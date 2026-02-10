@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller_han/A03_LawDao.kt" beforeDir="false" />
-    </list>
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,6 +59,10 @@
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/26/IdeaProjects/LawMate/build.gradle.kts",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "project.structure.last.edited": "모듈",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -73,6 +74,15 @@
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="LawMateApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="LawMate.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.lawmate.LawMateApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
