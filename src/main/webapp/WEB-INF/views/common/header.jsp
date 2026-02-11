@@ -32,7 +32,7 @@
                         <li><a href="#">상담 내역</a></li>
                         <li><a href="#">문서</a></li>
                         <li><a href="#">관리</a></li>
-                        <li><a href="#">관리자페이지(관리자만)</a></li>
+                        <li><a href="./admin/main">관리자페이지(관리자만)</a></li>
                     </ul>
                 </li>
             </ul>
