@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="로그인">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="1234">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,13 +51,12 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Jsp File" />
         <option value="Class" />
+        <option value="Jsp File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\26\.gradle\wrapper\dists\gradle-9.0.0-bin\d6wjpkvcgsg3oed0qlfss3wgl\gradle-9.0.0" javaHome="C:\Users\26\.jdks\ms-21.0.10" gradleVersion="9.0.0" />
@@ -104,13 +101,12 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\human-15\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
-      <recent name="C:\Users\human-15\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views\qna" />
+      <recent name="C:\Users\humanec01\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.LawMate [bootRun]">
+  <component name="RunManager" selected="Spring Boot.LawMateApplication">
     <configuration name="LawMate [bootRun]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -129,13 +125,14 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Gradle.LawMate [bootRun]" />
+      <item itemvalue="Spring Boot.LawMateApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.LawMate [bootRun]" />
@@ -150,7 +147,7 @@
     </attachedChunks>
   </component>
   <component name="StructureViewState">
-    <option name="selectedTab" value="논리" />
+    <option name="selectedTab" value="JSP" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
@@ -177,47 +174,23 @@
       <option name="project" value="LOCAL" />
       <updated>1770778705602</updated>
     </task>
-    <task id="LOCAL-00003" summary="qna기본 인터페이스">
+    <task id="LOCAL-00003" summary="1234">
       <option name="closed" value="true" />
-      <created>1770790081222</created>
+      <created>1770793164745</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1770790081222</updated>
+      <updated>1770793164745</updated>
     </task>
-    <task id="LOCAL-00004" summary="관리자 페이지 기본 ui생성 및 홈화면 링크 연결">
+    <task id="LOCAL-00004" summary="1234">
       <option name="closed" value="true" />
-      <created>1770791596062</created>
+      <created>1770793260097</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1770791596062</updated>
+      <updated>1770793260097</updated>
     </task>
-    <task id="LOCAL-00005" summary="로그인 페이지 연동">
-      <option name="closed" value="true" />
-      <created>1770791727995</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1770791727995</updated>
-    </task>
-    <task id="LOCAL-00006" summary="docs연동">
-      <option name="closed" value="true" />
-      <created>1770792920051</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1770792920051</updated>
-    </task>
-    <task id="LOCAL-00007" summary="로그인">
-      <option name="closed" value="true" />
-      <created>1770793144435</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1770793144435</updated>
-    </task>
-    <option name="localTasksCounter" value="8" />
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -225,11 +198,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="홈" />
-    <MESSAGE value="qna기본 인터페이스" />
-    <MESSAGE value="관리자 페이지 기본 ui생성 및 홈화면 링크 연결" />
-    <MESSAGE value="로그인 페이지 연동" />
-    <MESSAGE value="docs연동" />
-    <MESSAGE value="로그인" />
-    <option name="LAST_COMMIT_MESSAGE" value="로그인" />
+    <MESSAGE value="1234" />
+    <option name="LAST_COMMIT_MESSAGE" value="1234" />
   </component>
 </project>
