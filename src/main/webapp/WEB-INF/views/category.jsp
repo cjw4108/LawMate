@@ -23,7 +23,7 @@
                                 <h4>이혼/가족</h4>
                                 <p class="mb-3">부부관계, 양육권, 재산분할</p>
                                 <p class="mb-3">조회수 : </p><p class="mb-3">업데이트 날짜 : </p>
-                                <a href="#" class="btn btn-secondary btn-sm mt-3 px-4 float-end">바로가기</a>
+                                <a href="/categorylist" class="btn btn-secondary btn-sm mt-3 px-4 float-end">바로가기</a>
                             </div>
                         </div>
                     </div>
