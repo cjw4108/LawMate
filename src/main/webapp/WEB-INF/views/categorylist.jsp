@@ -4,14 +4,8 @@
 
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
-<style>
-    body {
-        padding-top: 50px;
-    }
-
-</style>
 <main class="main">
-    <section class="section">
+    <section id="hero" class="hero section">
         <div class="container">
             <!-- 상단 제목 영역 -->
             <div class="mb-5">
