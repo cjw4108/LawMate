@@ -25,4 +25,10 @@ public class AdminController {
     public String adminUsers() {
         return "admin/adminUsers";
     }
+
+    // 변호사 / 관리자 승인 관리 ⭐
+    @GetMapping("/approve")
+    public String adminApprove() {
+        return "admin/adminApprove";
+    }
 }
