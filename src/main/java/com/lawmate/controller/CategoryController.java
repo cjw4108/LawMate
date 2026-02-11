@@ -10,4 +10,9 @@ public class CategoryController {
     public String category() {
         return "category/category"; // → /WEB-INF/views/ccategory.jsp
     }
+
+    @GetMapping("/categorylist")
+    public String categorylist() {
+        return "category/categorylist"; // → /WEB-INF/views/categorylist.jsp
+    }
 }
