@@ -19,16 +19,44 @@
                 <div class="col-lg-6">
                     <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
                         <img src="/img/illustration-1.webp" alt="Hero Image" class="img-fluid">
-                        </div>
+                        </div>W
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="search-bar shadow-sm p-2 bg-white rounded-pill d-flex align-items-center border" style="height: 60px;">
-                    <input type="text" class="form-control border-0 ms-3" placeholder="검색어를 입력해주세요." style="box-shadow: none; background: transparent;">
-                    <button class="btn btn-link text-dark me-2"><i class="bi bi-search fs-4"></i></button>
+        <div class="col-lg-8 offset-lg-2" data-aos="fade-up" data-aos-delay="200">
+            <div class="d-flex gap-4">
+                <!-- 카테고리 드롭다운 -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn"
+                            type="button"
+                            id="categoryDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            style="height: 60px; min-width: 180px; border-color: #dee2e6;">
+                        카테고리
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                        <li><a class="dropdown-item" href="#">전체</a></li>
+                        <li><a class="dropdown-item" href="#">제품</a></li>
+                        <li><a class="dropdown-item" href="#">서비스</a></li>
+                        <li><a class="dropdown-item" href="#">고객지원</a></li>
+                    </ul>
+                </div>
+
+                <!-- 검색바 -->
+                <div class="search-bar shadow-sm p-2 bg-white rounded-pill d-flex align-items-center border flex-grow-1"
+                     style="height: 60px;">
+                    <input type="text"
+                           class="form-control border-0 ms-3"
+                           placeholder="검색어를 입력해주세요."
+                           style="box-shadow: none; background: transparent;">
+                    <button class="btn btn-link text-dark me-2">
+                        <i class="bi bi-search fs-4"></i>
+                    </button>
                 </div>
             </div>
+        </div>
+
             <div class="row stats-row gy-4 mt-5" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6"><div class="stat-item"><div class="stat-icon"><i class="bi bi-trophy"></i></div><div class="stat-content"><h4>3x Won Awards</h4><p class="mb-0">Vestibulum ante ipsum</p></div></div></div>
                 <div class="col-lg-3 col-md-6"><div class="stat-item"><div class="stat-icon"><i class="bi bi-briefcase"></i></div><div class="stat-content"><h4>6.5k Faucibus</h4><p class="mb-0">Nullam quis ante</p></div></div></div>
