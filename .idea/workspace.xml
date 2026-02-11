@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="변호사 권한 승인(우선 화면만)">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/LawyerMypageController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserMypageController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/consult.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/mypage.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/profile.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/consult.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/profile.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="12" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -263,7 +253,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770807795160</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="12">
+      <option name="closed" value="true" />
+      <created>1770813806807</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1770813806807</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -276,6 +274,7 @@
     <MESSAGE value="정리1" />
     <MESSAGE value="회원가입 경로 정리 완료" />
     <MESSAGE value="변호사 권한 승인(우선 화면만)" />
-    <option name="LAST_COMMIT_MESSAGE" value="변호사 권한 승인(우선 화면만)" />
+    <MESSAGE value="12" />
+    <option name="LAST_COMMIT_MESSAGE" value="12" />
   </component>
 </project>
