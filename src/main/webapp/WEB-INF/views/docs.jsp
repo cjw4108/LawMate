@@ -9,21 +9,21 @@
     <section id="hero" class="hero section">
         <div class="container" data-aos="fade-up" data-aos-delay="100">
             <div class="row align-items-center">
-                <div class="col-lg-6">
+                <div class="col-lg-6 offset-lg-1">
                     <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
                         <h1 class="mb-4"><span class="accent-text">서류 양식</span></h1>
                         <div class="company-badge mb-4"><i class="bi bi-gear-fill me-2"></i>법정 제출에 필요한 서류 양식을 작성하고 다운로드할 수 있습니다.</div>
                     </div>
                 </div>
 
-                <div class="col-lg-6">
+                <div class="col-lg-5">
                     <div class="hero-image" data-aos="zoom-out" data-aos-delay="300">
-                        <img src="/img/illustration-1.webp" alt="Hero Image" class="img-fluid">
-                        </div>W
+                        <img src="/img/illustration-1.png" alt="Hero Image" class="img-fluid">
+                        </div>
                     </div>
                 </div>
             </div>
-        <div class="col-lg-8 offset-lg-2" data-aos="fade-up" data-aos-delay="200">
+        <div class="col-lg-8 offset-lg-2" data-aos="fade-up" data-aos-delay="200" >
             <div class="d-flex gap-4">
                 <!-- 카테고리 드롭다운 -->
                 <div class="dropdown">
@@ -55,7 +55,14 @@
                     </button>
                 </div>
             </div>
-        </div>
+            <div class="col-lg-8 offset-lg-3" data-aos="fade-up" data-aos-delay="200" style="margin-top: 20px;">
+                <a href="#" class="bg-brand-softer hover:bg-brand-soft border border-brand-subtle text-fg-brand-strong text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 8px; margin-bottom: 8px; display: inline-block;">소장</a>
+                <a href="#" class="bg-neutral-primary-soft hover:bg-neutral-secondary-medium border border-default text-heading text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 8px; margin-bottom: 8px; display: inline-block;">준비서면</a>
+                <a href="#" class="bg-neutral-secondary-medium hover:bg-neutral-tertiary-medium border border-default-medium text-heading text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 8px; margin-bottom: 8px; display: inline-block;">고소장</a>
+                <a href="#" class="bg-danger-soft hover:bg-danger-medium border border-danger-subtle text-fg-danger-strong text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 8px; margin-bottom: 8px; display: inline-block;">채권가압류</a>
+                <a href="#" class="bg-success-soft hover:bg-success-medium border border-success-subtle text-fg-success-strong text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 8px; margin-bottom: 8px; display: inline-block;">내용증명</a>
+                <a href="#" class="bg-warning-soft hover:bg-warning-medium border border-warning-subtle text-fg-warning text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 8px; margin-bottom: 8px; display: inline-block;">합의서</a>
+            </div>
 
             <div class="row stats-row gy-4 mt-5" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6"><div class="stat-item"><div class="stat-icon"><i class="bi bi-trophy"></i></div><div class="stat-content"><h4>3x Won Awards</h4><p class="mb-0">Vestibulum ante ipsum</p></div></div></div>
