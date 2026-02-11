@@ -22,7 +22,7 @@
                         <div class="stat-item">
                             <div class="stat-content">
                                 <h4>이혼/가족</h4>
-                                <p class="mb-3">Vestibulum ante ipsum</p>
+                                <p class="mb-3">부부관계, 양육권, 재산분할</p>
                                 <a href="#" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
                             </div>
                         </div>
@@ -31,7 +31,7 @@
                         <div class="stat-item">
                             <div class="stat-content">
                                 <h4>민사</h4>
-                                <p class="mb-3">Nullam quis ante</p>
+                                <p class="mb-3">계약, 손해배상, 소송절차</p>
                                 <a href="#" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                         <div class="stat-item">
                             <div class="stat-content">
                                 <h4>형사</h4>
-                                <p class="mb-3">Etiam sit amet orci</p>
+                                <p class="mb-3">고소, 고발, 형사절차</p>
                                 <a href="#" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                         <div class="stat-item">
                             <div class="stat-content">
                                 <h4>노동</h4>
-                                <p class="mb-3">Vestibulum ante ipsum</p>
+                                <p class="mb-3">근로계약, 임금, 부당해고</p>
                                 <a href="#" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
                             </div>
                         </div>
@@ -60,7 +60,7 @@
                         <div class="stat-item">
                             <div class="stat-content">
                                 <h4>부동산</h4>
-                                <p class="mb-3">Nullam quis ante</p>
+                                <p class="mb-3">매매, 임대차, 등기</p>
                                 <a href="#" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
                             </div>
                         </div>
@@ -68,8 +68,8 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="stat-item">
                             <div class="stat-content">
-                                <h4></h4>
-                                <p class="mb-3">Etiam sit amet orci</p>
+                                <h4>기타</h4>
+                                <p class="mb-3">지식재산, 행정, 세무</p>
                                 <a href="#" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
                             </div>
                         </div>
