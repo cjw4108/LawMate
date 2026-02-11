@@ -26,7 +26,7 @@
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li class="dropdown">
-                    <a href="#" class="btn-getstarted text-dark"><span>로그인</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <a href="/login" class="btn-getstarted text-dark"><span>로그인</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                         <li><a href="#">마이페이지</a></li>
                         <li><a href="#">상담 내역</a></li>
