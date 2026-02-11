@@ -26,13 +26,13 @@
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li class="dropdown">
-                    <a href="#" class="btn-getstarted text-dark"><span>로그인</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <a href="/login" class="btn-getstarted text-dark"><span>로그인</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                         <li><a href="#">마이페이지</a></li>
                         <li><a href="#">상담 내역</a></li>
                         <li><a href="#">문서</a></li>
                         <li><a href="#">관리</a></li>
-                        <li><a href="#">관리자페이지(관리자만)</a></li>
+                        <li><a href="./admin/main">관리자페이지(관리자만)</a></li>
                     </ul>
                 </li>
             </ul>
