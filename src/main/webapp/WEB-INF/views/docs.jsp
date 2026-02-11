@@ -63,7 +63,7 @@
                 <a href="#" class="bg-warning-soft hover:bg-warning-medium border border-warning-subtle text-fg-warning text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 8px; margin-bottom: 8px; display: inline-block;">합의서</a>
             </div>
 
-            <div class="row stats-row gy-1 mt-0" data-aos="fade-up" data-aos-delay="500">
+            <div class="row stats-row gy-1 mt-5" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6"><div class="stat-item"><div class="stat-icon"><i class="bi bi-trophy"></i></div><div class="stat-content"><h4>3x Won Awards</h4><p class="mb-0">Vestibulum ante ipsum</p></div></div></div>
                 <div class="col-lg-3 col-md-6"><div class="stat-item"><div class="stat-icon"><i class="bi bi-briefcase"></i></div><div class="stat-content"><h4>6.5k Faucibus</h4><p class="mb-0">Nullam quis ante</p></div></div></div>
                 <div class="col-lg-3 col-md-6"><div class="stat-item"><div class="stat-icon"><i class="bi bi-graph-up"></i></div><div class="stat-content"><h4>80k Mauris</h4><p class="mb-0">Etiam sit amet orci</p></div></div></div>
