@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="1234">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" afterDir="false" />
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="홈">
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,29 +51,15 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Jsp File" />
-        <option value="JavaScript File" />
         <option value="Class" />
+        <option value="Jsp File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="SYNC" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;tnwls00120012-debug&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/cjw4108/LawMate&quot;,
-    &quot;accountId&quot;: &quot;b8f93ede-98bd-4061-8f45-29e66c1684ba&quot;
-  }
-}</component>
-  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\humanec01\.gradle\wrapper\dists\gradle-9.0.0-bin\d6wjpkvcgsg3oed0qlfss3wgl\gradle-9.0.0" javaHome="C:\Users\humanec01\.jdks\ms-21.0.10" gradleVersion="9.0.0" />
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\26\.gradle\wrapper\dists\gradle-9.0.0-bin\d6wjpkvcgsg3oed0qlfss3wgl\gradle-9.0.0" javaHome="C:\Users\26\.jdks\ms-21.0.10" gradleVersion="9.0.0" />
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 8
@@ -90,7 +76,6 @@
   "keyToString": {
     "Gradle.LawMate [bootRun].executor": "Run",
     "Gradle.LawMate 빌드.executor": "Run",
-    "Gradle.소스 다운로드.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Notification.DisplayName-DoNotAsk-WindowsDefender": "Microsoft Defender가 IDE에 영향을 줄 수 있습니다",
     "Notification.DoNotAsk-WindowsDefender": "true",
@@ -99,7 +84,6 @@
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -107,40 +91,27 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/humanec01/IdeaProjects/LawMate",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
+    "last_opened_file_path": "C:/Users/26/IdeaProjects/LawMate/build.gradle.kts",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "모듈",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
     "vue.rearranger.settings.migration": "true"
-  },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "oracle"
-    ]
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\humanec01\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
-      <recent name="C:\Users\humanec01\IdeaProjects\LawMate\src\main\webapp\WEB-INF" />
-      <recent name="C:\Users\humanec01\IdeaProjects\LawMate\src\main\webapp" />
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.LawMateApplication">
+  <component name="RunManager">
     <configuration name="LawMate [bootRun]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
+        <option name="scriptParameters" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -153,25 +124,13 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="LawMateApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="ms-21" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateResources" />
-      <module name="LawMate.test" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.lawmate.LawMateApplication" />
-      <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateResources" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <list>
-      <item itemvalue="Gradle.LawMate [bootRun]" />
-      <item itemvalue="Spring Boot.LawMateApplication" />
-    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.LawMate [bootRun]" />
@@ -181,13 +140,12 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
       </set>
     </attachedChunks>
   </component>
   <component name="StructureViewState">
-    <option name="selectedTab" value="논리" />
+    <option name="selectedTab" value="JSP" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
@@ -197,87 +155,31 @@
       <option name="presentableId" value="Default" />
       <updated>1770701390706</updated>
       <workItem from="1770701920685" duration="2226000" />
-      <workItem from="1770721999091" duration="23000" />
-      <workItem from="1770722040483" duration="259000" />
-      <workItem from="1770766394669" duration="7456000" />
-      <workItem from="1770782721966" duration="221000" />
-      <workItem from="1770782946900" duration="1996000" />
     </task>
-    <task id="LOCAL-00001" summary="123124">
+    <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
-      <created>1770713062175</created>
+      <created>1770774355887</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1770713062175</updated>
+      <updated>1770774355887</updated>
     </task>
-    <task id="LOCAL-00002" summary="４">
+    <task id="LOCAL-00002" summary="홈">
       <option name="closed" value="true" />
-      <created>1770721599499</created>
+      <created>1770778705602</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1770721599500</updated>
+      <updated>1770778705602</updated>
     </task>
-    <task id="LOCAL-00003" summary="４">
-      <option name="closed" value="true" />
-      <created>1770722089641</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1770722089641</updated>
-    </task>
-    <task id="LOCAL-00004" summary="４">
-      <option name="closed" value="true" />
-      <created>1770771158564</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1770771158564</updated>
-    </task>
-    <task id="LOCAL-00005" summary="４">
-      <option name="closed" value="true" />
-      <created>1770771281129</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1770771281130</updated>
-    </task>
-    <task id="LOCAL-00006" summary="４">
-      <option name="closed" value="true" />
-      <created>1770771630154</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1770771630154</updated>
-    </task>
-    <task id="LOCAL-00007" summary="４asdf">
-      <option name="closed" value="true" />
-      <created>1770781948141</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1770781948141</updated>
-    </task>
-    <task id="LOCAL-00008" summary="1234">
-      <option name="closed" value="true" />
-      <created>1770785098345</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1770785098345</updated>
-    </task>
-    <option name="localTasksCounter" value="9" />
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="123124" />
-    <MESSAGE value="４" />
-    <MESSAGE value="４asdf" />
-    <MESSAGE value="1234" />
-    <option name="LAST_COMMIT_MESSAGE" value="1234" />
+    <MESSAGE value="홈" />
+    <option name="LAST_COMMIT_MESSAGE" value="홈" />
   </component>
 </project>

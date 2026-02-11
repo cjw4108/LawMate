@@ -1,0 +1,20 @@
+/* 카테고리 버튼 hover 시 하늘색 배경 */
+.category-btn:hover {
+    background-color: #b3d9ff !important;
+    border-color: #dee2e6 !important;
+}
+
+/* 카테고리 버튼 focus/active 시 더 진한 색 */
+.category-btn:focus,
+.category-btn:active,
+.category-btn.show {
+    background-color: #99ccff !important;
+    border-color: #dee2e6 !important;
+    box-shadow: none !important;
+}
+
+/* 드롭다운 열렸을 때도 동일한 색상 유지 */
+.category-btn[aria-expanded="true"] {
+    background-color: #99ccff !important;
+    border-color: #dee2e6 !important;
+}
