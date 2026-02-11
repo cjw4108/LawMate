@@ -16,7 +16,7 @@ public class UserPageController {
     // 일반 회원가입
     @GetMapping("/signup")
     public String signupUser() {
-        return "signup";
+        return "siㅃgnup";
         // → /WEB-INF/views/signup.jsp
     }
 

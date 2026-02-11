@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="로그인 페이지 연동">
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="로그인">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/home.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +104,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\human-15\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
       <recent name="C:\Users\human-15\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views\qna" />
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF\views" />
       <recent name="C:\Users\26\IdeaProjects\LawMate\src\main\webapp\WEB-INF" />
@@ -148,7 +150,7 @@
     </attachedChunks>
   </component>
   <component name="StructureViewState">
-    <option name="selectedTab" value="JSP" />
+    <option name="selectedTab" value="논리" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
@@ -199,7 +201,23 @@
       <option name="project" value="LOCAL" />
       <updated>1770791727995</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="docs연동">
+      <option name="closed" value="true" />
+      <created>1770792920051</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1770792920051</updated>
+    </task>
+    <task id="LOCAL-00007" summary="로그인">
+      <option name="closed" value="true" />
+      <created>1770793144435</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1770793144435</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -210,6 +228,8 @@
     <MESSAGE value="qna기본 인터페이스" />
     <MESSAGE value="관리자 페이지 기본 ui생성 및 홈화면 링크 연결" />
     <MESSAGE value="로그인 페이지 연동" />
-    <option name="LAST_COMMIT_MESSAGE" value="로그인 페이지 연동" />
+    <MESSAGE value="docs연동" />
+    <MESSAGE value="로그인" />
+    <option name="LAST_COMMIT_MESSAGE" value="로그인" />
   </component>
 </project>
