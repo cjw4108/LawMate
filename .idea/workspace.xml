@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="정리">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,8 +125,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <list>
@@ -147,7 +150,7 @@
     </attachedChunks>
   </component>
   <component name="StructureViewState">
-    <option name="selectedTab" value="논리" />
+    <option name="selectedTab" value="JSP" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
