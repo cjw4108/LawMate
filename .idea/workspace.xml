@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="관리자 페이지 기본 ui생성 및 홈화면 링크 연결">
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="로그인 페이지 연동">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/header.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/header.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/home.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770791596062</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="로그인 페이지 연동">
+      <option name="closed" value="true" />
+      <created>1770791727995</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770791727995</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,6 +209,7 @@
     <MESSAGE value="홈" />
     <MESSAGE value="qna기본 인터페이스" />
     <MESSAGE value="관리자 페이지 기본 ui생성 및 홈화면 링크 연결" />
-    <option name="LAST_COMMIT_MESSAGE" value="관리자 페이지 기본 ui생성 및 홈화면 링크 연결" />
+    <MESSAGE value="로그인 페이지 연동" />
+    <option name="LAST_COMMIT_MESSAGE" value="로그인 페이지 연동" />
   </component>
 </project>

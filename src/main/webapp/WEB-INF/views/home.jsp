@@ -44,7 +44,7 @@
                 <div class="col-lg-2 col-md-4">
                     <div class="p-4 border text-center bg-light rounded shadow-sm">
                         <h5 class="fs-6 fw-bold">서류양식 다운로드</h5>
-                        <a href="#" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
+                        <a href="./docs" class="btn btn-secondary btn-sm mt-3 px-4">바로가기</a>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-4">
