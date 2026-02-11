@@ -13,7 +13,6 @@
                     <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
                         <h1 class="mb-4"><span class="accent-text">서류 양식</span></h1>
                         <div class="company-badge mb-4"><i class="bi bi-gear-fill me-2"></i>법정 제출에 필요한 서류 양식을 작성하고 다운로드할 수 있습니다.</div>
-
                     </div>
                 </div>
 
