@@ -8,11 +8,11 @@ public class CategoryController {
 
     @GetMapping("/category")
     public String category() {
-        return "category/category"; // → /WEB-INF/views/ccategory.jsp
+        return "category/category"; // → /WEB-INF/views/category/category.jsp
     }
 
     @GetMapping("/categorylist")
     public String categorylist() {
-        return "category/categorylist"; // → /WEB-INF/views/categorylist.jsp
+        return "category/categorylist"; // → /WEB-INF/views/category/categorylist.jsp
     }
 }

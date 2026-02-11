@@ -16,7 +16,7 @@
 
                     </div>
                 </div>
-                <div class="row stats-row gy-4 mt-5 justify-content-center" data-aos="fade-up" data-aos-delay="1">
+                <div class="row stats-row gy-4 mt-5 justify-content-center" data-aos="fade-up" data-aos-delay="200">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-item">
                             <div class="stat-content">
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row stats-row gy-4 mt-5 justify-content-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="row stats-row gy-4 mt-5 justify-content-center" data-aos="fade-up" data-aos-delay="200">
                     <div class="col-lg-4 col-md-6">
                         <div class="stat-item">
                             <div class="stat-content">

@@ -5,17 +5,17 @@
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 <main class="main">
-    <section id="hero" class="hero section">
+    <section id="hero" class="hero section" data-aos="fade-up" data-aos-delay="100">
         <div class="container">
             <!-- 상단 제목 영역 -->
-            <div class="mb-5">
+            <div class="mb-5" data-aos="fade-up" data-aos-delay="200">
 
                 <h2 class="mb-2">이혼/가족 법률정보</h2>
                 <p class="text-muted">이혼, 양육권, 재산분할 등 가족 관계 법률 정보</p>
             </div>
 
             <!-- 탭 메뉴 -->
-            <ul class="nav nav-tabs mb-4">
+            <ul class="nav nav-tabs mb-4" data-aos="fade-up" data-aos-delay="300">
                 <li class="nav-item">
                     <a class="nav-link active" href="#">전체</a>
                 </li>
@@ -37,10 +37,10 @@
             </ul>
 
             <!-- 법률정보 개수 -->
-            <p class="mb-4">총 <strong>482건</strong>의 법률정보</p>
+            <p class="mb-4" data-aos="fade-up" data-aos-delay="400">총 <strong>482건</strong>의 법률정보</p>
 
             <!-- 법률정보 리스트 -->
-            <div class="list-group mb-4">
+            <div class="list-group mb-4" data-aos="fade-up" data-aos-delay="500">
                 <!-- 항목 1 -->
                 <a href="#" class="list-group-item list-group-item-action p-4">
                     <div class="d-flex w-100 justify-content-between align-items-start mb-2">
