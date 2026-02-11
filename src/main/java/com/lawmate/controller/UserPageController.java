@@ -14,16 +14,16 @@ public class UserPageController {
     }
 
     // 일반 회원가입
-    @GetMapping("/signup/user")
+    @GetMapping("/signup")
     public String signupUser() {
-        return "signup_user";
-        // → /WEB-INF/views/signup_user.jsp
+        return "signup";
+        // → /WEB-INF/views/signup.jsp
     }
 
     // 변호사 회원가입
-    @GetMapping("/signup/lawyer")
-    public String signupLawyer() {
-        return "signup_lawyer";
-        // → /WEB-INF/views/signup_lawyer.jsp
+    @GetMapping("/lawyer")
+    public String Lawyer() {
+        return "lawyer";
+        // → /WEB-INF/views/lawyer.jsp
     }
 }
