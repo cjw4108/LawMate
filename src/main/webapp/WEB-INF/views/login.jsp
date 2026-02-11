@@ -64,7 +64,7 @@
                 <div class="login-links">
                     <div>
                         아직 회원이 아니신가요?
-                        <a href="${pageContext.request.contextPath}/signupChoice">회원가입</a>
+                        <a href="${pageContext.request.contextPath}/signup">회원가입</a>
                     </div>
                     <div class="mt-1">
                         변호사이신가요?
