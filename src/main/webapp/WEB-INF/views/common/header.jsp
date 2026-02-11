@@ -13,6 +13,7 @@
     <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="/vendor/aos/aos.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dropdown.css">
 </head>
 
 <body class="index-page">
