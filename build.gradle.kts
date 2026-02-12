@@ -30,6 +30,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(kotlin("stdlib-jdk8"))
     runtimeOnly("com.oracle.database.jdbc:ojdbc11:23.3.0.23.09")
+
 }
 
 tasks.test {
