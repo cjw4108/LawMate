@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="text-center mt-3">
-                            <a href="/user/login">이미 계정이 있으신가요? → 로그인</a>
+                            <a href="/login">이미 계정이 있으신가요? → 로그인</a>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">회원가입</button>
