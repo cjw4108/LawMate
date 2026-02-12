@@ -21,10 +21,16 @@ dependencies {
     implementation("org.apache.tomcat.embed:tomcat-embed-jasper")
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api")
     implementation("org.glassfish.web:jakarta.servlet.jsp.jstl")
+    // ✅ MyBatis
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
 
+    // ✅ JDBC
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(kotlin("stdlib-jdk8"))
+    runtimeOnly("com.oracle.database.jdbc:ojdbc11:23.3.0.23.09")
+
 }
 
 tasks.test {
