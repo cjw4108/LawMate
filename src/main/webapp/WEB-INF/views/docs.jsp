@@ -67,7 +67,7 @@
 
     <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0;">
         <div class="container">
-            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
+            <h3 class="mb-4 text-center fw-bold">자주 쓰는 양식 바로 작성하기</h3>
 
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6">
@@ -158,13 +158,137 @@
                         gap: 1rem;
                     }
                 }
+
+                /* 서류 양식 카드 전용 스타일 */
+                .card-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 24px;
+                    margin-bottom: 40px;
+                    padding: 20px 0;
+                }
+
+                .card-grid .card {
+                    background: white;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 12px;
+                    padding: 28px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    text-decoration: none;
+                    color: inherit;
+                    display: block;
+                }
+
+                .card-grid .card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+                    border-color: #3b82f6;
+                }
+
+                .card-grid .card .badge {
+                    display: inline-block;
+                    padding: 6px 14px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    margin-bottom: 16px;
+                }
+
+                .card-grid .card-title {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #1e293b;
+                    margin-bottom: 12px;
+                    margin-top: 0;
+                }
+
+                .card-grid .card-info {
+                    font-size: 13px;
+                    color: #64748b;
+                    line-height: 1.7;
+                    margin-bottom: 24px;
+                }
+
+                .card-grid .card-button {
+                    width: 100%;
+                    background-color: #3b82f6;
+                    color: white;
+                    border: none;
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .card-grid .card-button:hover {
+                    background-color: #2563eb;
+                    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+                }
+
+                #pagination {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    margin-top: 40px;
+                    padding-bottom: 40px;
+                }
+
+                #pagination .pagination-btn {
+                    width: 40px;
+                    height: 40px;
+                    border: 1px solid #e5e7eb;
+                    background: white;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 15px;
+                    color: #475569;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 500;
+                }
+
+                #pagination .pagination-btn:hover:not(.active):not(:disabled) {
+                    background-color: #f1f5f9;
+                    border-color: #cbd5e1;
+                }
+
+                #pagination .pagination-btn.active {
+                    background-color: #3b82f6;
+                    color: white;
+                    border-color: #3b82f6;
+                    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+                }
+
+                #pagination .pagination-btn:disabled {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                }
+
+                @media (max-width: 968px) {
+                    .card-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                }
+
+                @media (max-width: 640px) {
+                    .card-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
             </style>
         </div>
     </section>
 
     <section id="about" class="about section" data-aos="zoom-out" data-aos-delay="300" style="padding-top: 0 !important;">
         <div class="container">
-            <h3 class="mb-4 text-left fw-bold">전체 서류 양식 목록</h3>
+            <h3 class="mb-4 text-center fw-bold">전체 서류 양식 목록</h3>
 
             <div class="card-grid" id="cardGrid">
             </div>
@@ -219,24 +343,22 @@
                     cardElement.href = 'detail.html?id=' + card.id;
                     cardElement.className = 'card';
 
-                    // 배지와 타이틀을 감싸는 컨테이너
-                    const headerContainer = document.createElement('div');
-                    headerContainer.className = 'd-flex w-100 justify-content-between align-items-start mb-2';
-
+                    // 배지
                     const cardBadge = document.createElement('span');
                     cardBadge.className = 'badge ' + getBadgeClass(card.badge);
                     cardBadge.textContent = card.badge;
 
-                    headerContainer.appendChild(cardBadge);
-
+                    // 제목
                     const cardTitle = document.createElement('h3');
                     cardTitle.className = 'card-title';
                     cardTitle.textContent = card.title;
 
+                    // 정보
                     const cardInfo = document.createElement('div');
                     cardInfo.className = 'card-info';
                     cardInfo.innerHTML = '등록: ' + card.date + ' | (조회수) ' + card.views + '회<br>' + card.description;
 
+                    // 다운로드 버튼
                     const cardButton = document.createElement('button');
                     cardButton.className = 'card-button';
                     cardButton.textContent = '다운로드';
@@ -246,7 +368,7 @@
                         downloadFile(card.id);
                     };
 
-                    cardElement.appendChild(headerContainer);
+                    cardElement.appendChild(cardBadge);
                     cardElement.appendChild(cardTitle);
                     cardElement.appendChild(cardInfo);
                     cardElement.appendChild(cardButton);
