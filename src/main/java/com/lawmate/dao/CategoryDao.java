@@ -18,6 +18,7 @@ public interface CategoryDao {
         description,
         created_at
     FROM LAW_CATEGORY
+    where name like #{name} and description like #{description}
     """)
-    List<CategoryDto> category();
+    List<CategoryDto> categorySch(CategoryDto sch);
 }
