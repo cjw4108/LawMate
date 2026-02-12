@@ -32,11 +32,6 @@
         </thead>
         <tbody>
         <%-- // groupNo groupName debutDate fandomName --%>
-        <c:forEach var="consult" items="${consultList}">
-            <tr ondblclick="goDetail(${consult.id})"><td>${consult.id}</td><td>${consult.user_id}</td>
-                <td>${consult.title}</td><td>${consult.answered}</td>
-            <td><fmt:formatDate value="${consult.created_at}"/></td></tr>
-        </c:forEach>
         </tbody>
     </table>
 </div>
