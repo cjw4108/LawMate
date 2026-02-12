@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+/* 서비스 카드 컨테이너 (가로 정렬) */
+.service-container {
+    display: flex;
+    flex-wrap: nowrap; /* 줄바꿈 방지 */
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 0;
+    overflow-x: auto; /* 모바일에서 옆으로 스크롤 */
+}
+
+/* 개별 서비스 카드 스타일 */
+.service-card {
+    min-width: 170px;
+    flex: 1;
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px 10px;
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* 마우스 호버 효과 */
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    border-color: #0d83fd;
+}
+
+/* 카드 내 아이콘 및 제목 */
+.service-card i {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.service-card h6 {
+    font-weight: 700;
+    margin: 0;
+    color: #333;
+    word-break: keep-all; /* 한글 단어 단위 줄바꿈 */
+}
+
+/* 검색창 커스텀 */
+.search-wrapper {
+    transition: all 0.3s;
+}
+
+.search-wrapper:focus-within {
+    border-color: #0d83fd !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 131, 253, 0.1) !important;
+}
