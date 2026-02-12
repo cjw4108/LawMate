@@ -4,40 +4,33 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>LawMate - 서비스</title>
-
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Inter:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <title>LawMate - 스마트 법률 파트너</title>
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="/vendor/aos/aos.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/dropdown.css">
-    <link rel="stylesheet" href="/css/card.css">
+    <link href="/css/custom.css" rel="stylesheet">
 </head>
-
 <body class="index-page">
-<header id="header" class="header d-flex align-items-center fixed-top bg-white border-bottom">
-    <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+<header id="header" class="header d-flex align-items-center fixed-top bg-white border-bottom shadow-sm" style="height: 70px;">
+    <div class="container-xl d-flex align-items-center justify-content-between">
         <a href="/home" class="logo d-flex align-items-center me-auto">
-            <img src="/img/logo.png" alt="LawMate Logo" style="max-height: 40px;">
+            <img src="/img/logo.png" alt="LawMate" style="max-height: 35px;">
         </a>
-
         <nav id="navmenu" class="navmenu">
-            <ul>
+            <ul class="d-flex align-items-center mb-0">
                 <li class="dropdown">
-                    <a href="/login" class="btn-getstarted text-dark"><span>로그인</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                    <ul>
+                    <a href="/login" class="btn btn-primary rounded-pill px-4 text-white">
+                        <span>로그인</span> <i class="bi bi-chevron-down ms-1"></i>
+                    </a>
+                    <ul class="shadow border-0">
                         <li><a href="#">마이페이지</a></li>
                         <li><a href="#">상담 내역</a></li>
-                        <li><a href="#">문서</a></li>
-                        <li><a href="#">관리</a></li>
-                        <li><a href="./admin/main">관리자페이지(관리자만)</a></li>
+                        <li><a href="#">문서 관리</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a href="/admin/main" class="text-danger fw-bold">관리자 페이지</a></li>
                     </ul>
                 </li>
             </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
     </div>
 </header>
