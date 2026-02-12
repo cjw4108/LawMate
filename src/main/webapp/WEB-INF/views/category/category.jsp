@@ -25,20 +25,22 @@
                 <div class="row stats-row gy-4 mt-5 justify-content-center" data-aos="fade-up" data-aos-delay="200">
                     </c:if>
 
-                    <div class="col-lg-4 col-md-6">
-                        <div class="stat-item">
-                            <div class="stat-content">
-                                <h4>${category.name}</h4>
-                                <p class="mb-3">${category.description}</p>
-                                <p class="mb-3">
-                                    업데이트 날짜 : ${category.createdAt}
-                                </p>
-                                <p>조회수 : </p>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="stat-item">
+                                <div class="stat-content" style="position: relative; padding-bottom: 60px;">
+                                    <h4>${category.name}</h4>
+                                    <p class="mb-3">${category.description}</p>
+                                    <p class="mb-3">업데이트 날짜 : ${category.createdAt}</p>
+                                    <p>조회수 : </p>
 
-                                <a href="/categorylist?categoryId=${category.categoryId}" class="btn btn-secondary btn-sm mt-3 px-4 float-end">바로가기</a>
+                                    <div class="service-card shadow-sm"
+                                         style="position: absolute; bottom: 10px; right: 10px; width: 100px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                         onclick="location.href='/categorylist?categoryId=${category.categoryId}'">
+                                        <h6 style="font-size: 0.8rem; margin: 0;">바로가기</h6>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </c:forEach>
                 </div>
             </div>
