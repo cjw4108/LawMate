@@ -1,8 +1,11 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
+<main class="main" style="padding-top: 100px;">
 <br><br><br><br>
 <div class="container">
     <form id="frm01" class="form"  method="post">
@@ -29,7 +32,7 @@
         </thead>
         <tbody>
         <%-- // groupNo groupName debutDate fandomName --%>
-        <c:forEach var="grp" items="${consultList}">
+        <c:forEach var="consult" items="${consultList}">
             <tr ondblclick="goDetail(${consult.id})"><td>${consult.id}</td><td>${consult.user_id}</td>
                 <td>${consult.title}</td><td>${consult.answered}</td>
             <td><fmt:formatDate value="${consult.created_at}"/></td></tr>
@@ -37,8 +40,7 @@
         </tbody>
     </table>
 </div>
-
+</main>
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
-</body>
 </html>
