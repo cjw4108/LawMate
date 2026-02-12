@@ -67,13 +67,7 @@
 
     <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0;">
         <div class="container">
-            <div style="margin-bottom: 2.5rem;">
-                <div style="background: #ffffff; padding: 1.75rem 2.5rem; border-radius: 12px; border: 2px solid #3b82f6; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin: 0; text-align: left;">
-                        자주 쓰는 양식 바로 작성하기
-                    </h2>
-                </div>
-            </div>
+            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
 
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6">
@@ -170,14 +164,7 @@
 
     <section id="about" class="about section" data-aos="zoom-out" data-aos-delay="300" style="padding-top: 0 !important;">
         <div class="container">
-            <!-- 전체 서류 양식 목록 배너 -->
-            <div style="margin-bottom: 2.5rem;">
-                <div style="background: #ffffff; padding: 1.75rem 2.5rem; border-radius: 12px; border: 2px solid #3b82f6; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);">
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin: 0; text-align: left;">
-                        전체 서류 양식 목록
-                    </h2>
-                </div>
-            </div>
+            <h3 class="mb-4 text-left fw-bold">전체 서류 양식 목록</h3>
 
             <div class="card-grid" id="cardGrid">
             </div>
@@ -207,6 +194,18 @@
             let currentPage = 1;
             const totalPages = Math.ceil(allCards.length / cardsPerPage);
 
+            // 카테고리별 배지 색상 매핑
+            function getBadgeClass(badge) {
+                const badgeColorMap = {
+                    '계약 관련 서류': 'bg-primary',
+                    '소송 관련 서류': 'bg-success',
+                    '고소/고발 서류': 'bg-danger',
+                    '이혼절차': 'bg-warning',
+                    '기타': 'bg-secondary'
+                };
+                return badgeColorMap[badge] || 'bg-primary'; // 기본값은 bg-primary
+            }
+
             function renderCards(page) {
                 const cardGrid = document.getElementById('cardGrid');
                 cardGrid.innerHTML = '';
@@ -220,9 +219,15 @@
                     cardElement.href = 'detail.html?id=' + card.id;
                     cardElement.className = 'card';
 
+                    // 배지와 타이틀을 감싸는 컨테이너
+                    const headerContainer = document.createElement('div');
+                    headerContainer.className = 'd-flex w-100 justify-content-between align-items-start mb-2';
+
                     const cardBadge = document.createElement('span');
-                    cardBadge.className = 'card-badge';
+                    cardBadge.className = 'badge ' + getBadgeClass(card.badge);
                     cardBadge.textContent = card.badge;
+
+                    headerContainer.appendChild(cardBadge);
 
                     const cardTitle = document.createElement('h3');
                     cardTitle.className = 'card-title';
@@ -241,7 +246,7 @@
                         downloadFile(card.id);
                     };
 
-                    cardElement.appendChild(cardBadge);
+                    cardElement.appendChild(headerContainer);
                     cardElement.appendChild(cardTitle);
                     cardElement.appendChild(cardInfo);
                     cardElement.appendChild(cardButton);
