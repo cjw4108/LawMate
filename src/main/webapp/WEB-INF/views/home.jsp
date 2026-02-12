@@ -33,7 +33,7 @@
                     <i class="bi bi-chat-left-text text-info"></i>
                     <h6>Q&A 게시판</h6>
                 </div>
-                <div class="service-card shadow-sm" onclick="location.href='/consult/request'">
+                <div class="service-card shadow-sm" onclick="location.href='/consult/consultList'">
                     <i class="bi bi-person-video3 text-warning"></i>
                     <h6>상담 요청</h6>
                 </div>
