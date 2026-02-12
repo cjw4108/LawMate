@@ -23,9 +23,9 @@
                         <span>로그인</span> <i class="bi bi-chevron-down ms-1"></i>
                     </a>
                     <ul class="shadow border-0">
-                        <li><a href="#">마이페이지</a></li>
-                        <li><a href="#">상담 내역</a></li>
-                        <li><a href="#">문서 관리</a></li>
+                        <li><a href="/mypage/user">마이페이지</a></li>
+                        <li><a href="/mypage/user/consult">상담 내역</a></li>
+                        <li><a href="/mypage/user/profile">문서 관리</a></li>
                         <hr class="dropdown-divider">
                         <li><a href="/admin/main" class="text-danger fw-bold">관리자 페이지</a></li>
                     </ul>
