@@ -22,52 +22,55 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-8 offset-lg-2" data-aos="fade-up" data-aos-delay="200" style="margin-bottom: 0 !important;">
-            <div class="d-flex gap-4">
 
-                <div class="dropdown" style="width: 20%; min-width: 150px;">
-                    <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
-                            type="button"
-                            id="categoryDropdown"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style="padding: 1rem 1.5rem; border-color: #dee2e6;">
-                        카테고리
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                        <li><a class="dropdown-item" href="#">전체</a></li>
-                        <li><a class="dropdown-item" href="#">제품</a></li>
-                        <li><a class="dropdown-item" href="#">서비스</a></li>
-                        <li><a class="dropdown-item" href="#">고객지원</a></li>
-                    </ul>
-                </div>
+            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="col-lg-10">
+                    <div class="d-flex gap-4 mb-4">
+                        <div class="dropdown" style="width: 20%; min-width: 150px;">
+                            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
+                                    type="button"
+                                    id="categoryDropdown"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style="padding: 1rem 1.5rem; border-color: #dee2e6;">
+                                카테고리
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                                <li><a class="dropdown-item" href="#">전체</a></li>
+                                <li><a class="dropdown-item" href="#">제품</a></li>
+                                <li><a class="dropdown-item" href="#">서비스</a></li>
+                                <li><a class="dropdown-item" href="#">고객지원</a></li>
+                            </ul>
+                        </div>
 
-                <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
-                     style="padding: 0.75rem 1.25rem;">
-                    <input type="text"
-                           class="form-control border-0 ms-3"
-                           placeholder="검색어를 입력해주세요."
-                           style="box-shadow: none; background: transparent; padding: 0.5rem 0;">
-                    <button class="btn btn-link text-dark me-2">
-                        <i class="bi bi-search fs-4"></i>
-                    </button>
+                        <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
+                             style="padding: 0.75rem 1.25rem;">
+                            <input type="text"
+                                   class="form-control border-0 ms-3"
+                                   placeholder="검색어를 입력해주세요."
+                                   style="box-shadow: none; background: transparent; padding: 0.5rem 0;">
+                            <button class="btn btn-link text-dark me-2">
+                                <i class="bi bi-search fs-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="#" class="btn btn-outline-primary rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 소장</a>
+                        <a href="#" class="btn btn-outline-secondary rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 준비서면</a>
+                        <a href="#" class="btn btn-outline-info rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 고소장</a>
+                        <a href="#" class="btn btn-outline-danger rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 채권가압류</a>
+                        <a href="#" class="btn btn-outline-success rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 내용증명</a>
+                        <a href="#" class="btn btn-outline-warning rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 합의서</a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-8 offset-lg-3" data-aos="fade-up" data-aos-delay="200" style="margin-top: 1.5rem;">
-                <a href="#" class="bg-brand-softer hover:bg-brand-soft border border-brand-subtle text-fg-brand-strong text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">소장</a>
-                <a href="#" class="bg-neutral-primary-soft hover:bg-neutral-secondary-medium border border-default text-heading text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">준비서면</a>
-                <a href="#" class="bg-neutral-secondary-medium hover:bg-neutral-tertiary-medium border border-default-medium text-heading text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">고소장</a>
-                <a href="#" class="bg-danger-soft hover:bg-danger-medium border border-danger-subtle text-fg-danger-strong text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">채권가압류</a>
-                <a href="#" class="bg-success-soft hover:bg-success-medium border border-success-subtle text-fg-success-strong text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">내용증명</a>
-                <a href="#" class="bg-warning-soft hover:bg-warning-medium border border-warning-subtle text-fg-warning text-sm font-medium px-3 py-1.5 rounded" style="margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block;">합의서</a>
             </div>
         </div>
     </section>
 
     <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0;">
         <div class="container">
-            <h3 class="mb-4 text-center fw-bold">자주 쓰는 양식 바로 작성하기</h3>
+            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
 
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6">
@@ -288,7 +291,7 @@
 
     <section id="about" class="about section" data-aos="zoom-out" data-aos-delay="300" style="padding-top: 0 !important;">
         <div class="container">
-            <h3 class="mb-4 text-center fw-bold">전체 서류 양식 목록</h3>
+            <h3 class="mb-4 text-left fw-bold">전체 서류 양식 목록</h3>
 
             <div class="card-grid" id="cardGrid">
             </div>
