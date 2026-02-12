@@ -14,6 +14,7 @@
     <link href="/vendor/aos/aos.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/dropdown.css">
+    <link rel="stylesheet" href="/css/card.css">
 </head>
 
 <body class="index-page">
