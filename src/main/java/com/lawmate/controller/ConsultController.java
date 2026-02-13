@@ -8,5 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/consult")
 public class ConsultController {
     @GetMapping("/consultList")
-    public String consultList() { return "consult/consultList";}
+    public String consultList() {
+
+        return "consult/consultList";}
 }
