@@ -20,7 +20,7 @@ public class LoginController {
     public String login(
             @RequestParam("userId") String userId,
             @RequestParam("password") String password,
-            HttpSession session,
+
             Model model) {
 
         UserDTO loginUser = userService.login(userId, password);
@@ -30,9 +30,7 @@ public class LoginController {
             return "login"; // 로그인 페이지로 다시
         }
 
-        // 세션 저장
-        session.setAttribute("loginUser", loginUser);
-        session.setAttribute("role", loginUser.getRole());
+
 
         // 권한별 화면 분기
         String role = loginUser.getRole();
