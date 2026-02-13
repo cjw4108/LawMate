@@ -14,15 +14,17 @@ public class CategoryService {
     private CategoryDao dao;
 
     public List<CategoryDto> categorySch(CategoryDto sch) {
-
-        // null 방어
         if (sch.getName() == null) sch.setName("");
         if (sch.getDescription() == null) sch.setDescription("");
 
-        // LIKE 처리
         sch.setName("%" + sch.getName() + "%");
         sch.setDescription("%" + sch.getDescription() + "%");
 
         return dao.categorySch(sch);
+    }
+
+    // 추가
+    public CategoryDto getCategoryById(int categoryId) {
+        return dao.getCategoryById(categoryId);
     }
 }
