@@ -34,7 +34,7 @@
                                     <p>조회수 : </p>
 
                                     <div class="service-card shadow-sm"
-                                         style="position: absolute; bottom: 10px; right: 10px; width: 100px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                         style="position: absolute; border:1px solid skyblue; bottom: 10px; right: 10px; width: 100px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                          onclick="location.href='/categorylist?categoryId=${category.categoryId}'">
                                         <h6 style="font-size: 0.8rem; margin: 0;">바로가기</h6>
                                     </div>
