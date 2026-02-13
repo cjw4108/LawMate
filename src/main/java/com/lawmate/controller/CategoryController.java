@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -53,4 +54,24 @@ public class CategoryController {
         model.addAttribute("categoryList", categoryService.categorySch(sch));
         return "category/category";
     }
+
+    // 법률정보 상세 페이지
+    @GetMapping("/content/{contentId}")
+    public String contentDetail(@PathVariable("contentId") int contentId, Model model) {
+        System.out.println("받은 contentId: " + contentId);
+
+        // contentId로 법률정보 상세 조회
+        LawContentDto content = lawContentService.getContentById(contentId);
+        System.out.println("조회된 콘텐츠: " + content.getTitle());
+
+        // 조회수 증가
+        lawContentService.increaseViewCount(contentId);
+
+        model.addAttribute("content", content);
+
+        return "category/contentDetail";
+    }
+
+
+
 }
