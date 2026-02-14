@@ -66,6 +66,8 @@
 
 # Resolve links: $0 may be a link
 app_path=$0
+implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+Reload Gradle Project
 
 # Need this for daisy-chained symlinks.
 while

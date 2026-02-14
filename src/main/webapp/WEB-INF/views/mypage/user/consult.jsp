@@ -1,0 +1,27 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>상담 내역</title>
+
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background: #f5f6f8; margin: 0; }
+        .wrap { padding: 40px; }
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h2>상담 내역</h2>
+    <div class="card">
+        <p>상담 내역이 여기에 표시됩니다.</p>
+    </div>
+</div>
+</body>
+</html>

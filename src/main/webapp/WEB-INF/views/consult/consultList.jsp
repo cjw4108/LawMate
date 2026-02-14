@@ -1,0 +1,41 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
+<main class="main" style="padding-top: 100px;">
+<br><br><br><br>
+<div class="container">
+    <form id="frm01" class="form"  method="post">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <input placeholder="제목" name="title"  value="${param.title}" class="form-control mr-sm-2" />
+            <button class="btn btn-info" type="submit">Search</button>
+            <button class="btn btn-success" id="regBtn" type="button">등록</button>
+        </nav>
+    </form>
+    <table class="table table-hover table-striped">
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+        <thead>
+        <tr class="table-success text-center">
+            <th>ID</th>
+            <th>계정</th>
+            <th>제목</th>
+            <th>답변여부</th>
+            <th>생성일자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%-- // groupNo groupName debutDate fandomName --%>
+        </tbody>
+    </table>
+</div>
+</main>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
+
+</html>

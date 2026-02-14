@@ -21,46 +21,38 @@
             margin-bottom: 30px;
         }
 
-        /* 사용자 목록 */
         .user-list {
             border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 12px;
-            height: 320px;
+            border-radius: 6px;
+            padding: 15px;
+            height: 300px;
             overflow-y: auto;
-            background: #fff;
         }
 
         .user-item {
-            padding: 12px 14px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border: 1px solid #e5e5e5;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
             cursor: pointer;
-            transition: all 0.2s ease;
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
         }
 
         .user-item:hover {
-            background-color: #f1f3f5;
+            background-color: #f8f9fa;
         }
 
-        .user-item.active {
-            background-color: #e9f0ff;
-            border-left: 4px solid #0d6efd;
-        }
-
-        /* 상세 영역 */
         .detail-box {
             border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 24px;
-            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
         }
 
         .btn-group-custom {
             display: flex;
-            gap: 12px;
-            margin-top: 30px;
+            gap: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -74,7 +66,7 @@
             <h2 class="admin-title">관리자 변호사 승인</h2>
             <p class="text-center text-muted mb-4">(회원 검색 및 변호사 승인)</p>
 
-            <!-- 필터 / 검색 -->
+            <!-- 검색 / 필터 -->
             <div class="filter-box">
                 <select class="form-select w-auto">
                     <option>회원유형</option>
@@ -97,20 +89,9 @@
                 <div class="col-md-4">
                     <h5 class="mb-2">사용자 목록</h5>
                     <div class="user-list">
-                        <div class="user-item active">
-                            <div class="fw-bold">김민정</div>
-                            <small class="text-muted">변호사 · 승인 대기</small>
-                        </div>
-
-                        <div class="user-item">
-                            <div class="fw-bold">이철수</div>
-                            <small class="text-muted">일반 · 활성</small>
-                        </div>
-
-                        <div class="user-item">
-                            <div class="fw-bold">박영희</div>
-                            <small class="text-muted">변호사 · 승인 대기</small>
-                        </div>
+                        <div class="user-item">이름 | 유형 | 상태</div>
+                        <div class="user-item">이철수 | 변호사 | 대기</div>
+                        <div class="user-item">박영희 | 일반 | 활성</div>
                     </div>
                 </div>
 
@@ -121,12 +102,12 @@
 
                         <div class="mb-3">
                             <label class="form-label">아이디</label>
-                            <input type="text" class="form-control" value="lawyer_kmj" readonly>
+                            <input type="text" class="form-control" placeholder="아이디" readonly>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">업로드 한 서류</label>
-                            <input type="text" class="form-control" value="[ PDF / IMAGE ]" readonly>
+                            <input type="text" class="form-control" placeholder="[ PDF / IMAGE ]" readonly>
                         </div>
 
                         <div class="mb-3">
@@ -146,17 +127,6 @@
         </div>
     </section>
 </main>
-
-<script>
-    const items = document.querySelectorAll('.user-item');
-
-    items.forEach(item => {
-        item.addEventListener('click', () => {
-            items.forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-        });
-    });
-</script>
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 </body>
