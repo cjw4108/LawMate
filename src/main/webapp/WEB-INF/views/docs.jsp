@@ -31,15 +31,19 @@
                                     type="button"
                                     id="categoryDropdown"
                                     data-bs-toggle="dropdown"
+                                    data-bs-auto-close="true"
+                                    data-bs-boundary="viewport"
                                     aria-expanded="false"
                                     style="padding: 1rem 1.5rem; border-color: #dee2e6;">
                                 카테고리
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                                <li><a class="dropdown-item" href="#">전체</a></li>
-                                <li><a class="dropdown-item" href="#">제품</a></li>
-                                <li><a class="dropdown-item" href="#">서비스</a></li>
-                                <li><a class="dropdown-item" href="#">고객지원</a></li>
+                            <ul class="dropdown-menu" aria-labelledby="categoryDropdown" data-bs-popper="static">
+                                <li><a class="dropdown-item" href="#">부동산</a></li>
+                                <li><a class="dropdown-item" href="#">민사</a></li>
+                                <li><a class="dropdown-item" href="#">형사</a></li>
+                                <li><a class="dropdown-item" href="#">이혼/가족</a></li>
+                                <li><a class="dropdown-item" href="#">노동</a></li>
+                                <li><a class="dropdown-item" href="#">기타</a></li>
                             </ul>
                         </div>
 
@@ -55,13 +59,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="#" class="btn btn-outline-primary rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 소장</a>
-                        <a href="#" class="btn btn-outline-secondary rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 준비서면</a>
-                        <a href="#" class="btn btn-outline-info rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 고소장</a>
-                        <a href="#" class="btn btn-outline-danger rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 채권가압류</a>
-                        <a href="#" class="btn btn-outline-success rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 내용증명</a>
-                        <a href="#" class="btn btn-outline-warning rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 합의서</a>
+                    <div id="rank-container" class="d-flex flex-wrap justify-content-center gap-3">
                     </div>
                 </div>
             </div>
@@ -162,7 +160,6 @@
                     }
                 }
 
-                /* 서류 양식 카드 전용 스타일 */
                 .card-grid {
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
@@ -302,32 +299,32 @@
 
         <script>
             const allCards = [
-                { id: 1, badge: '계약 관련 서류', title: '임대차 계약서', date: '2024. 01. 15', views: 123, description: '표준 임대차 계약서 양식' },
-                { id: 2, badge: '소송 관련 서류', title: '소장 양식', date: '2024. 01. 16', views: 456, description: '민사소송 소장 작성 양식' },
-                { id: 3, badge: '계약 관련 서류', title: '근로계약서', date: '2024. 01. 17', views: 789, description: '표준 근로계약서 양식' },
-                { id: 4, badge: '소송 관련 서류', title: '답변서 양식', date: '2024. 01. 18', views: 234, description: '민사소송 답변서 작성 양식' },
-                { id: 5, badge: '계약 관련 서류', title: '매매계약서', date: '2024. 01. 19', views: 567, description: '부동산 매매계약서 양식' },
-                { id: 6, badge: '고소/고발 서류', title: '고소장 양식', date: '2024. 01. 20', views: 890, description: '형사 고소장 작성 양식' },
-                { id: 7, badge: '계약 관련 서류', title: '위임장', date: '2024. 01. 21', views: 345, description: '법률 대리 위임장 양식' },
-                { id: 8, badge: '소송 관련 서류', title: '준비서면', date: '2024. 01. 22', views: 678, description: '소송 준비서면 작성 양식' },
-                { id: 9, badge: '고소/고발 서류', title: '고발장 양식', date: '2024. 01. 23', views: 901, description: '형사 고발장 작성 양식' },
-                { id: 10, badge: '계약 관련 서류', title: '합의서', date: '2024. 01. 24', views: 432, description: '분쟁 합의서 양식' },
-                { id: 11, badge: '소송 관련 서류', title: '항소장', date: '2024. 01. 25', views: 765, description: '항소장 작성 양식' },
-                { id: 12, badge: '계약 관련 서류', title: '비밀유지계약서', date: '2024. 01. 26', views: 321, description: 'NDA 계약서 양식' },
-                { id: 13, badge: '소송 관련 서류', title: '상고장', date: '2024. 01. 27', views: 654, description: '상고장 작성 양식' },
+                { id: 1, badge: '민사', title: '임대차 계약서', date: '2024. 01. 15', views: 123, description: '표준 임대차 계약서 양식' },
+                { id: 2, badge: '형사', title: '소장 양식', date: '2024. 01. 16', views: 456, description: '민사소송 소장 작성 양식' },
+                { id: 3, badge: '민사', title: '근로계약서', date: '2024. 01. 17', views: 789, description: '표준 근로계약서 양식' },
+                { id: 4, badge: '형사', title: '답변서 양식', date: '2024. 01. 18', views: 234, description: '민사소송 답변서 작성 양식' },
+                { id: 5, badge: '민사', title: '매매계약서', date: '2024. 01. 19', views: 567, description: '부동산 매매계약서 양식' },
+                { id: 6, badge: '형사', title: '고소장 양식', date: '2024. 01. 20', views: 890, description: '형사 고소장 작성 양식' },
+                { id: 7, badge: '민사', title: '위임장', date: '2024. 01. 21', views: 345, description: '법률 대리 위임장 양식' },
+                { id: 8, badge: '형사', title: '준비서면', date: '2024. 01. 22', views: 678, description: '소송 준비서면 작성 양식' },
+                { id: 9, badge: '민사', title: '고발장 양식', date: '2024. 01. 23', views: 901, description: '형사 고발장 작성 양식' },
+                { id: 10, badge: '민사', title: '합의서', date: '2024. 01. 24', views: 432, description: '분쟁 합의서 양식' },
+                { id: 11, badge: '민사', title: '항소장', date: '2024. 01. 25', views: 765, description: '항소장 작성 양식' },
+                { id: 12, badge: '민사', title: '비밀유지계약서', date: '2024. 01. 26', views: 321, description: 'NDA 계약서 양식' },
+                { id: 13, badge: '민사', title: '상고장', date: '2024. 01. 27', views: 654, description: '상고장 작성 양식' },
             ];
 
             const cardsPerPage = 6;
             let currentPage = 1;
             const totalPages = Math.ceil(allCards.length / cardsPerPage);
 
-            // 카테고리별 배지 색상 매핑
             function getBadgeClass(badge) {
                 const badgeColorMap = {
-                    '계약 관련 서류': 'bg-primary',
-                    '소송 관련 서류': 'bg-success',
-                    '고소/고발 서류': 'bg-danger',
-                    '이혼절차': 'bg-warning',
+                    '부동산': 'bg-primary',
+                    '민사': 'bg-success',
+                    '형사': 'bg-danger',
+                    '이혼/가족': 'bg-warning',
+                    '노동': 'bg-info',
                     '기타': 'bg-secondary'
                 };
                 return badgeColorMap[badge] || 'bg-primary'; // 기본값은 bg-primary
@@ -346,22 +343,18 @@
                     cardElement.href = 'detail.html?id=' + card.id;
                     cardElement.className = 'card';
 
-                    // 배지
                     const cardBadge = document.createElement('span');
                     cardBadge.className = 'badge ' + getBadgeClass(card.badge);
                     cardBadge.textContent = card.badge;
 
-                    // 제목
                     const cardTitle = document.createElement('h3');
                     cardTitle.className = 'card-title';
                     cardTitle.textContent = card.title;
 
-                    // 정보
                     const cardInfo = document.createElement('div');
                     cardInfo.className = 'card-info';
                     cardInfo.innerHTML = '등록: ' + card.date + ' | (조회수) ' + card.views + '회<br>' + card.description;
 
-                    // 다운로드 버튼
                     const cardButton = document.createElement('button');
                     cardButton.className = 'card-button';
                     cardButton.textContent = '다운로드';
@@ -408,7 +401,6 @@
                     pagination.appendChild(pageBtn);
                 }
 
-                // 다음 버튼
                 const nextBtn = document.createElement('button');
                 nextBtn.className = 'pagination-btn';
                 nextBtn.innerHTML = '&gt;';
@@ -436,6 +428,22 @@
 
             renderCards(currentPage);
             renderPagination();
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var dropdown = new bootstrap.Dropdown(document.getElementById('categoryDropdown'));
+
+                document.getElementById('categoryDropdown').addEventListener('shown.bs.dropdown', function () {
+                    var menu = this.nextElementSibling;
+                    var rect = this.getBoundingClientRect();
+
+                    document.body.appendChild(menu);
+
+                    menu.style.position = 'fixed';
+                    menu.style.top = rect.bottom + 'px';
+                    menu.style.left = rect.left + 'px';
+                    menu.style.width = rect.width + 'px';
+                });
+            });
         </script>
     </section>
 
