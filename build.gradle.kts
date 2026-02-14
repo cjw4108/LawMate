@@ -18,6 +18,8 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
     implementation("org.apache.tomcat.embed:tomcat-embed-jasper")
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api")
     implementation("org.glassfish.web:jakarta.servlet.jsp.jstl")
