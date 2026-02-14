@@ -425,7 +425,6 @@
                 alert('파일 ' + id + ' 다운로드');
 
             }
-
             renderCards(currentPage);
             renderPagination();
 
@@ -442,6 +441,33 @@
                     menu.style.top = rect.bottom + 'px';
                     menu.style.left = rect.left + 'px';
                     menu.style.width = rect.width + 'px';
+                });
+            });
+            $(document).ready(function() {
+                // 페이지 열리자마자 실행!
+                $.ajax({
+                    url: "/api/ranking",
+                    type: "GET",
+                    success: function(data) {
+                        $("#rank-container").empty();
+                        const colors = ['primary', 'secondary', 'info', 'danger', 'success', 'warning'];
+
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i] == null || i >= 6) break;
+
+                            let keyword = data[i];
+                            let color = colors[i];
+                            let html = '<a href="#" class="btn btn-outline-' + color + ' rounded-pill px-4 py-2" ' +
+                                'style="font-size: 1rem; font-weight: 500;">' +
+                                '# ' + keyword +
+                                '</a>';
+
+                            $("#rank-container").append(html);
+                        }
+                    },
+                    error: function() {
+                        console.log("에러");
+                    }
                 });
             });
         </script>
