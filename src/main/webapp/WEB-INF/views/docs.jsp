@@ -23,41 +23,44 @@
                 </div>
             </div>
 
-            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
-                <div class="col-lg-10">
-                    <div class="d-flex gap-4 mb-4">
-                        <div class="dropdown" style="width: 20%; min-width: 150px;">
-                            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
-                                    type="button"
-                                    id="categoryDropdown"
-                                    data-bs-toggle="dropdown"
-                                    data-bs-auto-close="true"
-                                    data-bs-boundary="viewport"
-                                    aria-expanded="false"
-                                    style="padding: 1rem 1.5rem; border-color: #dee2e6;">
-                                카테고리
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="categoryDropdown" data-bs-popper="static">
-                                <li><a class="dropdown-item" href="#">부동산</a></li>
-                                <li><a class="dropdown-item" href="#">민사</a></li>
-                                <li><a class="dropdown-item" href="#">형사</a></li>
-                                <li><a class="dropdown-item" href="#">이혼/가족</a></li>
-                                <li><a class="dropdown-item" href="#">노동</a></li>
-                                <li><a class="dropdown-item" href="#">기타</a></li>
-                            </ul>
-                        </div>
+            <div class="d-flex gap-4 mb-4 align-items-stretch">
+                <!-- 카테고리 드롭다운 -->
+                <div class="dropdown" style="width: 20%; min-width: 150px;">
+                    <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
+                            type="button"
+                            id="categoryDropdown"
+                            data-bs-toggle="dropdown"
+                            data-bs-auto-close="true"
+                            data-bs-boundary="viewport"
+                            aria-expanded="false"
+                            style="padding: 0.65rem 1.25rem; border-color: #dee2e6; height: 100%;">
+                        <!-- ↑ padding을 0.65rem으로 축소 -->
+                        카테고리
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown" data-bs-popper="static">
+                        <li><a class="dropdown-item" href="#">부동산</a></li>
+                        <li><a class="dropdown-item" href="#">민사</a></li>
+                        <li><a class="dropdown-item" href="#">형사</a></li>
+                        <li><a class="dropdown-item" href="#">이혼/가족</a></li>
+                        <li><a class="dropdown-item" href="#">노동</a></li>
+                        <li><a class="dropdown-item" href="#">기타</a></li>
+                    </ul>
+                </div>
 
-                        <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
-                             style="padding: 0.75rem 1.25rem;">
-                            <input type="text"
-                                   class="form-control border-0 ms-3"
-                                   placeholder="검색어를 입력해주세요."
-                                   style="box-shadow: none; background: transparent; padding: 0.5rem 0;">
-                            <button class="btn btn-link text-dark me-2">
-                                <i class="bi bi-search fs-4"></i>
-                            </button>
-                        </div>
-                    </div>
+                <!-- 검색창 -->
+                <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
+                     style="padding: 0.65rem 1.25rem;">
+                    <!-- ↑ padding을 0.65rem으로 축소 -->
+                    <input type="text"
+                           class="form-control border-0 ms-3"
+                           placeholder="검색어를 입력해주세요."
+                           style="box-shadow: none; background: transparent; padding: 0.25rem 0;">
+                    <!-- ↑ input padding도 0.25rem으로 축소 -->
+                    <button class="btn btn-link text-dark me-2">
+                        <i class="bi bi-search fs-4"></i>
+                    </button>
+                </div>
+            </div>
 
                     <div id="rank-container" class="d-flex flex-wrap justify-content-center gap-3">
                     </div>
