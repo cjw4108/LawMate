@@ -447,7 +447,6 @@
                     menu.style.width = rect.width + 'px';
                 });
             });
-            // 1. 랭킹을 불러오는 기능을 '함수'로 따로 만듭니다 (그래야 재사용 가능!)
             function loadRanking() {
                 $.ajax({
                     url: "/api/ranking",
@@ -457,8 +456,6 @@
                         const colors = ['primary', 'secondary', 'info', 'danger', 'success', 'warning'];
 
                         if (!data || data.length === 0) {
-                            // 데이터가 없을 때 보일 기본 메시지 (선택 사항)
-                            // $("#rank-container").append('<span class="text-muted">인기 검색어가 없습니다.</span>');
                             return;
                         }
 
@@ -480,10 +477,9 @@
             }
 
             $(document).ready(function() {
-                // [실행 1] 페이지가 열리자마자 랭킹 출력
+
                 loadRanking();
 
-                // [실행 2] 엔터키 감지 이벤트
                 $("#searchInput").on("keydown", function(e) {
                     if (e.keyCode === 13) {
                         let keyword = $(this).val();
@@ -495,7 +491,6 @@
                             data: { query: keyword },
                             success: function() {
                                 console.log("검색어 집계 성공: " + keyword);
-                                // [실행 3] 저장이 성공하면 랭킹을 다시 불러와서 화면 갱신!
                                 loadRanking();
                             }
                         });
