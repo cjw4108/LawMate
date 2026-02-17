@@ -80,19 +80,17 @@
         )
     </insert>
 
-    <!-- 문서 배치 삽입 -->
+    <!-- 문서 배치 삽입 - INSERT ALL 대신 foreach로 개별 INSERT -->
     <insert id="insertDocumentBatch" parameterType="list">
-        INSERT ALL
-        <foreach collection="list" item="doc">
-            INTO DOCUMENTS (
-                CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
-                ACCESS_TYPE, DOWNLOAD_COUNT, IS_ACTIVE, CREATED_AT
+        <foreach collection="list" item="doc" separator=";">
+            INSERT INTO DOCUMENTS (
+            CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
+            ACCESS_TYPE, DOWNLOAD_COUNT, IS_ACTIVE, CREATED_AT
             ) VALUES (
-                #{doc.categoryId}, #{doc.title}, #{doc.description}, #{doc.filePath}, #{doc.fileType},
-                #{doc.accessType}, #{doc.downloadCount}, #{doc.isActive}, SYSDATE
+            #{doc.categoryId}, #{doc.title}, #{doc.description}, #{doc.filePath}, #{doc.fileType},
+            #{doc.accessType}, #{doc.downloadCount}, #{doc.isActive}, SYSDATE
             )
         </foreach>
-        SELECT * FROM DUAL
     </insert>
 
     <!-- 모든 문서 조회 -->

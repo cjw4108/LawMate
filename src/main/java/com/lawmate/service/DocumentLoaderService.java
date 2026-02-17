@@ -47,8 +47,12 @@ public class DocumentLoaderService {
         // 3단계: DTO 변환
         List<DocumentDTO> documents = convertToDocuments(jsonData);
 
-        // 4단계: DB 저장 (배치)
-        documentDAO.insertDocumentBatch(documents);
+// 4단계: DB 저장 (배치 대신 개별 INSERT)
+        log.info("DB 저장 중...");
+        for (DocumentDTO doc : documents) {
+            documentDAO.insertDocument(doc);
+        }
+        log.info("  ✓ {}개 문서 저장 완료", documents.size());
 
         // 5단계: 결과 출력
         printStatistics();
