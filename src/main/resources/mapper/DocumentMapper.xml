@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lawmate.dao.DocumentDAO">
+
+    <!-- 카테고리 ResultMap -->
+    <resultMap id="categoryResultMap" type="com.lawmate.dto.DocumentCategoryDTO">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="displayOrder" column="DISPLAY_ORDER"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="createdAt" column="CREATED_AT"/>
+    </resultMap>
+
+    <!-- 문서 ResultMap -->
+    <resultMap id="documentResultMap" type="com.lawmate.dto.DocumentDTO">
+        <id property="id" column="ID"/>
+        <result property="categoryId" column="CATEGORY_ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="filePath" column="FILE_PATH"/>
+        <result property="templateHtml" column="TEMPLATE_HTML"/>
+        <result property="fileSize" column="FILE_SIZE"/>
+        <result property="fileType" column="FILE_TYPE"/>
+        <result property="accessType" column="ACCESS_TYPE"/>
+        <result property="downloadCount" column="DOWNLOAD_COUNT"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+    </resultMap>
+
+    <!-- ========== 카테고리 쿼리 ========== -->
+    
+    <!-- 카테고리 삽입 -->
+    <insert id="insertCategory" parameterType="com.lawmate.dto.DocumentCategoryDTO">
+        INSERT INTO DOCUMENT_CATEGORIES (
+        NAME, DESCRIPTION, PARENT_ID, DISPLAY_ORDER, IS_ACTIVE, CREATED_AT
+        ) VALUES (
+        #{name},
+        #{description},
+        #{parentId, jdbcType=NUMERIC},
+        #{displayOrder},
+        #{isActive},
+        SYSDATE
+        )
+    </insert>
+
+    <!-- 모든 카테고리 조회 -->
+    <select id="selectAllCategories" resultMap="categoryResultMap">
+        SELECT * FROM DOCUMENT_CATEGORIES
+        ORDER BY DISPLAY_ORDER
+    </select>
+
+    <!-- ID로 카테고리 조회 -->
+    <select id="selectCategoryById" parameterType="long" resultMap="categoryResultMap">
+        SELECT * FROM DOCUMENT_CATEGORIES
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 이름으로 카테고리 조회 -->
+    <select id="selectCategoryByName" parameterType="string" resultMap="categoryResultMap">
+        SELECT * FROM DOCUMENT_CATEGORIES
+        WHERE NAME = #{name}
+    </select>
+
+    <!-- ========== 문서 쿼리 ========== -->
+    
+    <!-- 문서 삽입 -->
+    <insert id="insertDocument" parameterType="com.lawmate.dto.DocumentDTO">
+        INSERT INTO DOCUMENTS (
+            CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
+            ACCESS_TYPE, DOWNLOAD_COUNT, IS_ACTIVE, CREATED_AT
+        ) VALUES (
+            #{categoryId}, #{title}, #{description}, #{filePath}, #{fileType},
+            #{accessType}, #{downloadCount}, #{isActive}, SYSDATE
+        )
+    </insert>
+
+    <!-- 문서 배치 삽입 -->
+    <insert id="insertDocumentBatch" parameterType="list">
+        INSERT ALL
+        <foreach collection="list" item="doc">
+            INTO DOCUMENTS (
+                CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
+                ACCESS_TYPE, DOWNLOAD_COUNT, IS_ACTIVE, CREATED_AT
+            ) VALUES (
+                #{doc.categoryId}, #{doc.title}, #{doc.description}, #{doc.filePath}, #{doc.fileType},
+                #{doc.accessType}, #{doc.downloadCount}, #{doc.isActive}, SYSDATE
+            )
+        </foreach>
+        SELECT * FROM DUAL
+    </insert>
+
+    <!-- 모든 문서 조회 -->
+    <select id="selectAllDocuments" resultMap="documentResultMap">
+        SELECT * FROM DOCUMENTS
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <!-- 카테고리별 문서 조회 -->
+    <select id="selectDocumentsByCategory" parameterType="long" resultMap="documentResultMap">
+        SELECT * FROM DOCUMENTS
+        WHERE CATEGORY_ID = #{categoryId}
+        ORDER BY CREATED_AT DESC
+    </select>
+
+    <!-- ID로 문서 조회 -->
+    <select id="selectDocumentById" parameterType="long" resultMap="documentResultMap">
+        SELECT * FROM DOCUMENTS
+        WHERE ID = #{id}
+    </select>
+
+    <!-- 전체 문서 수 -->
+    <select id="countDocuments" resultType="int">
+        SELECT COUNT(*) FROM DOCUMENTS
+    </select>
+
+    <!-- 카테고리별 문서 수 -->
+    <select id="countDocumentsByCategory" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM DOCUMENTS
+        WHERE CATEGORY_ID = #{categoryId}
+    </select>
+
+    <!-- ========== 삭제 (테스트용) ========== -->
+    
+    <delete id="deleteAllDocuments">
+        DELETE FROM DOCUMENTS
+    </delete>
+
+    <delete id="deleteAllCategories">
+        DELETE FROM DOCUMENT_CATEGORIES
+    </delete>
+
+</mapper>
