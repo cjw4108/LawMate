@@ -31,6 +31,7 @@
         <result property="userId" column="USER_ID"/>
         <result property="createdAt" column="CREATED_AT"/>
         <result property="updatedAt" column="UPDATED_AT"/>
+        <result property="categoryName" column="CATEGORY_NAME"/>
     </resultMap>
 
     <!-- ========== 카테고리 쿼리 ========== -->
@@ -95,15 +96,19 @@
 
     <!-- 모든 문서 조회 -->
     <select id="selectAllDocuments" resultMap="documentResultMap">
-        SELECT * FROM DOCUMENTS
-        ORDER BY CREATED_AT DESC
+        SELECT D.*, C.NAME AS CATEGORY_NAME
+        FROM DOCUMENTS D
+                 LEFT JOIN DOCUMENT_CATEGORIES C ON D.CATEGORY_ID = C.ID
+        ORDER BY D.CREATED_AT DESC
     </select>
 
     <!-- 카테고리별 문서 조회 -->
     <select id="selectDocumentsByCategory" parameterType="long" resultMap="documentResultMap">
-        SELECT * FROM DOCUMENTS
-        WHERE CATEGORY_ID = #{categoryId}
-        ORDER BY CREATED_AT DESC
+        SELECT D.*, C.NAME AS CATEGORY_NAME
+        FROM DOCUMENTS D
+                 LEFT JOIN DOCUMENT_CATEGORIES C ON D.CATEGORY_ID = C.ID
+        WHERE D.CATEGORY_ID = #{categoryId}
+        ORDER BY D.CREATED_AT DESC
     </select>
 
     <!-- ID로 문서 조회 -->

@@ -1,0 +1,32 @@
+/*실시간 검색 자동 완성 css */
+
+.search-autocomplete {
+    position: absolute;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 99999;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.search-autocomplete-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-autocomplete-item:hover {
+    background-color: #f8fafc;
+}
+
+.search-autocomplete-item:last-child {
+    border-bottom: none;
+}

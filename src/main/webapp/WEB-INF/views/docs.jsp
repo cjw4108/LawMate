@@ -2,12 +2,36 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<link rel="stylesheet" href="/css/liveSearch.css">
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
+<style>
+    .hero.section {
+        padding-top: 80px !important;
+    }
+
+    #hero .container {
+        overflow: visible !important;
+    }
+
+    #hero .row {
+        overflow: visible !important;
+    }
+
+    .d-flex.gap-4.mb-4 {
+        overflow: visible !important;
+        position: relative;
+    }
+
+    .dropdown-menu {
+        z-index: 99999 !important;
+        position: absolute !important;
+    }
+</style>
 
 <main class="main">
 
-    <section id="hero" class="hero section" style="padding-bottom: 0 !important;">
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <section id="hero" class="hero section" style="padding-bottom: 0 !important; overflow: visible;">
+        <div class="container" data-aos="fade-up" data-aos-delay="100" style="overflow: visible;">
             <div class="row align-items-center">
                 <div class="col-lg-6 offset-lg-1">
                     <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
@@ -23,7 +47,7 @@
                 </div>
             </div>
 
-            <div class="d-flex gap-4 mb-4 align-items-stretch">
+            <div class="d-flex gap-4 mb-4 align-items-stretch" style="position: relative; overflow: visible;">
                 <!-- 카테고리 드롭다운 -->
                 <div class="dropdown" style="width: 20%; min-width: 150px;">
                     <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
@@ -31,13 +55,13 @@
                             id="categoryDropdown"
                             data-bs-toggle="dropdown"
                             data-bs-auto-close="true"
-                            data-bs-boundary="viewport"
                             aria-expanded="false"
                             style="padding: 0.65rem 1.25rem; border-color: #dee2e6; height: 100%;">
-                        <!-- ↑ padding을 0.65rem으로 축소 -->
                         카테고리
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown" data-bs-popper="static">
+                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown"
+                        style="z-index: 99999;">
+                        <li><a class="dropdown-item" href="#">전체</a></li>
                         <li><a class="dropdown-item" href="#">부동산</a></li>
                         <li><a class="dropdown-item" href="#">민사</a></li>
                         <li><a class="dropdown-item" href="#">형사</a></li>
@@ -49,7 +73,7 @@
 
                 <!-- 검색창 -->
                 <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
-                     style="padding: 0.65rem 1.25rem;">
+                     style="padding: 0.65rem 1.25rem; position: relative;">
                     <!-- ↑ padding을 0.65rem으로 축소 -->
                     <input type="text"
                            id="searchInput"
@@ -302,25 +326,13 @@
         </div>
 
         <script>
-            const allCards = [
-                { id: 1, badge: '민사', title: '임대차 계약서', date: '2024. 01. 15', views: 123, description: '표준 임대차 계약서 양식' },
-                { id: 2, badge: '형사', title: '소장 양식', date: '2024. 01. 16', views: 456, description: '민사소송 소장 작성 양식' },
-                { id: 3, badge: '민사', title: '근로계약서', date: '2024. 01. 17', views: 789, description: '표준 근로계약서 양식' },
-                { id: 4, badge: '형사', title: '답변서 양식', date: '2024. 01. 18', views: 234, description: '민사소송 답변서 작성 양식' },
-                { id: 5, badge: '민사', title: '매매계약서', date: '2024. 01. 19', views: 567, description: '부동산 매매계약서 양식' },
-                { id: 6, badge: '형사', title: '고소장 양식', date: '2024. 01. 20', views: 890, description: '형사 고소장 작성 양식' },
-                { id: 7, badge: '민사', title: '위임장', date: '2024. 01. 21', views: 345, description: '법률 대리 위임장 양식' },
-                { id: 8, badge: '형사', title: '준비서면', date: '2024. 01. 22', views: 678, description: '소송 준비서면 작성 양식' },
-                { id: 9, badge: '민사', title: '고발장 양식', date: '2024. 01. 23', views: 901, description: '형사 고발장 작성 양식' },
-                { id: 10, badge: '민사', title: '합의서', date: '2024. 01. 24', views: 432, description: '분쟁 합의서 양식' },
-                { id: 11, badge: '민사', title: '항소장', date: '2024. 01. 25', views: 765, description: '항소장 작성 양식' },
-                { id: 12, badge: '민사', title: '비밀유지계약서', date: '2024. 01. 26', views: 321, description: 'NDA 계약서 양식' },
-                { id: 13, badge: '민사', title: '상고장', date: '2024. 01. 27', views: 654, description: '상고장 작성 양식' },
-            ];
-
-            const cardsPerPage = 6;
+            let allCards = [];
             let currentPage = 1;
-            const totalPages = Math.ceil(allCards.length / cardsPerPage);
+            const cardsPerPage = 6;
+            let totalPages = 1;
+            let selectedCategoryId = null;
+            let searchKeyword = '';
+            let searchTimer = null;
 
             function getBadgeClass(badge) {
                 const badgeColorMap = {
@@ -331,48 +343,45 @@
                     '노동': 'bg-info',
                     '기타': 'bg-secondary'
                 };
-                return badgeColorMap[badge] || 'bg-primary'; // 기본값은 bg-primary
+                return badgeColorMap[badge] || 'bg-primary';
             }
 
-            function renderCards(page) {
+            function loadDocuments(page, categoryId, keyword) {
+                let url = '/api/documents?page=' + page + '&size=' + cardsPerPage;
+                if (categoryId) url += '&categoryId=' + categoryId;
+                if (keyword) url += '&keyword=' + encodeURIComponent(keyword);
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(data) {
+                        allCards = data.documents;
+                        totalPages = data.totalPages;
+                        currentPage = data.currentPage;
+                        renderCards();
+                        renderPagination();
+                    }
+                });
+            }
+
+            function renderCards() {
                 const cardGrid = document.getElementById('cardGrid');
                 cardGrid.innerHTML = '';
 
-                const startIndex = (page - 1) * cardsPerPage;
-                const endIndex = startIndex + cardsPerPage;
-                const cardsToShow = allCards.slice(startIndex, endIndex);
+                if (allCards.length === 0) {
+                    cardGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 60px; color: #94a3b8;">검색 결과가 없습니다.</div>';
+                    return;
+                }
 
-                cardsToShow.forEach(card => {
-                    const cardElement = document.createElement('a');
-                    cardElement.href = 'detail.html?id=' + card.id;
+                allCards.forEach(function(card) {
+                    const cardElement = document.createElement('div');
                     cardElement.className = 'card';
-
-                    const cardBadge = document.createElement('span');
-                    cardBadge.className = 'badge ' + getBadgeClass(card.badge);
-                    cardBadge.textContent = card.badge;
-
-                    const cardTitle = document.createElement('h3');
-                    cardTitle.className = 'card-title';
-                    cardTitle.textContent = card.title;
-
-                    const cardInfo = document.createElement('div');
-                    cardInfo.className = 'card-info';
-                    cardInfo.innerHTML = '등록: ' + card.date + ' | (조회수) ' + card.views + '회<br>' + card.description;
-
-                    const cardButton = document.createElement('button');
-                    cardButton.className = 'card-button';
-                    cardButton.textContent = '다운로드';
-                    cardButton.onclick = function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        downloadFile(card.id);
-                    };
-
-                    cardElement.appendChild(cardBadge);
-                    cardElement.appendChild(cardTitle);
-                    cardElement.appendChild(cardInfo);
-                    cardElement.appendChild(cardButton);
-
+                    const categoryName = card.categoryName || '기타';
+                    cardElement.innerHTML =
+                        '<span class="badge ' + getBadgeClass(categoryName) + '">' + categoryName + '</span>' +
+                        '<h3 class="card-title">' + card.title + '</h3>' +
+                        '<div class="card-info">' + (card.description || '') + '</div>' +
+                        '<button class="card-button" onclick="downloadFile(' + card.id + ')">다운로드</button>';
                     cardGrid.appendChild(cardElement);
                 });
             }
@@ -380,73 +389,158 @@
             function renderPagination() {
                 const pagination = document.getElementById('pagination');
                 pagination.innerHTML = '';
+                if (totalPages <= 1) return;
 
-                const prevBtn = document.createElement('button');
-                prevBtn.className = 'pagination-btn';
-                prevBtn.innerHTML = '&lt;';
-                prevBtn.disabled = currentPage === 1;
-                prevBtn.onclick = function() {
-                    goToPage(currentPage - 1);
-                };
-                pagination.appendChild(prevBtn);
+                const pageGroupSize = 5;
+                const currentGroup = Math.floor((currentPage - 1) / pageGroupSize);
+                const startPage = currentGroup * pageGroupSize + 1;
+                const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.className = 'pagination-btn';
-                    if (i === currentPage) {
-                        pageBtn.className += ' active';
-                    }
-                    pageBtn.textContent = i;
-                    pageBtn.onclick = (function(pageNum) {
-                        return function() {
-                            goToPage(pageNum);
-                        };
-                    })(i);
-                    pagination.appendChild(pageBtn);
+                if (currentGroup > 0) {
+                    addPagBtn(pagination, '&laquo;', function() { loadDocuments(1, selectedCategoryId, searchKeyword); });
+                    addPagBtn(pagination, '&lt;', function() { loadDocuments(startPage - 1, selectedCategoryId, searchKeyword); });
                 }
 
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'pagination-btn';
-                nextBtn.innerHTML = '&gt;';
-                nextBtn.disabled = currentPage === totalPages;
-                nextBtn.onclick = function() {
-                    goToPage(currentPage + 1);
-                };
-                pagination.appendChild(nextBtn);
+                for (let i = startPage; i <= endPage; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+                    btn.textContent = i;
+                    btn.onclick = (function(p) { return function() { loadDocuments(p, selectedCategoryId, searchKeyword); }; })(i);
+                    pagination.appendChild(btn);
+                }
+
+                if (endPage < totalPages) {
+                    addPagBtn(pagination, '&gt;', function() { loadDocuments(endPage + 1, selectedCategoryId, searchKeyword); });
+                    addPagBtn(pagination, '&raquo;', function() { loadDocuments(totalPages, selectedCategoryId, searchKeyword); });
+                }
             }
 
-            function goToPage(page) {
-                if (page < 1 || page > totalPages) return;
-
-                currentPage = page;
-                renderCards(currentPage);
-                renderPagination();
-
+            function addPagBtn(parent, html, onclick) {
+                const btn = document.createElement('button');
+                btn.className = 'pagination-btn';
+                btn.innerHTML = html;
+                btn.onclick = onclick;
+                parent.appendChild(btn);
             }
 
             function downloadFile(id) {
-                console.log('다운로드:', id);
-                alert('파일 ' + id + ' 다운로드');
-
+                window.location.href = '/docs/download/' + id;
             }
-            renderCards(currentPage);
-            renderPagination();
 
-            document.addEventListener('DOMContentLoaded', function() {
-                var dropdown = new bootstrap.Dropdown(document.getElementById('categoryDropdown'));
+            // 실시간 검색 자동완성
+            function showAutocomplete(keyword) {
+                removeAutocomplete();
+                if (!keyword || keyword.length < 1) return;
 
-                document.getElementById('categoryDropdown').addEventListener('shown.bs.dropdown', function () {
-                    var menu = this.nextElementSibling;
-                    var rect = this.getBoundingClientRect();
+                $.ajax({
+                    url: '/api/documents?page=1&size=100',
+                    type: 'GET',
+                    success: function(data) {
+                        const kw = keyword.toLowerCase();
+                        const matched = data.documents.filter(d => d.title.toLowerCase().includes(kw)).slice(0, 8);
 
-                    document.body.appendChild(menu);
+                        if (matched.length === 0) return;
 
-                    menu.style.position = 'fixed';
-                    menu.style.top = rect.bottom + 'px';
-                    menu.style.left = rect.left + 'px';
-                    menu.style.width = rect.width + 'px';
+                        const box = document.createElement('div');
+                        box.className = 'search-autocomplete';
+                        box.id = 'autocompleteBox';
+
+                        matched.forEach(function(doc) {
+                            const item = document.createElement('div');
+                            item.className = 'search-autocomplete-item';
+                            item.innerHTML =
+                                '<span class="badge ' + getBadgeClass(doc.categoryName) + '" style="font-size:11px;">' + (doc.categoryName || '') + '</span>' +
+                                '<span>' + doc.title + '</span>';
+                            item.onclick = function() {
+                                $('#searchInput').val(doc.title);
+                                searchKeyword = doc.title;
+                                removeAutocomplete();
+                                loadDocuments(1, selectedCategoryId, searchKeyword);
+                            };
+                            box.appendChild(item);
+                        });
+
+                        // 검색창 아래에 붙이기
+                        const searchBar = document.querySelector('.search-bar');
+                        searchBar.style.position = 'relative';
+                        box.style.top = searchBar.offsetHeight + 'px';
+                        box.style.left = '0';
+                        box.style.right = '0';
+                        searchBar.appendChild(box);
+                    }
+                });
+            }
+
+            function removeAutocomplete() {
+                const existing = document.getElementById('autocompleteBox');
+                if (existing) existing.remove();
+            }
+
+            $(document).ready(function() {
+                loadDocuments(1, null, null);
+                loadRanking();
+
+                // 카테고리 클릭
+                $('.dropdown-item').on('click', function(e) {
+                    e.preventDefault();
+                    const categoryName = $(this).text();
+
+                    if (categoryName === '전체') {
+                        selectedCategoryId = null;
+                        $('#categoryDropdown').text('카테고리');
+                        loadDocuments(1, null, searchKeyword);
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/api/documents?page=1&size=1',
+                        type: 'GET',
+                        success: function(data) {
+                            const category = data.categories.find(c => c.name === categoryName);
+                            if (category) {
+                                selectedCategoryId = category.id;
+                                $('#categoryDropdown').text(categoryName);
+                                loadDocuments(1, selectedCategoryId, searchKeyword);
+                            }
+                        }
+                    });
+                });
+
+                // 실시간 검색
+                $('#searchInput').on('input', function() {
+                    const keyword = $(this).val().trim();
+                    clearTimeout(searchTimer);
+                    if (keyword.length === 0) {
+                        removeAutocomplete();
+                        searchKeyword = '';
+                        loadDocuments(1, selectedCategoryId, null);
+                        return;
+                    }
+                    searchTimer = setTimeout(function() {
+                        showAutocomplete(keyword);
+                    }, 200);
+                });
+
+                // 엔터로 검색
+                $('#searchInput').on('keydown', function(e) {
+                    if (e.keyCode === 13) {
+                        searchKeyword = $(this).val().trim();
+                        removeAutocomplete();
+                        loadDocuments(1, selectedCategoryId, searchKeyword);
+                        if (searchKeyword) {
+                            $.ajax({ url: "/api/search/log", type: "POST", data: { query: searchKeyword } });
+                        }
+                    }
+                });
+
+                // 외부 클릭시 자동완성 닫기
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.search-bar').length) {
+                        removeAutocomplete();
+                    }
                 });
             });
+
             function loadRanking() {
                 $.ajax({
                     url: "/api/ranking",
@@ -454,49 +548,17 @@
                     success: function(data) {
                         $("#rank-container").empty();
                         const colors = ['primary', 'secondary', 'info', 'danger', 'success', 'warning'];
-
-                        if (!data || data.length === 0) {
-                            return;
-                        }
-
+                        if (!data || data.length === 0) return;
                         for (let i = 0; i < data.length; i++) {
                             if (data[i] == null || i >= 6) break;
-                            let keyword = data[i];
-                            let color = colors[i % colors.length]; // 색상 반복 사용
-                            let html = '<a href="#" class="btn btn-outline-' + color + ' rounded-pill px-4 py-2" ' +
-                                'style="font-size: 1rem; font-weight: 500;">' +
-                                '# ' + keyword +
-                                '</a>';
-                            $("#rank-container").append(html);
+                            let color = colors[i % colors.length];
+                            $("#rank-container").append(
+                                '<a href="#" class="btn btn-outline-' + color + ' rounded-pill px-4 py-2"># ' + data[i] + '</a>'
+                            );
                         }
-                    },
-                    error: function() {
-                        console.log("랭킹 로딩 에러");
                     }
                 });
             }
-
-            $(document).ready(function() {
-
-                loadRanking();
-
-                $("#searchInput").on("keydown", function(e) {
-                    if (e.keyCode === 13) {
-                        let keyword = $(this).val();
-                        if (keyword.trim() === "") return;
-
-                        $.ajax({
-                            url: "/api/search/log",
-                            type: "POST",
-                            data: { query: keyword },
-                            success: function() {
-                                console.log("검색어 집계 성공: " + keyword);
-                                loadRanking();
-                            }
-                        });
-                    }
-                });
-            });
         </script>
     </section>
 
