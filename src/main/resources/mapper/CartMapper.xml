@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lawmate.dao.CartDAO">
+
+    <resultMap id="cartResultMap" type="com.lawmate.dto.CartDTO">
+        <id property="id" column="ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="documentId" column="DOCUMENT_ID"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="documentTitle" column="DOCUMENT_TITLE"/>
+        <result property="categoryName" column="CATEGORY_NAME"/>
+        <result property="filePath" column="FILE_PATH"/>
+    </resultMap>
+
+    <insert id="insertCart" parameterType="com.lawmate.dto.CartDTO">
+        INSERT INTO CART (USER_ID, DOCUMENT_ID, CREATED_AT)
+        VALUES (#{userId}, #{documentId}, SYSDATE)
+    </insert>
+
+    <select id="selectCartByUserId" parameterType="string" resultMap="cartResultMap">
+        SELECT
+            C.ID,
+            C.USER_ID,
+            C.DOCUMENT_ID,
+            C.CREATED_AT,
+            D.TITLE AS DOCUMENT_TITLE,
+            DC.NAME AS CATEGORY_NAME,
+            D.FILE_PATH
+        FROM CART C
+                 INNER JOIN DOCUMENTS D ON C.DOCUMENT_ID = D.ID
+                 LEFT JOIN DOCUMENT_CATEGORIES DC ON D.CATEGORY_ID = DC.ID
+        WHERE C.USER_ID = #{userId}
+        ORDER BY C.CREATED_AT DESC
+    </select>
+
+    <select id="countCartByUserId" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM CART WHERE USER_ID = #{userId}
+    </select>
+
+    <delete id="deleteCart">
+        DELETE FROM CART
+        WHERE ID = #{id} AND USER_ID = #{userId}
+    </delete>
+
+    <delete id="deleteAllCart" parameterType="string">
+        DELETE FROM CART WHERE USER_ID = #{userId}
+    </delete>
+
+    <select id="checkDuplicate" resultType="int">
+        SELECT COUNT(*)
+        FROM CART
+        WHERE USER_ID = #{userId} AND DOCUMENT_ID = #{documentId}
+    </select>
+
+</mapper>

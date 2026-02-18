@@ -4,7 +4,6 @@
 
 <mapper namespace="com.lawmate.dao.DocumentDAO">
 
-    <!-- 카테고리 ResultMap -->
     <resultMap id="categoryResultMap" type="com.lawmate.dto.DocumentCategoryDTO">
         <id property="id" column="ID"/>
         <result property="name" column="NAME"/>
@@ -15,7 +14,6 @@
         <result property="createdAt" column="CREATED_AT"/>
     </resultMap>
 
-    <!-- 문서 ResultMap -->
     <resultMap id="documentResultMap" type="com.lawmate.dto.DocumentDTO">
         <id property="id" column="ID"/>
         <result property="categoryId" column="CATEGORY_ID"/>
@@ -34,9 +32,7 @@
         <result property="categoryName" column="CATEGORY_NAME"/>
     </resultMap>
 
-    <!-- ========== 카테고리 쿼리 ========== -->
-    
-    <!-- 카테고리 삽입 -->
+
     <insert id="insertCategory" parameterType="com.lawmate.dto.DocumentCategoryDTO">
         INSERT INTO DOCUMENT_CATEGORIES (
         NAME, DESCRIPTION, PARENT_ID, DISPLAY_ORDER, IS_ACTIVE, CREATED_AT
@@ -50,27 +46,22 @@
         )
     </insert>
 
-    <!-- 모든 카테고리 조회 -->
     <select id="selectAllCategories" resultMap="categoryResultMap">
         SELECT * FROM DOCUMENT_CATEGORIES
         ORDER BY DISPLAY_ORDER
     </select>
 
-    <!-- ID로 카테고리 조회 -->
     <select id="selectCategoryById" parameterType="long" resultMap="categoryResultMap">
         SELECT * FROM DOCUMENT_CATEGORIES
         WHERE ID = #{id}
     </select>
 
-    <!-- 이름으로 카테고리 조회 -->
     <select id="selectCategoryByName" parameterType="string" resultMap="categoryResultMap">
         SELECT * FROM DOCUMENT_CATEGORIES
         WHERE NAME = #{name}
     </select>
 
-    <!-- ========== 문서 쿼리 ========== -->
-    
-    <!-- 문서 삽입 -->
+
     <insert id="insertDocument" parameterType="com.lawmate.dto.DocumentDTO">
         INSERT INTO DOCUMENTS (
             CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
@@ -81,7 +72,6 @@
         )
     </insert>
 
-    <!-- 문서 배치 삽입 - INSERT ALL 대신 foreach로 개별 INSERT -->
     <insert id="insertDocumentBatch" parameterType="list">
         <foreach collection="list" item="doc" separator=";">
             INSERT INTO DOCUMENTS (
@@ -94,7 +84,6 @@
         </foreach>
     </insert>
 
-    <!-- 모든 문서 조회 -->
     <select id="selectAllDocuments" resultMap="documentResultMap">
         SELECT D.*, C.NAME AS CATEGORY_NAME
         FROM DOCUMENTS D
@@ -102,7 +91,6 @@
         ORDER BY D.CREATED_AT DESC
     </select>
 
-    <!-- 카테고리별 문서 조회 -->
     <select id="selectDocumentsByCategory" parameterType="long" resultMap="documentResultMap">
         SELECT D.*, C.NAME AS CATEGORY_NAME
         FROM DOCUMENTS D
@@ -111,18 +99,15 @@
         ORDER BY D.CREATED_AT DESC
     </select>
 
-    <!-- ID로 문서 조회 -->
     <select id="selectDocumentById" parameterType="long" resultMap="documentResultMap">
         SELECT * FROM DOCUMENTS
         WHERE ID = #{id}
     </select>
 
-    <!-- 전체 문서 수 -->
     <select id="countDocuments" resultType="int">
         SELECT COUNT(*) FROM DOCUMENTS
     </select>
 
-    <!-- 카테고리별 문서 수 -->
     <select id="countDocumentsByCategory" parameterType="long" resultType="int">
         SELECT COUNT(*) FROM DOCUMENTS
         WHERE CATEGORY_ID = #{categoryId}
