@@ -15,6 +15,7 @@ public class LawContentDto {
     private Date updatedAt;
     private String deepCategory;
 
+
     // JOIN으로 가져올 필드
     private String categoryName;
 
