@@ -31,7 +31,7 @@
                         <p class="mb-3 text-muted">${content.summary}</p>
                         <div class="d-flex justify-content-between text-muted small">
                             <span>조회수 ${content.viewCount}</span>
-                            <span>업데이트 <fmt:formatDate value="${content.updatedAt}" pattern="yyyy.MM.dd"/></span>
+                            <span>작성일 <fmt:formatDate value="${content.createdAt}" pattern="yyyy.MM.dd"/></span>
                         </div>
                     </a>
                 </c:forEach>

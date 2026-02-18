@@ -30,6 +30,7 @@
         line-height: 1.8;
         font-size: 1.05rem;
         white-space: pre-wrap;
+        text-indent: 0;
     }
 </style>
 
@@ -98,27 +99,29 @@
                         <span class="badge category-badge-pink mb-3">${content.deepCategory}</span>
                         <h2 class="mb-3">${content.title}</h2>
                         <p class="text-muted small mb-0">
-                            업데이트: <fmt:formatDate value="${content.updatedAt}" pattern="yyyy.MM.dd"/> |
-                            조회수: ${content.viewCount} |
-                            작성자: 관리자
+                            <c:choose>
+                                <c:when test="${not empty content.updatedAt}">
+                                    업데이트: <fmt:formatDate value="${content.updatedAt}" pattern="yyyy.MM.dd"/>
+                                </c:when>
+                                <c:otherwise>
+                                    작성일: <fmt:formatDate value="${content.createdAt}" pattern="yyyy.MM.dd"/>
+                                </c:otherwise>
+                            </c:choose>
+                            | 조회수: ${content.viewCount} | 작성자: 관리자
                         </p>
                     </div>
 
                     <!-- 1. 개요 -->
                     <div class="mb-5" id="section1" data-aos="fade-up" data-aos-delay="500">
                         <h3 class="mb-4" style="background-color: #f0f0f0; padding: 1rem;">1. 개요</h3>
-                        <div class="content-text">
-                            ${content.summary}
-                        </div>
+                        <div class="content-text">${content.summary}</div>
                     </div>
 
                     <!-- 2. 상세 내용 (content가 있을 때만) -->
                     <c:if test="${not empty content.content}">
                         <div class="mb-5" id="section2" data-aos="fade-up" data-aos-delay="600">
                             <h3 class="mb-4" style="background-color: #f0f0f0; padding: 1rem;">2. 상세 내용</h3>
-                            <div class="content-text">
-                                    ${content.content}
-                            </div>
+                            <div class="content-text">${content.content}</div>
                         </div>
                     </c:if>
 
@@ -127,9 +130,7 @@
                         <div class="mb-5" id="section3" data-aos="fade-up" data-aos-delay="700">
                             <h3 class="mb-4" style="background-color: #f0f0f0; padding: 1rem;">3. 진행 절차</h3>
                             <div class="content-box">
-                                <div class="content-text">
-                                        ${content.process}
-                                </div>
+                                <div class="content-text">${content.process}</div>
                             </div>
                         </div>
                     </c:if>
@@ -138,9 +139,7 @@
                     <c:if test="${not empty content.documents}">
                         <div class="mb-5" id="section4" data-aos="fade-up" data-aos-delay="800">
                             <h3 class="mb-4" style="background-color: #f0f0f0; padding: 1rem;">4. 필요 서류</h3>
-                            <div class="content-text">
-                                    ${content.documents}
-                            </div>
+                            <div class="content-text">${content.documents}</div>
                         </div>
                     </c:if>
 
