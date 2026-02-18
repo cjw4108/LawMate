@@ -12,8 +12,31 @@
 <script src="/vendor/glightbox/js/glightbox.min.js"></script>
 <script src="/vendor/swiper/swiper-bundle.min.js"></script>
 <script src="/vendor/purecounter/purecounter_vanilla.js"></script>
-
 <script src="/js/main.js"></script>
+
+<script>
+    function updateCartCount() {
+        $.ajax({
+            url: '/api/cart/count',
+            type: 'GET',
+            success: function(response) {
+                const count = response.count || 0;
+                const badge = $('#cartCount');
+                if (count > 0) {
+                    badge.text(count).css('display', 'flex');
+                } else {
+                    badge.css('display', 'none');
+                }
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        if ($('#cartCount').length > 0) {
+            updateCartCount();
+        }
+    });
+</script>
 
 </body>
 </html>

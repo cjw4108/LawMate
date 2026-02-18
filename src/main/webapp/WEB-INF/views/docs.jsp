@@ -48,7 +48,7 @@
             </div>
 
             <div class="d-flex gap-4 mb-4 align-items-stretch" style="position: relative; overflow: visible;">
-                <!-- 카테고리 드롭다운 -->
+
                 <div class="dropdown" style="width: 20%; min-width: 150px;">
                     <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
                             type="button"
@@ -71,16 +71,14 @@
                     </ul>
                 </div>
 
-                <!-- 검색창 -->
+
                 <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
                      style="padding: 0.65rem 1.25rem; position: relative;">
-                    <!-- ↑ padding을 0.65rem으로 축소 -->
                     <input type="text"
                            id="searchInput"
                            class="form-control border-0 ms-3"
                            placeholder="검색어를 입력해주세요."
                            style="box-shadow: none; background: transparent; padding: 0.25rem 0;">
-                    <!-- ↑ input padding도 0.25rem으로 축소 -->
                     <button class="btn btn-link text-dark me-2">
                         <i class="bi bi-search fs-4"></i>
                     </button>
@@ -96,7 +94,7 @@
 
     <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0;">
         <div class="container">
-            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
+                <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
 
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6">
@@ -326,6 +324,22 @@
         </div>
 
         <script>
+
+            $(document).ready(function() {
+
+                $.ajax({
+                    url: '/api/test/login',
+                    type: 'POST',
+                    success: function() {
+                        console.log('테스트 세션 생성됨');
+                    }
+                });
+
+                loadDocuments(1, null, null);
+                loadRanking();
+                updateCartCount();
+            });
+
             let allCards = [];
             let currentPage = 1;
             const cardsPerPage = 6;
@@ -376,12 +390,21 @@
                 allCards.forEach(function(card) {
                     const cardElement = document.createElement('div');
                     cardElement.className = 'card';
+                    cardElement.style.cursor = 'pointer';
+
+                    cardElement.onclick = function() {
+                        addToCart(card.id);
+                    };
+
                     const categoryName = card.categoryName || '기타';
+
                     cardElement.innerHTML =
                         '<span class="badge ' + getBadgeClass(categoryName) + '">' + categoryName + '</span>' +
                         '<h3 class="card-title">' + card.title + '</h3>' +
                         '<div class="card-info">' + (card.description || '') + '</div>' +
-                        '<button class="card-button" onclick="downloadFile(' + card.id + ')">다운로드</button>';
+                        '<button class="card-button" onclick="event.stopPropagation(); downloadFile(' + card.id + ')" ' +
+                        'style="background: #3b82f6;">📥 바로 다운로드</button>';
+
                     cardGrid.appendChild(cardElement);
                 });
             }
@@ -427,7 +450,6 @@
                 window.location.href = '/docs/download/' + id;
             }
 
-            // 실시간 검색 자동완성
             function showAutocomplete(keyword) {
                 removeAutocomplete();
                 if (!keyword || keyword.length < 1) return;
@@ -460,7 +482,6 @@
                             box.appendChild(item);
                         });
 
-                        // 검색창 아래에 붙이기
                         const searchBar = document.querySelector('.search-bar');
                         searchBar.style.position = 'relative';
                         box.style.top = searchBar.offsetHeight + 'px';
@@ -480,7 +501,6 @@
                 loadDocuments(1, null, null);
                 loadRanking();
 
-                // 카테고리 클릭
                 $('.dropdown-item').on('click', function(e) {
                     e.preventDefault();
                     const categoryName = $(this).text();
@@ -506,7 +526,6 @@
                     });
                 });
 
-                // 실시간 검색
                 $('#searchInput').on('input', function() {
                     const keyword = $(this).val().trim();
                     clearTimeout(searchTimer);
@@ -521,7 +540,6 @@
                     }, 200);
                 });
 
-                // 엔터로 검색
                 $('#searchInput').on('keydown', function(e) {
                     if (e.keyCode === 13) {
                         searchKeyword = $(this).val().trim();
@@ -533,7 +551,6 @@
                     }
                 });
 
-                // 외부 클릭시 자동완성 닫기
                 $(document).on('click', function(e) {
                     if (!$(e.target).closest('.search-bar').length) {
                         removeAutocomplete();
@@ -559,6 +576,47 @@
                     }
                 });
             }
+
+            function addToCart(documentId) {
+                $.ajax({
+                    url: '/api/cart/add',
+                    type: 'POST',
+                    data: { documentId: documentId },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('📁 내 서류함에 담았습니다!');
+                            updateCartCount();
+                        } else {
+                            if (response.message.includes('로그인')) {
+                                if (confirm(response.message + '\n로그인 페이지로 이동하시겠습니까?')) {
+                                    location.href = '/login';
+                                }
+                            } else {
+                                alert('⚠️ ' + response.message);
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateCartCount() {
+                $.ajax({
+                    url: '/api/cart/count',
+                    type: 'GET',
+                    success: function(response) {
+                        const count = response.count || 0;
+                        if (count > 0) {
+                            $('#cartCount').text(count).show();
+                        } else {
+                            $('#cartCount').hide();
+                        }
+                    }
+                });
+            }
+
+            $(document).ready(function() {
+                updateCartCount();
+            });
         </script>
     </section>
 

@@ -11,7 +11,6 @@ public class DocumentCategoryDTO {
     private Integer isActive;
     private Date createdAt;
 
-    // getter/setter
     public Long getId() {
         return id;
     }
