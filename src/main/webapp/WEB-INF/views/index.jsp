@@ -3,7 +3,6 @@
 <html lang="en">
 
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
-
 <main class="main">
 
   <section id="hero" class="hero section">
@@ -139,5 +138,5 @@
 
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
-</body>
+
 </html>

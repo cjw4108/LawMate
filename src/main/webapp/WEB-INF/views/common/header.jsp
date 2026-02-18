@@ -1,46 +1,37 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ko">
 <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>LawMate - Coding Portfolio</title>
-
-    <link href="/img/favicon.png" rel="icon">
-    <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
+    <title>LawMate - 스마트 법률 파트너</title>
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="/vendor/aos/aos.css" rel="stylesheet">
-    <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
     <link href="/css/main.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
 </head>
-
 <body class="index-page">
-
-<header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-        <a href="/" class="logo d-flex align-items-center me-auto me-xl-0">
-            <h1 class="sitename">iLanding</h1>
+<header id="header" class="header d-flex align-items-center fixed-top bg-white border-bottom shadow-sm" style="height: 70px;">
+    <div class="container-xl d-flex align-items-center justify-content-between">
+        <a href="/home" class="logo d-flex align-items-center me-auto">
+            <img src="/img/logo.png" alt="LawMate" style="max-height: 35px;">
         </a>
         <nav id="navmenu" class="navmenu">
-            <ul>
-                <li><a href="#hero" class="active">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="#contact">Contact</a></li>
+            <ul class="d-flex align-items-center mb-0">
+                <li class="dropdown">
+                    <a href="/login" class="btn btn-primary rounded-pill px-4 text-white">
+                        <span>로그인</span> <i class="bi bi-chevron-down ms-1"></i>
+                    </a>
+                    <ul class="shadow border-0">
+                        <li><a href="/mypage/user">마이페이지</a></li>
+                        <li><a href="/mypage/user/consult">상담 내역</a></li>
+                        <li><a href="/mypage/user/profile">문서 관리</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a href="/admin/main" class="text-danger fw-bold">관리자 페이지</a></li>
+                    </ul>
+                </li>
             </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
-        <a class="btn-getstarted" href="#about">Get Started</a>
     </div>
 </header>

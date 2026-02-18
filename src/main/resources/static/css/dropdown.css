@@ -1,0 +1,18 @@
+.category-btn:hover {
+    background-color: #b3d9ff !important;
+    border-color: #dee2e6 !important;
+}
+
+.category-btn:focus,
+.category-btn:active,
+.category-btn.show {
+    background-color: #99ccff !important;
+    border-color: #dee2e6 !important;
+    box-shadow: none !important;
+}
+
+.category-btn[aria-expanded="true"] {
+    background-color: #99ccff !important;
+    border-color: #dee2e6 !important;
+}
+

@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="LawMateApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateResources" />
+    <module name="LawMate.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.lawmate.LawMateApplication" />
+    <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateResources" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
