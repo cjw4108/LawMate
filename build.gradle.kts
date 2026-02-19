@@ -34,7 +34,10 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     runtimeOnly("com.oracle.database.jdbc:ojdbc11:23.3.0.23.09")
     implementation("org.jsoup:jsoup:1.15.2")
-
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("com.oracle.database.jdbc:ojdbc11")
+    implementation("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 }
 
 tasks.test {
