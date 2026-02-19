@@ -25,8 +25,8 @@ public class CategoryController {
 
     @GetMapping("/category")
     public String category(Model model) {
-        CategoryDto sch = new CategoryDto(0, "", "", null);
-        model.addAttribute("categoryList", categoryService.categorySch(sch));
+        List<CategoryDto> list = categoryService.getCategoryViewCount();
+        model.addAttribute("categoryList", list);
         return "category/category";
     }
 
@@ -34,13 +34,11 @@ public class CategoryController {
     public String categorylist(@RequestParam("categoryId") int categoryId, Model model) {
         System.out.println("받은 categoryId: " + categoryId);
 
-        // categoryId로 직접 조회
         CategoryDto category = categoryService.getCategoryById(categoryId);
         System.out.println("조회된 카테고리: " + category.getName());
 
         model.addAttribute("category", category);
 
-        // 해당 카테고리의 법률정보 목록 조회
         List<LawContentDto> contentList = lawContentService.getContentsByCategory(categoryId);
         System.out.println("법률정보 개수: " + contentList.size());
 
@@ -55,16 +53,13 @@ public class CategoryController {
         return "category/category";
     }
 
-    // 법률정보 상세 페이지
     @GetMapping("/content/{contentId}")
     public String contentDetail(@PathVariable("contentId") int contentId, Model model) {
         System.out.println("받은 contentId: " + contentId);
 
-        // contentId로 법률정보 상세 조회
         LawContentDto content = lawContentService.getContentById(contentId);
         System.out.println("조회된 콘텐츠: " + content.getTitle());
 
-        // 조회수 증가
         lawContentService.increaseViewCount(contentId);
 
         model.addAttribute("content", content);
@@ -72,6 +67,11 @@ public class CategoryController {
         return "category/contentDetail";
     }
 
-
-
+    // 추가
+    @GetMapping("/categoryViewCount")
+    public String categoryViewCount(Model model) {
+        List<CategoryDto> list = categoryService.getCategoryViewCount();
+        model.addAttribute("categoryList", list);
+        return "category/categoryViewCount";
+    }
 }

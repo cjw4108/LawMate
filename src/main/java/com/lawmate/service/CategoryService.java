@@ -23,8 +23,12 @@ public class CategoryService {
         return dao.categorySch(sch);
     }
 
-    // 추가
     public CategoryDto getCategoryById(int categoryId) {
         return dao.getCategoryById(categoryId);
+    }
+
+    // 추가
+    public List<CategoryDto> getCategoryViewCount() {
+        return dao.getCategoryViewCount();
     }
 }

@@ -31,7 +31,7 @@
                                     <h4>${category.name}</h4>
                                     <p class="mb-3">${category.description}</p>
                                     <p class="mb-3">업데이트 날짜 : ${category.createdAt}</p>
-                                    <p>조회수 : </p>
+                                    <p>조회수 : ${category.totalViewCount}</p>
 
                                     <div class="service-card shadow-sm"
                                          style="position: absolute; border:1px solid skyblue; bottom: 10px; right: 10px; width: 100px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
