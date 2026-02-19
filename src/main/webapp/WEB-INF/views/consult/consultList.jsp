@@ -23,7 +23,7 @@
 <div class="container">
     <form id="frm01" class="form"  method="post">
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <input placeholder="제목" name="title"  value="${param.schTitle}" class="form-control mr-sm-3" />
+            <input placeholder="제목" name="schTitle"  value="${param.schTitle}" class="form-control mr-sm-3" />
             <button class="btn btn-info" type="submit">Search</button>
             <button class="btn btn-success" id="regBtn" type="button">등록</button>
         </nav>

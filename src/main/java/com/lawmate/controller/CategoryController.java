@@ -31,26 +31,40 @@ public class CategoryController {
     }
 
     @GetMapping("/categorylist")
-    public String categorylist(@RequestParam("categoryId") int categoryId, Model model) {
-        System.out.println("받은 categoryId: " + categoryId);
+    public String categorylist(
+            @RequestParam("categoryId") int categoryId,
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
 
+        int pageSize = 4; // 한 페이지에 보여줄 글 수
+
+        // 1. 카테고리 조회
         CategoryDTO category = categoryService.getCategoryById(categoryId);
-        System.out.println("조회된 카테고리: " + category.getName());
-
         model.addAttribute("category", category);
 
-        List<LawContentDTO> contentList = lawContentService.getContentsByCategory(categoryId);
-        System.out.println("법률정보 개수: " + contentList.size());
+        // 2. 해당 카테고리 글 전체 조회
+        List<LawContentDTO> allContents = lawContentService.getContentsByCategory(categoryId);
 
+        // 3. 총 글 개수 계산
+        int totalContents = allContents.size();
+        model.addAttribute("totalContents", totalContents); // <-- 이 부분이 중요
+
+        // 4. 페이지 계산
+        int totalPages = (int) Math.ceil((double) totalContents / pageSize);
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+
+        // 5. 현재 페이지 글 추출
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalContents);
+        List<LawContentDTO> contentList = allContents.subList(start, end);
         model.addAttribute("contentList", contentList);
 
-        return "category/categorylist";
-    }
+        // 6. 페이지네이션 관련
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
 
-    @GetMapping("/categorySch")
-    public String categorySch(@ModelAttribute("sch") CategoryDTO sch, Model model) {
-        model.addAttribute("categoryList", categoryService.categorySch(sch));
-        return "category/category";
+        return "category/categorylist";
     }
 
     @GetMapping("/content/{contentId}")

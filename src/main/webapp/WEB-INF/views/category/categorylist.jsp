@@ -17,7 +17,7 @@
 
             <!-- 법률정보 개수 -->
             <p class="mb-4" data-aos="fade-up" data-aos-delay="400">
-                총 <strong>${contentList.size()}건</strong>의 법률정보
+                총 <strong>${totalContents}건</strong>의 법률정보
             </p>
 
             <!-- 법률정보 리스트 -->
@@ -37,20 +37,28 @@
                 </c:forEach>
             </div>
 
-            <!-- 페이지네이션 -->
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">이전</a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">다음</a>
-                    </li>
+                    <!-- 이전 버튼 -->
+                    <c:if test="${currentPage > 1}">
+                        <li class="page-item">
+                            <a class="page-link" href="?categoryId=${category.categoryId}&page=${currentPage - 1}">이전</a>
+                        </li>
+                    </c:if>
+
+                    <!-- 페이지 번호 -->
+                    <c:forEach begin="1" end="${totalPages}" var="i">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" href="?categoryId=${category.categoryId}&page=${i}">${i}</a>
+                        </li>
+                    </c:forEach>
+
+                    <!-- 다음 버튼 -->
+                    <c:if test="${currentPage < totalPages}">
+                        <li class="page-item">
+                            <a class="page-link" href="?categoryId=${category.categoryId}&page=${currentPage + 1}">다음</a>
+                        </li>
+                    </c:if>
                 </ul>
             </nav>
         </div>
