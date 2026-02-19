@@ -1,55 +1,67 @@
 package com.lawmate.controller;
 
+import com.lawmate.dto.Question;
+import com.lawmate.service.QuestionService;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.lawmate.dto.Question;
-import com.lawmate.service.QuestionService;
+import java.util.List;
 
 @Controller
 @RequestMapping("/qna")
+@RequiredArgsConstructor
 public class QnaController {
 
     private final QuestionService questionService;
 
-    public QnaController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-
+    // 질문 목록
     @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("list", questionService.findAll());
-        return "qna/qnaList"; // 파일명 qnaList.jsp와 일치 [cite: 11]
+    public String list(@RequestParam(required = false) String keyword,
+                       @RequestParam(defaultValue = "latest") String sort,
+                       Model model, HttpSession session) {
+        List<Question> list;
+        String userId = (String) session.getAttribute("userId");
+
+        if (keyword != null && !keyword.isEmpty()) {
+            list = questionService.search(keyword);
+        } else {
+            switch (sort) {
+                case "replies":  list = questionService.findAllByOrderByAnsweredDesc(); break;
+                case "likes":    list = questionService.findAllByOrderByLikesDesc(); break;
+                case "favorite":
+                    if (userId == null) return "redirect:/login";
+                    list = questionService.findMyFavorites(userId);
+                    break;
+                default:         list = questionService.findAllByOrderByCreatedAtDesc(); break;
+            }
+        }
+        model.addAttribute("list", list);
+        model.addAttribute("currentSort", sort);
+        return "qna/qnaList";
     }
 
-    @GetMapping("/write") // JSP의 href="/qna/write"와 대응
-    public String writeForm() {
-        return "qna/qnaRegister"; // 파일명 qnaRegister.jsp와 일치 [cite: 1]
-    }
-
-    @PostMapping("/write") // JSP의 action="/qna/write"와 대응
-    public String write(Question question) {
-        questionService.save(question);
-        return "redirect:/qna/list"; // 등록 후 리스트로 이동
-    }
-
+    // 질문 상세
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionService.findById(id));
-        return "qna/qnaDetail"; // 파일명 qnaDetail.jsp와 일치 [cite: 5]
+    public String detail(@PathVariable Long id, Model model, HttpSession session) {
+        Question question = questionService.findById(id);
+        if (question == null) return "redirect:/qna/list";
+        model.addAttribute("question", question);
+        return "qna/qnaDetail";
     }
 
+    // 신고 처리 (Ajax)
     @PostMapping("/report/{id}")
     @ResponseBody
-    public String report(@PathVariable Long id) {
-        questionService.report(id);
-        return "success";
+    public String report(@PathVariable Long id, @RequestParam("reason") String reason, HttpSession session) {
+        try {
+            String userId = (String) session.getAttribute("userId");
+            if (userId == null) userId = "anonymous";
+            questionService.report(id, reason, userId);
+            return "success";
+        } catch (Exception e) {
+            return "error";
+        }
     }
-
-    @GetMapping("/admin/list")
-    public String adminList(Model model) {
-        model.addAttribute("reportedList", questionService.findReportedQuestions());
-        return "qna/adminQna"; // adminQna.jsp 파일명과 일치
-    }
-
 }

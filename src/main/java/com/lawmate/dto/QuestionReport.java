@@ -8,7 +8,10 @@ import java.time.LocalDateTime;
 @Table(name = "QUESTION_REPORTS")
 @Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class QuestionReport {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,8 +22,14 @@ public class QuestionReport {
     @Column(name = "USER_ID")
     private String userId;
 
+    @Column(name = "REASON")
     private String reason;
 
     @Column(name = "CREATED_AT")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
