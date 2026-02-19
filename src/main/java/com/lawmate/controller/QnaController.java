@@ -38,4 +38,18 @@ public class QnaController {
         model.addAttribute("question", questionService.findById(id));
         return "qna/qnaDetail"; // 파일명 qnaDetail.jsp와 일치 [cite: 5]
     }
+
+    @PostMapping("/report/{id}")
+    @ResponseBody
+    public String report(@PathVariable Long id) {
+        questionService.report(id);
+        return "success";
+    }
+
+    @GetMapping("/admin/list")
+    public String adminList(Model model) {
+        model.addAttribute("reportedList", questionService.findReportedQuestions());
+        return "qna/adminQna"; // adminQna.jsp 파일명과 일치
+    }
+
 }

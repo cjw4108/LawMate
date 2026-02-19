@@ -1,7 +1,7 @@
 package com.lawmate.service;
 
-import com.lawmate.dao.CategoryDao;
-import com.lawmate.dto.CategoryDto;
+import com.lawmate.dao.CategoryDAO;
+import com.lawmate.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ import java.util.List;
 public class CategoryService {
 
     @Autowired
-    private CategoryDao dao;
+    private CategoryDAO dao;
 
-    public List<CategoryDto> categorySch(CategoryDto sch) {
+    public List<CategoryDTO> categorySch(CategoryDTO sch) {
         if (sch.getName() == null) sch.setName("");
         if (sch.getDescription() == null) sch.setDescription("");
 
@@ -23,12 +23,12 @@ public class CategoryService {
         return dao.categorySch(sch);
     }
 
-    public CategoryDto getCategoryById(int categoryId) {
+    public CategoryDTO getCategoryById(int categoryId) {
         return dao.getCategoryById(categoryId);
     }
 
     // 추가
-    public List<CategoryDto> getCategoryViewCount() {
+    public List<CategoryDTO> getCategoryViewCount() {
         return dao.getCategoryViewCount();
     }
 }
