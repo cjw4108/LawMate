@@ -1,7 +1,7 @@
 package com.lawmate.service;
 
-import com.lawmate.dao.LawContentDao;
-import com.lawmate.dto.LawContentDto;
+import com.lawmate.dao.LawContentDAO;
+import com.lawmate.dto.LawContentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
 public class LawContentService {
 
     @Autowired
-    private LawContentDao dao;
+    private LawContentDAO dao;
 
-    public List<LawContentDto> getContentsByCategory(int categoryId) {
+    public List<LawContentDTO> getContentsByCategory(int categoryId) {
         return dao.getContentsByCategory(categoryId);
     }
 
     // 법률정보 상세 조회
-    public LawContentDto getContentById(int contentId) {
+    public LawContentDTO getContentById(int contentId) {
         return dao.getContentById(contentId);
     }
 

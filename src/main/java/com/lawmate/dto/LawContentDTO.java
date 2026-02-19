@@ -2,7 +2,7 @@ package com.lawmate.dto;
 
 import java.util.Date;
 
-public class LawContentDto {
+public class LawContentDTO {
     private int contentId;
     private int categoryId;
     private String title;
@@ -20,10 +20,10 @@ public class LawContentDto {
     private String categoryName;
 
     // 기본 생성자
-    public LawContentDto() {}
+    public LawContentDTO() {}
 
     // 전체 필드 생성자
-    public LawContentDto(int contentId, int categoryId, String title, String summary,
+    public LawContentDTO(int contentId, int categoryId, String title, String summary,
                          String content, String process, String documents,
                          int viewCount, Date createdAt, Date updatedAt,
                          String deepCategory, String categoryName) {

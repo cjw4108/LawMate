@@ -4,10 +4,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import com.lawmate.dto.LawContentDto;
+import com.lawmate.dto.LawContentDTO;
 
 @Mapper
-public interface LawContentDao {
+public interface LawContentDAO {
 
     // 카테고리별 법률정보 목록 조회
     @Select("""
@@ -24,7 +24,7 @@ public interface LawContentDao {
         WHERE category_id = #{categoryId}
         ORDER BY created_at DESC
     """)
-    List<LawContentDto> getContentsByCategory(int categoryId);
+    List<LawContentDTO> getContentsByCategory(int categoryId);
 
     // 법률정보 상세 조회 (카테고리명 포함, CLOB 필드 포함)
     @Select("""
@@ -45,7 +45,7 @@ public interface LawContentDao {
         LEFT JOIN LAW_CATEGORY cat ON c.category_id = cat.category_id
         WHERE c.content_id = #{contentId}
     """)
-    LawContentDto getContentById(int contentId);
+    LawContentDTO getContentById(int contentId);
 
     // 조회수 증가
     @Update("""

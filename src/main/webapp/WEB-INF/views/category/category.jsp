@@ -38,10 +38,31 @@
                                          onclick="location.href='/categorylist?categoryId=${category.categoryId}'">
                                         <h6 style="font-size: 0.8rem; margin: 0;">바로가기</h6>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </c:forEach>
+                </div>
+                <!-- 🔥 하단 이동 안내 영역 -->
+                <div class="col-12 mt-5">
+                    <div class="card shadow-sm p-4 text-center"
+                         style="background:#f8f9ff; border:1px solid #dbe4ff;">
+
+                        <h5 class="mb-3">
+                            아니면, 단어를 찾고 싶으신가요?
+                        </h5>
+
+                        <p class="mb-4 text-muted">
+                            법률 용어를 직접 검색하고 싶다면 아래 버튼을 눌러 이동하세요.
+                        </p>
+
+                        <a href="/legal-dictionary"
+                           class="service-card shadow-sm mb-4">
+                            📘 법률용어 페이지로 이동
+                        </a>
+
+                    </div>
                 </div>
             </div>
         </div>
