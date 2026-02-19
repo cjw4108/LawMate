@@ -14,27 +14,23 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
     private Long id;
 
     @Column(name = "USER_ID")
     private String userId;
 
-    @Column(name = "TITLE")
     private String title;
 
     @Lob
-    @Column(name = "CONTENT")
     private String content;
 
-    @Column(name = "ANSWERED")
-    private Integer answered;
+    private Integer answered = 0;
 
     @Column(name = "ADOPTED_ANSWER")
     private Long adoptedAnswer;
 
     @Column(name = "REPORT_COUNT")
-    private Integer reportCount;
+    private Integer reportCount = 0;
 
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
@@ -43,5 +39,6 @@ public class Question {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         if (this.answered == null) this.answered = 0;
+        if (this.reportCount == null) this.reportCount = 0;
     }
 }

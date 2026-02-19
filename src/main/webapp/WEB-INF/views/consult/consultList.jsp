@@ -8,12 +8,12 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $("#regBtn").click(function(){
-            location.href="consult/consultInsert"
+            location.href="consultInsert"
         })
     });
     function goDetail(groupNo){
         //alert(groupNo)
-        location.href="consult/consultDetail?id="+id
+        location.href="consultDetail?id="+id
     }
 </script>
 

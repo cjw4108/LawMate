@@ -10,15 +10,15 @@
             <form action="/consult/consultInsert" method="post">
                 <div class="mb-4">
                     <label class="fw-bold mb-2">회원ID</label>
-                    <input type="text" class="form-control" placeholder="회원ID를 입력해 주세요.">
+                    <input type="text" class="form-control" id="userId" name="userId" placeholder="회원ID를 입력해 주세요.">
                 </div>
                 <div class="mb-4">
                     <label class="fw-bold mb-2">제목</label>
-                    <input type="text" class="form-control" placeholder="텍스트를 입력해 주세요.">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="텍스트를 입력해 주세요.">
                 </div>
                 <div class="mb-4">
                     <label class="fw-bold mb-2">질문 내용</label>
-                    <textarea class="form-control" rows="10" placeholder="텍스트를 입력해 주세요."></textarea>
+                    <textarea class="form-control" rows="10" id="content" name="content" placeholder="텍스트를 입력해 주세요."></textarea>
                 </div>
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-dark px-4">등록</button>

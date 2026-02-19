@@ -19,7 +19,6 @@ public class ConsultService {
             sch.setSchTitle("");
         }
         sch.setSchTitle("%"+sch.getSchTitle()+"%");
-        System.out.println(sch.getSchTitle());
         return dao.getConsultList(sch);
     }
 
