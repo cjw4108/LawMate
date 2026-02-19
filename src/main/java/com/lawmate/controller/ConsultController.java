@@ -28,7 +28,7 @@ public class ConsultController {
 
     @PostMapping("consultInsert")
     public String consultInsertPost(ConsultDto ins, Model d) {
-
+        System.out.println(ins);
         d.addAttribute("msg", service.consultInsert(ins));
 
         return "consult\\consultInsert";
