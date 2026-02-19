@@ -1,16 +1,29 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#regBtn").click(function(){
+            location.href="consult/consultInsert"
+        })
+    });
+    function goDetail(groupNo){
+        //alert(groupNo)
+        location.href="consult/consultDetail?id="+id
+    }
+</script>
+
 <main class="main" style="padding-top: 100px;">
-<br><br><br><br>
+<h1 style="text-align:center;">상담신청 목록</h1>
+<br>
 <div class="container">
     <form id="frm01" class="form"  method="post">
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <input placeholder="제목" name="title"  value="${param.title}" class="form-control mr-sm-2" />
+            <input placeholder="제목" name="title"  value="${param.schTitle}" class="form-control mr-sm-3" />
             <button class="btn btn-info" type="submit">Search</button>
             <button class="btn btn-success" id="regBtn" type="button">등록</button>
         </nav>
@@ -32,6 +45,12 @@
         </thead>
         <tbody>
         <%-- // groupNo groupName debutDate fandomName --%>
+        <c:forEach items="${consultList}" var="consult">
+            <tr ondblclick="goDetail(${consult.id})"><td>${consult.id}</td><td>${consult.userId}</td>
+                <td>${consult.title}</td><td>${consult.answered}</td>
+                <td><fmt:formatDate value="${consult.createdAt}"/></td>
+            </tr>
+        </c:forEach>
         </tbody>
     </table>
 </div>
