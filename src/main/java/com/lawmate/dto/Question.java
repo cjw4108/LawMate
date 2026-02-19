@@ -29,7 +29,8 @@ public class Question {
     @Column(name = "ADOPTED_ANSWER")
     private Long adoptedAnswer;
 
-    @Column(name = "REPORT_COUNT")
+    // 명시적으로 컬럼 이름을 지정하고 기본값을 0으로 설정합니다
+    @Column(name = "REPORT_COUNT", nullable = false)
     private Integer reportCount = 0;
 
     @Column(name = "CREATED_AT")
@@ -39,6 +40,7 @@ public class Question {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         if (this.answered == null) this.answered = 0;
+        // null 방지를 위해 생성 시 0으로 초기화합니다
         if (this.reportCount == null) this.reportCount = 0;
     }
 }
