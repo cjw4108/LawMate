@@ -33,6 +33,9 @@ public class Question {
     @Column(name = "ADOPTED_ANSWER")
     private Long adoptedAnswer;
 
+    @Column(name = "REPORT_COUNT")
+    private Integer reportCount;
+
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
