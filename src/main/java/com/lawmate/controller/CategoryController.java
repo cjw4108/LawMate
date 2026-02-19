@@ -1,7 +1,7 @@
 package com.lawmate.controller;
 
-import com.lawmate.dto.CategoryDto;
-import com.lawmate.dto.LawContentDto;
+import com.lawmate.dto.CategoryDTO;
+import com.lawmate.dto.LawContentDTO;
 import com.lawmate.service.CategoryService;
 import com.lawmate.service.LawContentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class CategoryController {
 
     @GetMapping("/category")
     public String category(Model model) {
-        List<CategoryDto> list = categoryService.getCategoryViewCount();
+        List<CategoryDTO> list = categoryService.getCategoryViewCount();
         model.addAttribute("categoryList", list);
         return "category/category";
     }
@@ -34,12 +34,12 @@ public class CategoryController {
     public String categorylist(@RequestParam("categoryId") int categoryId, Model model) {
         System.out.println("받은 categoryId: " + categoryId);
 
-        CategoryDto category = categoryService.getCategoryById(categoryId);
+        CategoryDTO category = categoryService.getCategoryById(categoryId);
         System.out.println("조회된 카테고리: " + category.getName());
 
         model.addAttribute("category", category);
 
-        List<LawContentDto> contentList = lawContentService.getContentsByCategory(categoryId);
+        List<LawContentDTO> contentList = lawContentService.getContentsByCategory(categoryId);
         System.out.println("법률정보 개수: " + contentList.size());
 
         model.addAttribute("contentList", contentList);
@@ -48,7 +48,7 @@ public class CategoryController {
     }
 
     @GetMapping("/categorySch")
-    public String categorySch(@ModelAttribute("sch") CategoryDto sch, Model model) {
+    public String categorySch(@ModelAttribute("sch") CategoryDTO sch, Model model) {
         model.addAttribute("categoryList", categoryService.categorySch(sch));
         return "category/category";
     }
@@ -57,7 +57,7 @@ public class CategoryController {
     public String contentDetail(@PathVariable("contentId") int contentId, Model model) {
         System.out.println("받은 contentId: " + contentId);
 
-        LawContentDto content = lawContentService.getContentById(contentId);
+        LawContentDTO content = lawContentService.getContentById(contentId);
         System.out.println("조회된 콘텐츠: " + content.getTitle());
 
         lawContentService.increaseViewCount(contentId);
@@ -70,7 +70,7 @@ public class CategoryController {
     // 추가
     @GetMapping("/categoryViewCount")
     public String categoryViewCount(Model model) {
-        List<CategoryDto> list = categoryService.getCategoryViewCount();
+        List<CategoryDTO> list = categoryService.getCategoryViewCount();
         model.addAttribute("categoryList", list);
         return "category/categoryViewCount";
     }

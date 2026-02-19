@@ -2,7 +2,7 @@ package com.lawmate.dto;
 
 import java.time.LocalDateTime;
 
-public class CategoryDto {
+public class CategoryDTO {
     private int categoryId;
     private String name;
     private String description;
@@ -10,16 +10,16 @@ public class CategoryDto {
     private long totalViewCount; // 추가
 
     // MyBatis를 위한 기본 생성자 필수!
-    public CategoryDto() {}
+    public CategoryDTO() {}
 
-    public CategoryDto(int categoryId, String name, String description, LocalDateTime createdAt) {
+    public CategoryDTO(int categoryId, String name, String description, LocalDateTime createdAt) {
         this.categoryId = categoryId;
         this.name = name;
         this.description = description;
         this.createdAt = createdAt;
     }
 
-    public CategoryDto(int categoryId, String name, String description, LocalDateTime createdAt, long totalViewCount) {
+    public CategoryDTO(int categoryId, String name, String description, LocalDateTime createdAt, long totalViewCount) {
         this.categoryId = categoryId;
         this.name = name;
         this.description = description;
