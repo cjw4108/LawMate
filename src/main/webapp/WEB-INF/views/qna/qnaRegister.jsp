@@ -7,14 +7,14 @@
             <h3 class="mb-0">질문 등록 화면</h3>
         </div>
         <div class="p-4 bg-white">
-            <form action="/qna/insert" method="post">
+            <form action="/qna/write" method="post">
                 <div class="mb-4">
                     <label class="fw-bold mb-2">제목</label>
-                    <input type="text" class="form-control" placeholder="텍스트를 입력해 주세요.">
+                    <input type="text" name="title" class="form-control" placeholder="텍스트를 입력해 주세요.">
                 </div>
                 <div class="mb-4">
                     <label class="fw-bold mb-2">질문 내용</label>
-                    <textarea class="form-control" rows="10" placeholder="텍스트를 입력해 주세요."></textarea>
+                    <textarea name="content" class="form-control" rows="10" placeholder="텍스트를 입력해 주세요."></textarea>
                 </div>
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-dark px-4">등록</button>

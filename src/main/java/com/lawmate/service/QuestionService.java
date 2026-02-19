@@ -17,6 +17,19 @@ public class QuestionService {
         this.questionRepository = questionRepository;
     }
 
+    public void report(Long id) {
+        Question question = findById(id);
+        question.setReportCount(question.getReportCount() + 1);
+        questionRepository.save(question);
+    }
+
+    public List<Question> findReportedQuestions() {
+        // 실제 프로젝트에선 repository에 findByReportCountGreaterThan(0) 등을 선언해 사용하세요.
+        return questionRepository.findAll().stream()
+                .filter(q -> q.getReportCount() > 0)
+                .toList();
+    }
+
     public Question save(Question question) {
         return questionRepository.save(question);
     }

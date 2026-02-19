@@ -12,7 +12,6 @@ public class QnaController {
 
     private final QuestionService questionService;
 
-    // ✅ Lombok 대신 직접 생성자 작성
     public QnaController(QuestionService questionService) {
         this.questionService = questionService;
     }
@@ -20,23 +19,37 @@ public class QnaController {
     @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("list", questionService.findAll());
-        return "qna/list";
+        return "qna/qnaList"; // 파일명 qnaList.jsp와 일치 [cite: 11]
     }
 
-    @GetMapping("/write")
+    @GetMapping("/write") // JSP의 href="/qna/write"와 대응
     public String writeForm() {
-        return "qna/write";
+        return "qna/qnaRegister"; // 파일명 qnaRegister.jsp와 일치 [cite: 1]
     }
 
-    @PostMapping("/write")
+    @PostMapping("/write") // JSP의 action="/qna/write"와 대응
     public String write(Question question) {
         questionService.save(question);
-        return "redirect:/qna/list";
+        return "redirect:/qna/list"; // 등록 후 리스트로 이동
     }
 
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("question", questionService.findById(id));
-        return "qna/detail";
+        return "qna/qnaDetail"; // 파일명 qnaDetail.jsp와 일치 [cite: 5]
     }
+
+    @PostMapping("/report/{id}")
+    @ResponseBody
+    public String report(@PathVariable Long id) {
+        questionService.report(id);
+        return "success";
+    }
+
+    @GetMapping("/admin/list")
+    public String adminList(Model model) {
+        model.addAttribute("reportedList", questionService.findReportedQuestions());
+        return "qna/adminQna"; // adminQna.jsp 파일명과 일치
+    }
+
 }
