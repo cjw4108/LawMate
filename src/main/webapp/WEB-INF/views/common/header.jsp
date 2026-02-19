@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>LawMate - 스마트 법률 파트너</title>
@@ -18,6 +19,30 @@
         </a>
         <nav id="navmenu" class="navmenu">
             <ul class="d-flex align-items-center mb-0">
+                <li style="margin-right: 30px;">
+                    <a href="/cart"
+                       title="내 서류함"
+                       style="position: relative; display: inline-block; text-decoration: none;">
+                        <i class="bi bi-folder2" style="font-size: 28px; color: #1e293b;"></i>
+                        <span id="cartCount"
+                              style="position: absolute;
+                     top: 0px;
+                     right: -5px;
+                     background: #ef4444;
+                     color: white;
+                     border-radius: 10px;
+                     min-width: 18px;
+                     height: 18px;
+                     padding: 0 4px;
+                     font-size: 10px;
+                     display: flex;
+                     align-items: center;
+                     justify-content: center;
+                     font-weight: 600;
+                     line-height: 1;">0</span>
+                    </a>
+                </li>
+
                 <li class="dropdown">
                     <a href="/login" class="btn btn-primary rounded-pill px-4 text-white">
                         <span>로그인</span> <i class="bi bi-chevron-down ms-1"></i>

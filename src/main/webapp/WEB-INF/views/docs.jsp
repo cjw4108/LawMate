@@ -2,12 +2,36 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<link rel="stylesheet" href="/css/liveSearch.css">
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
+<style>
+    .hero.section {
+        padding-top: 80px !important;
+    }
+
+    #hero .container {
+        overflow: visible !important;
+    }
+
+    #hero .row {
+        overflow: visible !important;
+    }
+
+    .d-flex.gap-4.mb-4 {
+        overflow: visible !important;
+        position: relative;
+    }
+
+    .dropdown-menu {
+        z-index: 99999 !important;
+        position: absolute !important;
+    }
+</style>
 
 <main class="main">
 
-    <section id="hero" class="hero section" style="padding-bottom: 0 !important;">
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <section id="hero" class="hero section" style="padding-bottom: 0 !important; overflow: visible;">
+        <div class="container" data-aos="fade-up" data-aos-delay="100" style="overflow: visible;">
             <div class="row align-items-center">
                 <div class="col-lg-6 offset-lg-1">
                     <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
@@ -23,45 +47,45 @@
                 </div>
             </div>
 
-            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
-                <div class="col-lg-10">
-                    <div class="d-flex gap-4 mb-4">
-                        <div class="dropdown" style="width: 20%; min-width: 150px;">
-                            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
-                                    type="button"
-                                    id="categoryDropdown"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    style="padding: 1rem 1.5rem; border-color: #dee2e6;">
-                                카테고리
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                                <li><a class="dropdown-item" href="#">전체</a></li>
-                                <li><a class="dropdown-item" href="#">제품</a></li>
-                                <li><a class="dropdown-item" href="#">서비스</a></li>
-                                <li><a class="dropdown-item" href="#">고객지원</a></li>
-                            </ul>
-                        </div>
+            <div class="d-flex gap-4 mb-4 align-items-stretch" style="position: relative; overflow: visible;">
 
-                        <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
-                             style="padding: 0.75rem 1.25rem;">
-                            <input type="text"
-                                   class="form-control border-0 ms-3"
-                                   placeholder="검색어를 입력해주세요."
-                                   style="box-shadow: none; background: transparent; padding: 0.5rem 0;">
-                            <button class="btn btn-link text-dark me-2">
-                                <i class="bi bi-search fs-4"></i>
-                            </button>
-                        </div>
-                    </div>
+                <div class="dropdown" style="width: 20%; min-width: 150px;">
+                    <button class="btn btn-outline-secondary dropdown-toggle rounded-pill shadow-sm category-btn w-100"
+                            type="button"
+                            id="categoryDropdown"
+                            data-bs-toggle="dropdown"
+                            data-bs-auto-close="true"
+                            aria-expanded="false"
+                            style="padding: 0.65rem 1.25rem; border-color: #dee2e6; height: 100%;">
+                        카테고리
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown"
+                        style="z-index: 99999;">
+                        <li><a class="dropdown-item" href="#">전체</a></li>
+                        <li><a class="dropdown-item" href="#">부동산</a></li>
+                        <li><a class="dropdown-item" href="#">민사</a></li>
+                        <li><a class="dropdown-item" href="#">형사</a></li>
+                        <li><a class="dropdown-item" href="#">이혼/가족</a></li>
+                        <li><a class="dropdown-item" href="#">노동</a></li>
+                        <li><a class="dropdown-item" href="#">기타</a></li>
+                    </ul>
+                </div>
 
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="#" class="btn btn-outline-primary rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 소장</a>
-                        <a href="#" class="btn btn-outline-secondary rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 준비서면</a>
-                        <a href="#" class="btn btn-outline-info rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 고소장</a>
-                        <a href="#" class="btn btn-outline-danger rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 채권가압류</a>
-                        <a href="#" class="btn btn-outline-success rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 내용증명</a>
-                        <a href="#" class="btn btn-outline-warning rounded-pill px-4 py-2" style="font-size: 1rem; font-weight: 500;"># 합의서</a>
+
+                <div class="search-bar shadow-sm bg-white rounded-pill d-flex align-items-center border flex-grow-1"
+                     style="padding: 0.65rem 1.25rem; position: relative;">
+                    <input type="text"
+                           id="searchInput"
+                           class="form-control border-0 ms-3"
+                           placeholder="검색어를 입력해주세요."
+                           style="box-shadow: none; background: transparent; padding: 0.25rem 0;">
+                    <button class="btn btn-link text-dark me-2">
+                        <i class="bi bi-search fs-4"></i>
+                    </button>
+                </div>
+            </div>
+
+                    <div id="rank-container" class="d-flex flex-wrap justify-content-center gap-3">
                     </div>
                 </div>
             </div>
@@ -70,7 +94,7 @@
 
     <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0;">
         <div class="container">
-            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
+                <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
 
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6">
@@ -162,7 +186,6 @@
                     }
                 }
 
-                /* 서류 양식 카드 전용 스타일 */
                 .card-grid {
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
@@ -301,80 +324,86 @@
         </div>
 
         <script>
-            const allCards = [
-                { id: 1, badge: '계약 관련 서류', title: '임대차 계약서', date: '2024. 01. 15', views: 123, description: '표준 임대차 계약서 양식' },
-                { id: 2, badge: '소송 관련 서류', title: '소장 양식', date: '2024. 01. 16', views: 456, description: '민사소송 소장 작성 양식' },
-                { id: 3, badge: '계약 관련 서류', title: '근로계약서', date: '2024. 01. 17', views: 789, description: '표준 근로계약서 양식' },
-                { id: 4, badge: '소송 관련 서류', title: '답변서 양식', date: '2024. 01. 18', views: 234, description: '민사소송 답변서 작성 양식' },
-                { id: 5, badge: '계약 관련 서류', title: '매매계약서', date: '2024. 01. 19', views: 567, description: '부동산 매매계약서 양식' },
-                { id: 6, badge: '고소/고발 서류', title: '고소장 양식', date: '2024. 01. 20', views: 890, description: '형사 고소장 작성 양식' },
-                { id: 7, badge: '계약 관련 서류', title: '위임장', date: '2024. 01. 21', views: 345, description: '법률 대리 위임장 양식' },
-                { id: 8, badge: '소송 관련 서류', title: '준비서면', date: '2024. 01. 22', views: 678, description: '소송 준비서면 작성 양식' },
-                { id: 9, badge: '고소/고발 서류', title: '고발장 양식', date: '2024. 01. 23', views: 901, description: '형사 고발장 작성 양식' },
-                { id: 10, badge: '계약 관련 서류', title: '합의서', date: '2024. 01. 24', views: 432, description: '분쟁 합의서 양식' },
-                { id: 11, badge: '소송 관련 서류', title: '항소장', date: '2024. 01. 25', views: 765, description: '항소장 작성 양식' },
-                { id: 12, badge: '계약 관련 서류', title: '비밀유지계약서', date: '2024. 01. 26', views: 321, description: 'NDA 계약서 양식' },
-                { id: 13, badge: '소송 관련 서류', title: '상고장', date: '2024. 01. 27', views: 654, description: '상고장 작성 양식' },
-            ];
 
-            const cardsPerPage = 6;
+            $(document).ready(function() {
+
+                $.ajax({
+                    url: '/api/test/login',
+                    type: 'POST',
+                    success: function() {
+                        console.log('테스트 세션 생성됨');
+                    }
+                });
+
+                loadDocuments(1, null, null);
+                loadRanking();
+                updateCartCount();
+            });
+
+            let allCards = [];
             let currentPage = 1;
-            const totalPages = Math.ceil(allCards.length / cardsPerPage);
+            const cardsPerPage = 6;
+            let totalPages = 1;
+            let selectedCategoryId = null;
+            let searchKeyword = '';
+            let searchTimer = null;
 
-            // 카테고리별 배지 색상 매핑
             function getBadgeClass(badge) {
                 const badgeColorMap = {
-                    '계약 관련 서류': 'bg-primary',
-                    '소송 관련 서류': 'bg-success',
-                    '고소/고발 서류': 'bg-danger',
-                    '이혼절차': 'bg-warning',
+                    '부동산': 'bg-primary',
+                    '민사': 'bg-success',
+                    '형사': 'bg-danger',
+                    '이혼/가족': 'bg-warning',
+                    '노동': 'bg-info',
                     '기타': 'bg-secondary'
                 };
-                return badgeColorMap[badge] || 'bg-primary'; // 기본값은 bg-primary
+                return badgeColorMap[badge] || 'bg-primary';
             }
 
-            function renderCards(page) {
+            function loadDocuments(page, categoryId, keyword) {
+                let url = '/api/documents?page=' + page + '&size=' + cardsPerPage;
+                if (categoryId) url += '&categoryId=' + categoryId;
+                if (keyword) url += '&keyword=' + encodeURIComponent(keyword);
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(data) {
+                        allCards = data.documents;
+                        totalPages = data.totalPages;
+                        currentPage = data.currentPage;
+                        renderCards();
+                        renderPagination();
+                    }
+                });
+            }
+
+            function renderCards() {
                 const cardGrid = document.getElementById('cardGrid');
                 cardGrid.innerHTML = '';
 
-                const startIndex = (page - 1) * cardsPerPage;
-                const endIndex = startIndex + cardsPerPage;
-                const cardsToShow = allCards.slice(startIndex, endIndex);
+                if (allCards.length === 0) {
+                    cardGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 60px; color: #94a3b8;">검색 결과가 없습니다.</div>';
+                    return;
+                }
 
-                cardsToShow.forEach(card => {
-                    const cardElement = document.createElement('a');
-                    cardElement.href = 'detail.html?id=' + card.id;
+                allCards.forEach(function(card) {
+                    const cardElement = document.createElement('div');
                     cardElement.className = 'card';
+                    cardElement.style.cursor = 'pointer';
 
-                    // 배지
-                    const cardBadge = document.createElement('span');
-                    cardBadge.className = 'badge ' + getBadgeClass(card.badge);
-                    cardBadge.textContent = card.badge;
-
-                    // 제목
-                    const cardTitle = document.createElement('h3');
-                    cardTitle.className = 'card-title';
-                    cardTitle.textContent = card.title;
-
-                    // 정보
-                    const cardInfo = document.createElement('div');
-                    cardInfo.className = 'card-info';
-                    cardInfo.innerHTML = '등록: ' + card.date + ' | (조회수) ' + card.views + '회<br>' + card.description;
-
-                    // 다운로드 버튼
-                    const cardButton = document.createElement('button');
-                    cardButton.className = 'card-button';
-                    cardButton.textContent = '다운로드';
-                    cardButton.onclick = function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        downloadFile(card.id);
+                    cardElement.onclick = function() {
+                        addToCart(card.id);
                     };
 
-                    cardElement.appendChild(cardBadge);
-                    cardElement.appendChild(cardTitle);
-                    cardElement.appendChild(cardInfo);
-                    cardElement.appendChild(cardButton);
+                    const categoryName = card.categoryName || '기타';
+
+                    cardElement.innerHTML =
+                        '<span class="badge ' + getBadgeClass(categoryName) + '">' + categoryName + '</span>' +
+                        '<h3 class="card-title">' + card.title + '</h3>' +
+                        '<div class="card-info">' + (card.description || '') + '</div>' +
+                        '<button class="card-button" onclick="event.stopPropagation(); downloadFile(' + card.id + ')" ' +
+                        'style="background: #3b82f6;">📥 바로 다운로드</button>';
 
                     cardGrid.appendChild(cardElement);
                 });
@@ -383,59 +412,211 @@
             function renderPagination() {
                 const pagination = document.getElementById('pagination');
                 pagination.innerHTML = '';
+                if (totalPages <= 1) return;
 
-                const prevBtn = document.createElement('button');
-                prevBtn.className = 'pagination-btn';
-                prevBtn.innerHTML = '&lt;';
-                prevBtn.disabled = currentPage === 1;
-                prevBtn.onclick = function() {
-                    goToPage(currentPage - 1);
-                };
-                pagination.appendChild(prevBtn);
+                const pageGroupSize = 5;
+                const currentGroup = Math.floor((currentPage - 1) / pageGroupSize);
+                const startPage = currentGroup * pageGroupSize + 1;
+                const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.className = 'pagination-btn';
-                    if (i === currentPage) {
-                        pageBtn.className += ' active';
-                    }
-                    pageBtn.textContent = i;
-                    pageBtn.onclick = (function(pageNum) {
-                        return function() {
-                            goToPage(pageNum);
-                        };
-                    })(i);
-                    pagination.appendChild(pageBtn);
+                if (currentGroup > 0) {
+                    addPagBtn(pagination, '&laquo;', function() { loadDocuments(1, selectedCategoryId, searchKeyword); });
+                    addPagBtn(pagination, '&lt;', function() { loadDocuments(startPage - 1, selectedCategoryId, searchKeyword); });
                 }
 
-                // 다음 버튼
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'pagination-btn';
-                nextBtn.innerHTML = '&gt;';
-                nextBtn.disabled = currentPage === totalPages;
-                nextBtn.onclick = function() {
-                    goToPage(currentPage + 1);
-                };
-                pagination.appendChild(nextBtn);
+                for (let i = startPage; i <= endPage; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+                    btn.textContent = i;
+                    btn.onclick = (function(p) { return function() { loadDocuments(p, selectedCategoryId, searchKeyword); }; })(i);
+                    pagination.appendChild(btn);
+                }
+
+                if (endPage < totalPages) {
+                    addPagBtn(pagination, '&gt;', function() { loadDocuments(endPage + 1, selectedCategoryId, searchKeyword); });
+                    addPagBtn(pagination, '&raquo;', function() { loadDocuments(totalPages, selectedCategoryId, searchKeyword); });
+                }
             }
 
-            function goToPage(page) {
-                if (page < 1 || page > totalPages) return;
-
-                currentPage = page;
-                renderCards(currentPage);
-                renderPagination();
-
+            function addPagBtn(parent, html, onclick) {
+                const btn = document.createElement('button');
+                btn.className = 'pagination-btn';
+                btn.innerHTML = html;
+                btn.onclick = onclick;
+                parent.appendChild(btn);
             }
 
             function downloadFile(id) {
-                console.log('다운로드:', id);
-                alert('파일 ' + id + ' 다운로드');
-
+                window.location.href = '/docs/download/' + id;
             }
 
-            renderCards(currentPage);
-            renderPagination();
+            function showAutocomplete(keyword) {
+                removeAutocomplete();
+                if (!keyword || keyword.length < 1) return;
+
+                $.ajax({
+                    url: '/api/documents?page=1&size=100',
+                    type: 'GET',
+                    success: function(data) {
+                        const kw = keyword.toLowerCase();
+                        const matched = data.documents.filter(d => d.title.toLowerCase().includes(kw)).slice(0, 8);
+
+                        if (matched.length === 0) return;
+
+                        const box = document.createElement('div');
+                        box.className = 'search-autocomplete';
+                        box.id = 'autocompleteBox';
+
+                        matched.forEach(function(doc) {
+                            const item = document.createElement('div');
+                            item.className = 'search-autocomplete-item';
+                            item.innerHTML =
+                                '<span class="badge ' + getBadgeClass(doc.categoryName) + '" style="font-size:11px;">' + (doc.categoryName || '') + '</span>' +
+                                '<span>' + doc.title + '</span>';
+                            item.onclick = function() {
+                                $('#searchInput').val(doc.title);
+                                searchKeyword = doc.title;
+                                removeAutocomplete();
+                                loadDocuments(1, selectedCategoryId, searchKeyword);
+                            };
+                            box.appendChild(item);
+                        });
+
+                        const searchBar = document.querySelector('.search-bar');
+                        searchBar.style.position = 'relative';
+                        box.style.top = searchBar.offsetHeight + 'px';
+                        box.style.left = '0';
+                        box.style.right = '0';
+                        searchBar.appendChild(box);
+                    }
+                });
+            }
+
+            function removeAutocomplete() {
+                const existing = document.getElementById('autocompleteBox');
+                if (existing) existing.remove();
+            }
+
+            $(document).ready(function() {
+                loadDocuments(1, null, null);
+                loadRanking();
+
+                $('.dropdown-item').on('click', function(e) {
+                    e.preventDefault();
+                    const categoryName = $(this).text();
+
+                    if (categoryName === '전체') {
+                        selectedCategoryId = null;
+                        $('#categoryDropdown').text('카테고리');
+                        loadDocuments(1, null, searchKeyword);
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/api/documents?page=1&size=1',
+                        type: 'GET',
+                        success: function(data) {
+                            const category = data.categories.find(c => c.name === categoryName);
+                            if (category) {
+                                selectedCategoryId = category.id;
+                                $('#categoryDropdown').text(categoryName);
+                                loadDocuments(1, selectedCategoryId, searchKeyword);
+                            }
+                        }
+                    });
+                });
+
+                $('#searchInput').on('input', function() {
+                    const keyword = $(this).val().trim();
+                    clearTimeout(searchTimer);
+                    if (keyword.length === 0) {
+                        removeAutocomplete();
+                        searchKeyword = '';
+                        loadDocuments(1, selectedCategoryId, null);
+                        return;
+                    }
+                    searchTimer = setTimeout(function() {
+                        showAutocomplete(keyword);
+                    }, 200);
+                });
+
+                $('#searchInput').on('keydown', function(e) {
+                    if (e.keyCode === 13) {
+                        searchKeyword = $(this).val().trim();
+                        removeAutocomplete();
+                        loadDocuments(1, selectedCategoryId, searchKeyword);
+                        if (searchKeyword) {
+                            $.ajax({ url: "/api/search/log", type: "POST", data: { query: searchKeyword } });
+                        }
+                    }
+                });
+
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('.search-bar').length) {
+                        removeAutocomplete();
+                    }
+                });
+            });
+
+            function loadRanking() {
+                $.ajax({
+                    url: "/api/ranking",
+                    type: "GET",
+                    success: function(data) {
+                        $("#rank-container").empty();
+                        const colors = ['primary', 'secondary', 'info', 'danger', 'success', 'warning'];
+                        if (!data || data.length === 0) return;
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i] == null || i >= 6) break;
+                            let color = colors[i % colors.length];
+                            $("#rank-container").append(
+                                '<a href="#" class="btn btn-outline-' + color + ' rounded-pill px-4 py-2"># ' + data[i] + '</a>'
+                            );
+                        }
+                    }
+                });
+            }
+
+            function addToCart(documentId) {
+                $.ajax({
+                    url: '/api/cart/add',
+                    type: 'POST',
+                    data: { documentId: documentId },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('📁 내 서류함에 담았습니다!');
+                            updateCartCount();
+                        } else {
+                            if (response.message.includes('로그인')) {
+                                if (confirm(response.message + '\n로그인 페이지로 이동하시겠습니까?')) {
+                                    location.href = '/login';
+                                }
+                            } else {
+                                alert('⚠️ ' + response.message);
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateCartCount() {
+                $.ajax({
+                    url: '/api/cart/count',
+                    type: 'GET',
+                    success: function(response) {
+                        const count = response.count || 0;
+                        if (count > 0) {
+                            $('#cartCount').text(count).show();
+                        } else {
+                            $('#cartCount').hide();
+                        }
+                    }
+                });
+            }
+
+            $(document).ready(function() {
+                updateCartCount();
+            });
         </script>
     </section>
 

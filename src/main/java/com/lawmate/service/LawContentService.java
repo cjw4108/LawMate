@@ -15,4 +15,14 @@ public class LawContentService {
     public List<LawContentDto> getContentsByCategory(int categoryId) {
         return dao.getContentsByCategory(categoryId);
     }
+
+    // 법률정보 상세 조회
+    public LawContentDto getContentById(int contentId) {
+        return dao.getContentById(contentId);
+    }
+
+    // 조회수 증가
+    public void increaseViewCount(int contentId) {
+        dao.increaseViewCount(contentId);
+    }
 }
