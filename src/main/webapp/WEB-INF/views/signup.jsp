@@ -3,14 +3,48 @@
 <html lang="ko">
 <head>
     <jsp:include page="/WEB-INF/views/common/header.jsp" />
+
+    <style>
+        .login-wrapper {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 35px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .login-title {
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        .login-links {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+        }
+        .login-links a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
 <main class="main">
     <section class="section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-5">
+        <div class="container login-wrapper">
+            <div class="login-card">
+
 
                     <h2 class="text-center mb-4">회원가입</h2>
 
@@ -34,7 +68,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">비밀번호 확인 *</label>
-                            <input type="text" name="name" class="form-control" required>
+                            <input type="password" name="passwordConfirm" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
