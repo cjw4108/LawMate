@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <jsp:include page="/WEB-INF/views/common/header.jsp" />
     <meta charset="UTF-8">
     <title>일반 회원 마이페이지</title>
 
@@ -80,5 +81,6 @@
     </div>
 
 </div>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 </body>
 </html>

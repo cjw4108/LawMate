@@ -4,20 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="12345">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserController.java" afterDir="false" />
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="우선 안에 내용데이터는 완료(연동은 지금 하는중)">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f6a1ad05-baa3-4955-8a68-0856f4d6714e.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__11___5_30__________.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__11__오후_5_30,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12___3_05__________.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12___3_09__________.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12__오후_3_05,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12__오후_3_09,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/LoginController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/lawyer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/lawyer.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/login.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/signup.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/signup.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/adminHeader.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/mypage.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -218,7 +215,8 @@
       <workItem from="1770701920685" duration="2226000" />
       <workItem from="1770940660918" duration="20242000" />
       <workItem from="1771453956286" duration="3778000" />
-      <workItem from="1771460485821" duration="5237000" />
+      <workItem from="1771460485821" duration="6688000" />
+      <workItem from="1771488300557" duration="794000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -324,7 +322,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770964334188</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="우선 안에 내용데이터는 완료(연동은 지금 하는중)">
+      <option name="closed" value="true" />
+      <created>1771484488848</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1771484488848</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -349,6 +355,23 @@
     <MESSAGE value="회원가입 경로 정리 완료" />
     <MESSAGE value="변호사 권한 승인(우선 화면만)" />
     <MESSAGE value="12345" />
-    <option name="LAST_COMMIT_MESSAGE" value="12345" />
+    <MESSAGE value="우선 안에 내용데이터는 완료(연동은 지금 하는중)" />
+    <option name="LAST_COMMIT_MESSAGE" value="우선 안에 내용데이터는 완료(연동은 지금 하는중)" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java</url>
+          <line>9</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/index.jsp</url>
+          <line>60</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

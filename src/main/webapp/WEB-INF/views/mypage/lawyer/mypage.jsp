@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <jsp:include page="/WEB-INF/views/common/header.jsp" />
     <meta charset="UTF-8">
     <title>관리 · 변호사 자격 검증</title>
 
@@ -100,5 +101,6 @@
     </div>
 
 </div>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
 </body>
 </html>
