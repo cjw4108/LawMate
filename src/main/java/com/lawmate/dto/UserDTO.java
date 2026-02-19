@@ -1,54 +1,54 @@
 package com.lawmate.dto;
 
 public class UserDTO {
+
     private String userId;
     private String password;
-    private String name;
-    private String role; // ADMIN / LAWYER / USER
+    private String email;
+    private String role;           // USER / LAWYER / ADMIN
+    private String lawyerStatus;   // PENDING / APPROVED / REJECTED
+    private String proofFilePath;  // 변호사 증빙 파일
 
-    // 기본 생성자
-    public UserDTO() {
-    }
+    public UserDTO() {}
 
-    // 생성자
-    public UserDTO(String userId, String password, String name, String role) {
+    public UserDTO(String userId, String password, String email, String role) {
         this.userId = userId;
         this.password = password;
-        this.name = name;
+        this.email = email;
         this.role = role;
+
+        if ("LAWYER".equals(role)) {
+            this.lawyerStatus = "PENDING";
+        } else {
+            this.lawyerStatus = "NONE";
+        }
     }
 
-    // getter / setter
-    public String getUserId() {
-        return userId;
-    }
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public String getName() {
-        return name;
-    }
+    public String getLawyerStatus() { return lawyerStatus; }
+    public void setLawyerStatus(String lawyerStatus) { this.lawyerStatus = lawyerStatus; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getProofFilePath() { return proofFilePath; }
+    public void setProofFilePath(String proofFilePath) { this.proofFilePath = proofFilePath; }
 
-    public String getRole() {
-        return role;
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "userId='" + userId + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", lawyerStatus='" + lawyerStatus + '\'' +
+                '}';
     }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
 }

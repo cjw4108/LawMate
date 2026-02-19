@@ -47,18 +47,30 @@
 
                 <h2 class="login-title">로그인</h2>
 
-                <form action="${pageContext.request.contextPath}/login" method="get">
+                <%-- 로그인 실패 메시지 --%>
+                <% if (request.getAttribute("error") != null) { %>
+                <div class="alert alert-danger text-center">
+                    <%= request.getAttribute("error") %>
+                </div>
+                <% } %>
+
+                <!-- 🔴 GET → POST 로 수정 -->
+                <form action="${pageContext.request.contextPath}/login" method="post">
                     <div class="mb-3">
                         <label class="form-label">아이디 *</label>
-                        <input type="text" name="userId" class="form-control" placeholder="아이디 입력" required>
+                        <input type="text" name="userId" class="form-control"
+                               placeholder="아이디 입력" required>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label">비밀번호 *</label>
-                        <input type="password" name="password" class="form-control" placeholder="비밀번호 입력" required>
+                        <input type="password" name="password" class="form-control"
+                               placeholder="비밀번호 입력" required>
                     </div>
 
-                    <button type="submit" class="btn btn-secondary w-100">로그인</button>
+                    <button type="submit" class="btn btn-secondary w-100">
+                        로그인
+                    </button>
                 </form>
 
                 <div class="login-links">
@@ -68,7 +80,9 @@
                     </div>
                     <div class="mt-1">
                         변호사이신가요?
-                        <a href="${pageContext.request.contextPath}/lawyer">변호사 회원가입</a>
+                        <a href="${pageContext.request.contextPath}/lawyer">
+                            변호사 회원가입
+                        </a>
                     </div>
                 </div>
 
