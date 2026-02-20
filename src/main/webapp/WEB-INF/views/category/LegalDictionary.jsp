@@ -192,18 +192,7 @@
                                                     ${t.description}
                                             </p>
 
-                                            <div style="position:absolute; bottom:10px; right:10px; display:flex; gap:8px;">
-                                                <div class="service-card shadow-sm"
-                                                     style="border:1px solid skyblue; padding:6px 14px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
-                                                     onclick="location.href='/legal-dictionary/statute?id=${t.id}'">
-                                                    <h6 style="font-size:0.75rem; margin:0;">법조문 보기</h6>
-                                                </div>
-                                                <div class="service-card shadow-sm"
-                                                     style="border:1px solid skyblue; padding:6px 14px; cursor:pointer; display:flex; align-items:center; justify-content:center;"
-                                                     onclick="location.href='/legal-dictionary/precedent?id=${t.id}'">
-                                                    <h6 style="font-size:0.75rem; margin:0;">판례 검색</h6>
-                                                </div>
-                                            </div>
+
 
                                         </div>
                                     </div>
