@@ -35,8 +35,8 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 offset-lg-1">
                     <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
-                        <h1 class="mb-4"><span class="accent-text">서류 양식</span></h1>
-                        <div class="company-badge mb-4"><i class="bi bi-gear-fill me-2"></i>법정 제출에 필요한 서류 양식을 작성하고 다운로드할 수 있습니다.</div>
+                        <h2 class="display-5 fw-bold mb-4" style="color: #2d465e;">서류 양식</h2>
+                        <div class="company-badge mb-4"><i class="bi bi-gear-fill me-2"></i>법정 제출에 필요한 서류 양식을 조회하고 다운로드할 수 있습니다.</div>
                     </div>
                 </div>
 
@@ -93,56 +93,6 @@
     </section>
 
     <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0;">
-        <div class="container">
-                <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 바로 작성하기</h3>
-
-            <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/complaint" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <i class="bi bi-file-text" style="font-size: 1.8rem; color: white;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">소장</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">민사소송 소장 작성</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/written-preparation" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: white;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">준비서면</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">소송 준비서면 작성</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/accusation" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                            <i class="bi bi-shield-exclamation" style="font-size: 1.8rem; color: white;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">고소장</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">형사 고소장 작성</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/content-certification" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                            <i class="bi bi-envelope-check" style="font-size: 1.8rem; color: white;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">내용증명</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">내용증명 우편 작성</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
             <style>
                 .quick-form-card {
                     display: block;
@@ -342,7 +292,7 @@
 
             let allCards = [];
             let currentPage = 1;
-            const cardsPerPage = 6;
+            const cardsPerPage = 9;
             let totalPages = 1;
             let selectedCategoryId = null;
             let searchKeyword = '';
