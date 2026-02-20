@@ -25,4 +25,8 @@ public class LawContentService {
     public void increaseViewCount(int contentId) {
         dao.increaseViewCount(contentId);
     }
+
+    public List<LawContentDTO> getTopByViewCount(int limit) {
+        return dao.getTopByViewCount(limit);
+    }
 }
