@@ -24,7 +24,7 @@
                 <li style="margin-right: 20px;"><a href="/category" class="nav-link text-dark">가이드</a></li>
                 <li style="margin-right: 20px;"><a href="/qna/list" class="nav-link text-dark">Q&A</a></li>
                 <li style="margin-right: 20px;"><a href="/consult/consultList" class="nav-link text-dark">상담신청</a></li>
-                <li style="margin-right: 20px;"><a href="/docs" class="nav-link text-dark">서류양식 다운로드</a></li>
+                <li style="margin-right: 20px;"><a href="/docs" class="nav-link text-dark">서류양식</a></li>
                 <li style="margin-right: 20px;"><a href="/home#" class="nav-link text-dark">AI 상담</a></li>
 
                 <!-- 우측 메뉴: 서류함, 로그인/마이페이지 -->

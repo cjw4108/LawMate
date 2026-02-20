@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/consult")
@@ -34,4 +35,10 @@ public class ConsultController {
         return "consult\\consultInsert";
     }
 
+    @GetMapping("consultDetail")
+    public String consultDetail(@RequestParam("id") int id, Model d) {
+        d.addAttribute("consult", service.getConsult(id));
+        System.out.println(d.getAttribute("consult"));
+        return "consult\\consultDetail";
+    }
 }

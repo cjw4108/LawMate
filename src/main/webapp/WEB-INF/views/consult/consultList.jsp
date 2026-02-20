@@ -11,8 +11,8 @@
             location.href="consultInsert"
         })
     });
-    function goDetail(groupNo){
-        //alert(groupNo)
+    function goDetail(id){
+        //alert(id)
         location.href="consultDetail?id="+id
     }
 </script>

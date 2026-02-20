@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,7 +15,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-7">
                     <div class="search-wrapper bg-white shadow-sm rounded-pill p-2 d-flex border">
-                        <input type="text" class="form-control border-0 px-4" placeholder="사건 키워드, 변호사, 법률 문서를 검색해보세요." style="background: transparent; box-shadow: none;">
+                        <input type="text" class="form-control border-0 px-4" placeholder="사건 키워드, 법률 문서를 검색해보세요.(2차 - AI기능 추가)" style="background: transparent; box-shadow: none;">
                         <button class="btn btn-primary rounded-pill px-4"><i class="bi bi-search"></i></button>
                     </div>
                 </div>
@@ -52,17 +53,31 @@
     <section class="py-5 bg-white border-top">
         <div class="container" data-aos="fade-up">
             <div class="row g-5">
+                <%-- ── 인기 콘텐츠 (DB 연동) ── --%>
                 <div class="col-lg-6">
                     <h4 class="fw-bold mb-4">인기 콘텐츠 <i class="bi bi-fire text-danger"></i></h4>
                     <div class="list-group list-group-flush border-top">
-                        <a href="#" class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
-                            <span>이혼 시 재산분할 비율은 어떻게 결정되나요?</span>
-                            <span class="badge bg-light text-dark rounded-pill border">조회 1.2k</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
-                            <span>상가 임대차 계약 갱신 요구권 가이드</span>
-                            <span class="badge bg-light text-dark rounded-pill border">조회 980</span>
-                        </a>
+                        <c:choose>
+                            <c:when test="${not empty popularList}">
+                                <c:forEach items="${popularList}" var="item" varStatus="st">
+                                    <a href="/content/${item.contentId}"
+                                       class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <span class="text-muted me-2" style="font-size:12px;">${st.index + 1}.</span>
+                                            ${item.title}
+                                        </span>
+                                        <span class="badge bg-light text-dark rounded-pill border flex-shrink-0 ms-2">
+                                            조회 ${item.viewCount}
+                                        </span>
+                                    </a>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="list-group-item py-3 text-muted text-center">
+                                    등록된 콘텐츠가 없습니다.
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
                 <div class="col-lg-6">

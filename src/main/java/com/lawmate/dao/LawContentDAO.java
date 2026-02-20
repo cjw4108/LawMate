@@ -4,6 +4,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Param;
 import com.lawmate.dto.LawContentDTO;
 
 @Mapper
@@ -54,4 +55,17 @@ public interface LawContentDAO {
         WHERE content_id = #{contentId}
     """)
     void increaseViewCount(int contentId);
+
+    @Select("""
+        SELECT
+            content_id,
+            category_id,
+            title,
+            summary,
+            view_count
+        FROM LAW_CONTENT
+        ORDER BY view_count DESC
+        FETCH FIRST #{limit} ROWS ONLY
+    """)
+    List<LawContentDTO> getTopByViewCount(@Param("limit") int limit);
 }
