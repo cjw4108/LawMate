@@ -2,16 +2,9 @@ package com.lawmate.controller;
 
 import com.lawmate.dto.UserDTO;
 import com.lawmate.service.UserService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -47,67 +40,44 @@ public class UserController {
     }
 
     /* ================= 일반 회원가입 ================= */
-    @PostMapping("/signup")
-    public String signup(
-            @RequestParam String userId,
-            @RequestParam String password,
-            @RequestParam String passwordConfirm,
-            @RequestParam String email,
-            Model model
-    ) {
-        if (!password.equals(passwordConfirm)) {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다");
-            return "signup";
+    @Controller
+    @RequestMapping("/user")
+    @RequiredArgsConstructor
+    public class UserController {
+
+        private final UserService userService;
+
+        @GetMapping("/signup")
+        public String signupForm() {
+            return "user/userSignup";
         }
 
-        UserDTO user = new UserDTO(userId, password, email, "USER");
-
-        if (!userService.register(user)) {
-            model.addAttribute("error", "이미 존재하는 아이디입니다");
-            return "signup";
+        @PostMapping("/signup")
+        public String signup(UserDTO user) {
+            user.setRole("USER");
+            userService.signup(user);
+            return "redirect:/login";
         }
-
-        return "redirect:/login";
     }
 
     /* ================= 변호사 회원가입 ================= */
-    @PostMapping("/lawyer/signup")
-    public String lawyerSignup(
-            @RequestParam String userId,
-            @RequestParam String password,
-            @RequestParam String passwordConfirm,
-            @RequestParam String email,
-            @RequestParam("proofFile") MultipartFile proofFile,
-            Model model
-    ) throws IOException {
+    @Controller
+    @RequestMapping("/lawyer")
+    @RequiredArgsConstructor
+    public class LawyerController {
 
-        if (!password.equals(passwordConfirm)) {
-            model.addAttribute("error", "비밀번호가 일치하지 않습니다");
-            return "lawyerSignup";
+        private final UserService userService;
+
+        @GetMapping("/signup")
+        public String signupForm() {
+            return "lawyer/lawyerSignup";
         }
 
-        if (proofFile.isEmpty()) {
-            model.addAttribute("error", "자격 증빙 파일은 필수입니다");
-            return "lawyerSignup";
+        @PostMapping("/signup")
+        public String signup(UserDTO user) {
+            user.setRole("LAWYER");
+            user.setLawyerStatus("PENDING");
+            userService.signup(user);
+            return "redirect:/login";
         }
-
-        String uploadDir = "C:/upload/lawyer/";
-        File dir = new File(uploadDir);
-        if (!dir.exists()) dir.mkdirs();
-
-        String fileName = UUID.randomUUID() + "_" + proofFile.getOriginalFilename();
-        File saveFile = new File(uploadDir + fileName);
-        proofFile.transferTo(saveFile);
-
-        UserDTO lawyer = new UserDTO(userId, password, email, "LAWYER");
-        lawyer.setLawyerStatus("PENDING");
-        lawyer.setProofFilePath(saveFile.getAbsolutePath());
-
-        if (!userService.register(lawyer)) {
-            model.addAttribute("error", "이미 존재하는 아이디입니다");
-            return "lawyerSignup";
-        }
-
-        return "redirect:/login";
     }
-}

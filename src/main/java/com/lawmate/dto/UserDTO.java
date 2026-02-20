@@ -5,25 +5,13 @@ public class UserDTO {
     private String userId;
     private String password;
     private String email;
-    private String role;           // USER / LAWYER / ADMIN
-    private String lawyerStatus;   // PENDING / APPROVED / REJECTED
-    private String proofFilePath;  // 변호사 증빙 파일
+    private String role; // USER / LAWYER / ADMIN
 
-    public UserDTO() {}
+    // 변호사용
+    private String lawyerStatus; // PENDING / APPROVED / REJECTED
+    private String licenseFile;
 
-    public UserDTO(String userId, String password, String email, String role) {
-        this.userId = userId;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-
-        if ("LAWYER".equals(role)) {
-            this.lawyerStatus = "PENDING";
-        } else {
-            this.lawyerStatus = "NONE";
-        }
-    }
-
+    // getter / setter
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
 
@@ -39,16 +27,6 @@ public class UserDTO {
     public String getLawyerStatus() { return lawyerStatus; }
     public void setLawyerStatus(String lawyerStatus) { this.lawyerStatus = lawyerStatus; }
 
-    public String getProofFilePath() { return proofFilePath; }
-    public void setProofFilePath(String proofFilePath) { this.proofFilePath = proofFilePath; }
-
-    @Override
-    public String toString() {
-        return "UserDTO{" +
-                "userId='" + userId + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", lawyerStatus='" + lawyerStatus + '\'' +
-                '}';
-    }
+    public String getLicenseFile() { return licenseFile; }
+    public void setLicenseFile(String licenseFile) { this.licenseFile = licenseFile; }
 }

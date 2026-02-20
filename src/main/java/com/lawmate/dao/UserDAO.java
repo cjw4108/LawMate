@@ -9,25 +9,18 @@ import java.util.List;
 @Repository
 public class UserDAO {
 
-    // 임시 메모리 저장소 (나중에 DB로 교체)
     private final List<UserDTO> users = new ArrayList<>();
 
     public UserDAO() {
-        // 관리자
-        UserDTO admin = new UserDTO("admin", "1234", "admin@lawmate.com", "ADMIN");
+        // 관리자 계정
+        UserDTO admin = new UserDTO();
+        admin.setUserId("admin");
+        admin.setPassword("1234");
+        admin.setRole("ADMIN");
         users.add(admin);
-
-        // 승인된 변호사
-        UserDTO lawyer = new UserDTO("lawyer01", "1234", "lawyer@lawmate.com", "LAWYER");
-        lawyer.setLawyerStatus("APPROVED");
-        users.add(lawyer);
-
-        // 일반 회원
-        UserDTO user = new UserDTO("user01", "1234", "user@lawmate.com", "USER");
-        users.add(user);
     }
 
-    /* ================= 로그인 ================= */
+    /* 로그인 */
     public UserDTO login(String userId, String password) {
         for (UserDTO user : users) {
             if (user.getUserId().equals(userId)
@@ -38,7 +31,7 @@ public class UserDAO {
         return null;
     }
 
-    /* ================= 회원가입 ================= */
+    /* 회원가입 */
     public boolean save(UserDTO user) {
         if (existsByUserId(user.getUserId())) {
             return false;
@@ -47,13 +40,21 @@ public class UserDAO {
         return true;
     }
 
-    /* ================= 아이디 중복 체크 ================= */
+    /* 아이디 중복 체크 */
     public boolean existsByUserId(String userId) {
+        return users.stream()
+                .anyMatch(u -> u.getUserId().equals(userId));
+    }
+
+    /* 관리자 – 승인 대기 변호사 조회 */
+    public List<UserDTO> findPendingLawyers() {
+        List<UserDTO> result = new ArrayList<>();
         for (UserDTO user : users) {
-            if (user.getUserId().equals(userId)) {
-                return true;
+            if ("LAWYER".equals(user.getRole())
+                    && "PENDING".equals(user.getLawyerStatus())) {
+                result.add(user);
             }
         }
-        return false;
+        return result;
     }
 }

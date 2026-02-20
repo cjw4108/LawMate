@@ -5,16 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="우선 안에 내용데이터는 완료(연동은 지금 하는중)">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12___3_05__________.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12___3_09__________.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12__오후_3_05,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/26__2__12__오후_3_09,_업데이트_전에_커밋되지_않은_변경_내용_[변경]/shelved.patch" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminLawyerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/AdminLawyerDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/adminDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/LawyerApprovalDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/adminDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminLawyerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/AdminMapper.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/AdminServiceI.mpl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/adminLogin.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/adminHeader.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/mypage.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/UserDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/adminApprove.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/approve.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/profile.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/profile.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,7 +225,9 @@
       <workItem from="1770940660918" duration="20242000" />
       <workItem from="1771453956286" duration="3778000" />
       <workItem from="1771460485821" duration="6688000" />
-      <workItem from="1771488300557" duration="794000" />
+      <workItem from="1771488300557" duration="1487000" />
+      <workItem from="1771545187256" duration="4818000" />
+      <workItem from="1771565153503" duration="10477000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -330,7 +341,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771484488848</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="우선 안에 내용데이터는 완료(연동은 지금 하는중)">
+      <option name="closed" value="true" />
+      <created>1771489105880</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1771489105880</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -363,7 +382,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java</url>
-          <line>9</line>
+          <line>21</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

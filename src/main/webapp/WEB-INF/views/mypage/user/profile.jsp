@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>자격 검증</title>
+    <title>회원 기본 정보</title>
 
     <style>
         body {
@@ -79,11 +79,11 @@
 <body>
 
 <div class="container">
-    <h1>자격 검증 신청</h1>
+    <h1>회원 기본 정보</h1>
 
     <!-- 현재 상태 -->
     <div class="row">
-        <span class="label">현재 상태</span>
+        <span class="label">아이디</span>
         <span class="status">승인 대기</span>
     </div>
 
