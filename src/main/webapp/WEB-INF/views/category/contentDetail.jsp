@@ -32,6 +32,10 @@
         white-space: pre-wrap;
         text-indent: 0;
     }
+
+    [id^="section"] {
+        scroll-margin-top: 80px; /* 헤더 70px + 여유 10px */
+    }
 </style>
 
 <main class="main">
