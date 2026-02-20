@@ -26,4 +26,9 @@ public class ConsultService {
 
         return dao.insertConsult(ins)>0?"등록성공":"등록되지 않았습니다";
     }
+
+    public ConsultDto getConsult(int id) {
+
+        return dao.getConsult(id);
+    }
 }
