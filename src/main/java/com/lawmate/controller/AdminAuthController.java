@@ -25,7 +25,7 @@ public class AdminAuthController {
     public String adminLogin(adminDTO adminDTO,
                              HttpSession session) {
 
-        adminDTO loginAdmin = adminService.login(adminDTO);
+        adminDTO loginAdmin = adminService. login(adminDTO);
 
         if (loginAdmin == null) {
             session.setAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
