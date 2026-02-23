@@ -8,32 +8,27 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/admin/lawyer")
 public class AdminLawyerController {
-
     private final AdminLawyerService adminLawyerService;
 
     public AdminLawyerController(AdminLawyerService adminLawyerService) {
         this.adminLawyerService = adminLawyerService;
     }
 
-    /* 변호사 승인관리 화면 */
     @GetMapping("/approval")
     public String approvalPage(Model model) {
-        model.addAttribute("lawyers",
-                adminLawyerService.getPendingLawyers());
+        model.addAttribute("lawyers", adminLawyerService.getPendingLawyers());
         return "admin/lawyerApproval";
     }
 
-    /* 승인 */
     @PostMapping("/approve")
     public String approve(@RequestParam String lawyerId) {
-        adminLawyerService.approveLawyer(lawyerId);
+        adminLawyerService.updateLawyerStatus(lawyerId, "APPROVED");
         return "redirect:/admin/lawyer/approval";
     }
 
-    /* 반려 */
     @PostMapping("/reject")
     public String reject(@RequestParam String lawyerId) {
-        adminLawyerService.rejectLawyer(lawyerId);
+        adminLawyerService.updateLawyerStatus(lawyerId, "REJECTED");
         return "redirect:/admin/lawyer/approval";
     }
 }

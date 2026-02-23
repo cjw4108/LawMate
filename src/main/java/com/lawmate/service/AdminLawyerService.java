@@ -26,4 +26,7 @@ public class AdminLawyerService {
     public void rejectLawyer(String lawyerId) {
         adminLawyerDAO.reject(lawyerId);
     }
+
+    public void updateLawyerStatus(String lawyerId, String approved) {
+    }
 }

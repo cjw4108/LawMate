@@ -44,6 +44,7 @@
                      #{licenseFile, jdbcType=VARCHAR}
                  )
     </insert>
+
     <select id="findPendingLawyers" resultType="com.lawmate.dto.UserDTO">
         SELECT
             user_id        AS userId,
@@ -56,5 +57,11 @@
         WHERE role = 'LAWYER'
           AND lawyer_status = 'PENDING'
     </select>
+
+    <update id="updateLawyerStatus">
+        UPDATE users
+        SET lawyer_status = #{status}
+        WHERE user_id = #{userId}
+    </update>
 
 </mapper>
