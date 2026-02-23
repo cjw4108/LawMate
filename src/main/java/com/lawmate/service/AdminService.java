@@ -13,6 +13,10 @@ public class AdminService {
         this.adminDAO = adminDAO;
     }
 
+    public static adminDTO login(adminDTO adminDTO) {
+        return adminDTO;
+    }
+
     public adminDTO login(String adminId, String adminPw) {
         return adminDAO.login(adminId, adminPw);
     }
