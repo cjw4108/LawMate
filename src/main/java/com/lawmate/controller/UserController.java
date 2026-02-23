@@ -20,8 +20,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/login")
-    public String loginForm() { return "login"; }
+    // [중요] /login GET 매핑은 UserPageController와 중복되므로 여기서 삭제하거나 주석 처리합니다.
+    // @GetMapping("/login")
+    // public String loginForm() { return "login"; }
 
     @GetMapping("/signup")
     public String signupForm() { return "signup"; }
@@ -45,8 +46,8 @@ public class UserController {
                 return "lawyer";
             }
         }
-        boolean result = userService.signup(user); // UserService의 signup 호출
-        if (result) return "redirect:/login";
+        boolean result = userService.signup(user);
+        if (result) return "redirect:/login"; // 가입 성공 시 로그인 페이지로
         model.addAttribute("error", "가입 실패: 중복된 아이디입니다.");
         return "LAWYER".equals(user.getRole()) ? "lawyer" : "signup";
     }
@@ -56,9 +57,10 @@ public class UserController {
     public String login(@RequestParam String userId, @RequestParam String password, HttpSession session, Model model) {
         UserDTO user = userService.login(userId, password);
         if (user != null) {
+            // 팀원들과 공유할 세션 키값: "loginUser"
             session.setAttribute("loginUser", user);
             session.setAttribute("role", user.getRole());
-            return "redirect:/home"; // HomeController가 관리하는 /home으로 이동
+            return "redirect:/home";
         }
         model.addAttribute("error", "로그인 정보가 틀렸습니다.");
         return "login";
