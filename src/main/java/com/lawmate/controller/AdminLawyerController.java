@@ -1,6 +1,6 @@
 package com.lawmate.controller;
 
-import com.lawmate.service.adminLawyerService;
+import com.lawmate.service.AdminLawyerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/lawyer")
 public class AdminLawyerController {
 
-    private final adminLawyerService adminLawyerService;
+    private final AdminLawyerService adminLawyerService;
 
-    public AdminLawyerController(adminLawyerService adminLawyerService) {
+    public AdminLawyerController(AdminLawyerService adminLawyerService) {
         this.adminLawyerService = adminLawyerService;
     }
 

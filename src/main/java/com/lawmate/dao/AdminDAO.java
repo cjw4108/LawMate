@@ -1,18 +1,18 @@
 package com.lawmate.dao;
 
-import com.lawmate.dto.adminDTO;
+import com.lawmate.dto.AdminDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class adminDAO {
+public class AdminDAO {
 
-    private final List<adminDTO> admins = new ArrayList<>();
+    private final List<AdminDTO> admins = new ArrayList<>();
 
-    public adminDAO() {
-        adminDTO admin = new adminDTO();
+    public AdminDAO() {
+        AdminDTO admin = new AdminDTO();
         admin.setAdminId("admin");
         admin.setAdminPw("1234");
         admin.setAdminName("관리자");
@@ -20,8 +20,8 @@ public class adminDAO {
         admins.add(admin);
     }
 
-    public adminDTO login(String adminId, String adminPw) {
-        for (adminDTO admin : admins) {
+    public AdminDTO login(String adminId, String adminPw) {
+        for (AdminDTO admin : admins) {
             if (admin.getAdminId().equals(adminId)
                     && admin.getAdminPw().equals(adminPw)) {
                 return admin;

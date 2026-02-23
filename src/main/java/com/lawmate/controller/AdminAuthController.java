@@ -1,6 +1,6 @@
 package com.lawmate.controller;
 
-import com.lawmate.dto.adminDTO;
+import com.lawmate.dto.AdminDTO;
 import com.lawmate.service.AdminService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ public class AdminAuthController {
 
     // 관리자 로그인 처리
     @PostMapping("/login")
-    public String adminLogin(adminDTO adminDTO,
+    public String adminLogin(AdminDTO adminDTO,
                              HttpSession session) {
 
-        adminDTO loginAdmin = com.lawmate.service.AdminService. login(adminDTO);
+        AdminDTO loginAdmin = com.lawmate.service.AdminService. login(adminDTO);
 
         if (loginAdmin == null) {
             session.setAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
