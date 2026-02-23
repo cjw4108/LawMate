@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class adminLawyerService {
+public class AdminLawyerService {
 
     private final AdminLawyerDAO adminLawyerDAO;
 
-    public adminLawyerService(AdminLawyerDAO adminLawyerDAO) {
+    public AdminLawyerService(AdminLawyerDAO adminLawyerDAO) {
         this.adminLawyerDAO = adminLawyerDAO;
     }
 

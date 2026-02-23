@@ -1,6 +1,6 @@
 package com.lawmate.dto;
 
-public class adminDTO {
+public class AdminDTO {
     private String adminId;
     private String adminPw;
     private String adminName;

@@ -1,23 +1,23 @@
 package com.lawmate.service;
 
-import com.lawmate.dao.adminDAO;
-import com.lawmate.dto.adminDTO;
+import com.lawmate.dao.AdminDAO;
+import com.lawmate.dto.AdminDTO;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AdminService {
 
-    private final adminDAO adminDAO;
+    private final AdminDAO AdminDAO;
 
-    public AdminService(adminDAO adminDAO) {
-        this.adminDAO = adminDAO;
+    public AdminService(AdminDAO adminDAO) {
+        this.AdminDAO = adminDAO;
     }
 
-    public static adminDTO login(adminDTO adminDTO) {
+    public static AdminDTO login(AdminDTO adminDTO) {
         return adminDTO;
     }
 
-    public adminDTO login(String adminId, String adminPw) {
-        return adminDAO.login(adminId, adminPw);
+    public AdminDTO login(String adminId, String adminPw) {
+        return AdminDAO.login(adminId, adminPw);
     }
 }

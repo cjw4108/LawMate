@@ -1,6 +1,6 @@
 package com.lawmate.controller;
 
-import com.lawmate.dto.adminDTO;
+import com.lawmate.dto.AdminDTO;
 import com.lawmate.dto.Question;
 import com.lawmate.service.AdminService;
 import com.lawmate.service.QuestionService;
@@ -21,30 +21,7 @@ public class AdminController {
     private final QuestionService questionService; // 서비스 연결
     private final AdminService adminService;
 
-    /* ================= 관리자 로그인 ================= */
 
-    @GetMapping("/login")
-    public String adminLoginForm() {
-        return "admin/adminLogin";
-    }
-
-    @PostMapping("/login")
-    public String adminLogin(
-            @RequestParam String adminId,
-            @RequestParam String adminPw,
-            HttpSession session,
-            Model model) {
-
-        adminDTO admin = adminService.login(adminId, adminPw);
-
-        if (admin == null) {
-            model.addAttribute("error", "관리자 아이디 또는 비밀번호가 올바르지 않습니다.");
-            return "admin/adminLogin";
-        }
-
-        session.setAttribute("loginAdmin", admin);
-        return "redirect:/admin/main";
-    }
     @GetMapping("/main")
     public String adminMain() {
         return "admin/adminMain";
