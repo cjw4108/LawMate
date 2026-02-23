@@ -1,6 +1,6 @@
 package com.lawmate.service;
 
-import com.lawmate.dao.adminLawyerDAO;
+import com.lawmate.dao.AdminLawyerDAO;
 import com.lawmate.dto.LawyerApprovalDTO;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +9,9 @@ import java.util.List;
 @Service
 public class adminLawyerService {
 
-    private final adminLawyerDAO adminLawyerDAO;
+    private final AdminLawyerDAO adminLawyerDAO;
 
-    public adminLawyerService(adminLawyerDAO adminLawyerDAO) {
+    public adminLawyerService(AdminLawyerDAO adminLawyerDAO) {
         this.adminLawyerDAO = adminLawyerDAO;
     }
 

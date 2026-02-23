@@ -2,15 +2,18 @@ package com.lawmate.controller;
 
 import com.lawmate.dto.UserDTO;
 import com.lawmate.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     /* ================= 로그인 ================= */
     @PostMapping("/login")
@@ -38,46 +41,4 @@ public class UserController {
 
         return "redirect:/main";
     }
-
-    /* ================= 일반 회원가입 ================= */
-    @Controller
-    @RequestMapping("/user")
-    @RequiredArgsConstructor
-    public class UserController {
-
-        private final UserService userService;
-
-        @GetMapping("/signup")
-        public String signupForm() {
-            return "user/userSignup";
-        }
-
-        @PostMapping("/signup")
-        public String signup(UserDTO user) {
-            user.setRole("USER");
-            userService.signup(user);
-            return "redirect:/login";
-        }
-    }
-
-    /* ================= 변호사 회원가입 ================= */
-    @Controller
-    @RequestMapping("/lawyer")
-    @RequiredArgsConstructor
-    public class LawyerController {
-
-        private final UserService userService;
-
-        @GetMapping("/signup")
-        public String signupForm() {
-            return "lawyer/lawyerSignup";
-        }
-
-        @PostMapping("/signup")
-        public String signup(UserDTO user) {
-            user.setRole("LAWYER");
-            user.setLawyerStatus("PENDING");
-            userService.signup(user);
-            return "redirect:/login";
-        }
-    }
+}
