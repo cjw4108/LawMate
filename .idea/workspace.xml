@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment=".">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,7 +211,7 @@
       <workItem from="1771545187256" duration="4818000" />
       <workItem from="1771565153503" duration="11427000" />
       <workItem from="1771801608404" duration="3841000" />
-      <workItem from="1771806410917" duration="856000" />
+      <workItem from="1771806410917" duration="1051000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -375,7 +373,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771806986611</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary=".">
+      <option name="closed" value="true" />
+      <created>1771807415933</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1771807415933</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
