@@ -22,15 +22,22 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signup(UserDTO user, @RequestParam(value="licenseFile", required=false) MultipartFile file) {
-        if ("LAWYER".equals(user.getRole()) && file != null && !file.isEmpty()) {
-            try {
-                String path = "C:/upload/license/"; // 🔴 반드시 이 폴더를 직접 만드세요!
-                new File(path).mkdirs();
-                String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                file.transferTo(new File(path + saveName));
-                user.setLicenseFile(saveName);
-            } catch (Exception e) { e.printStackTrace(); }
+        // [수정 포인트] 권한에 따른 상태값 강제 부여
+        if ("LAWYER".equals(user.getRole())) {
+            user.setLawyerStatus("PENDING"); // 변호사는 일단 대기 상태로!
+            if (file != null && !file.isEmpty()) {
+                try {
+                    String path = "C:/upload/license/";
+                    new File(path).mkdirs();
+                    String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                    file.transferTo(new File(path + saveName));
+                    user.setLicenseFile(saveName);
+                } catch (Exception e) { e.printStackTrace(); }
+            }
+        } else {
+            user.setLawyerStatus("APPROVED"); // 일반 유저는 바로 승인 상태
         }
+
         if (userService.signup(user)) return "redirect:/login";
         return "signup";
     }

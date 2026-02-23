@@ -40,11 +40,10 @@
                      #{userName},
                      #{email},
                      #{role},
-                     #{lawyerStatus},
-                     #{licenseFile}
+                     #{lawyerStatus, jdbcType=VARCHAR},
+                     #{licenseFile, jdbcType=VARCHAR}
                  )
     </insert>
-
     <select id="findPendingLawyers" resultType="com.lawmate.dto.UserDTO">
         SELECT
             user_id        AS userId,
