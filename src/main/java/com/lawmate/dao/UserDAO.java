@@ -6,12 +6,15 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserDAO {
-    // 로그인 체크
+    // 쿼리는 다 XML에 있으니 여기선 선언만 합니다!
     UserDTO login(@Param("userId") String userId, @Param("password") String password);
-
-    // 실제 DB에 데이터 삽입 (회원가입)
-    int save(UserDTO user);
-
-    // 중복 확인
+    void signup(UserDTO userDTO);
+    int saveLawyer(UserDTO userDTO);
     int existsByUserId(String userId);
+    UserDTO findByUserId(String userId);
+    int updateProfile(UserDTO userDTO);
+
+    int updateLawyerStatus(@Param("userId") String userId,
+                           @Param("lawyerStatus") String lawyerStatus,
+                           @Param("rejectReason") String rejectReason);
 }

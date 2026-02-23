@@ -35,30 +35,22 @@
 
     <insert id="insertCategory" parameterType="com.lawmate.dto.DocumentCategoryDTO">
         INSERT INTO DOCUMENT_CATEGORIES (
-        NAME, DESCRIPTION, PARENT_ID, DISPLAY_ORDER, IS_ACTIVE, CREATED_AT
+            NAME, DESCRIPTION, PARENT_ID, DISPLAY_ORDER, IS_ACTIVE, CREATED_AT
         ) VALUES (
-        #{name},
-        #{description},
-        #{parentId, jdbcType=NUMERIC},
-        #{displayOrder},
-        #{isActive},
-        SYSDATE
-        )
+                     #{name}, #{description}, #{parentId, jdbcType=NUMERIC}, #{displayOrder}, #{isActive}, SYSDATE
+                 )
     </insert>
 
     <select id="selectAllCategories" resultMap="categoryResultMap">
-        SELECT * FROM DOCUMENT_CATEGORIES
-        ORDER BY DISPLAY_ORDER
+        SELECT * FROM DOCUMENT_CATEGORIES ORDER BY DISPLAY_ORDER
     </select>
 
     <select id="selectCategoryById" parameterType="long" resultMap="categoryResultMap">
-        SELECT * FROM DOCUMENT_CATEGORIES
-        WHERE ID = #{id}
+        SELECT * FROM DOCUMENT_CATEGORIES WHERE ID = #{id}
     </select>
 
     <select id="selectCategoryByName" parameterType="string" resultMap="categoryResultMap">
-        SELECT * FROM DOCUMENT_CATEGORIES
-        WHERE NAME = #{name}
+        SELECT * FROM DOCUMENT_CATEGORIES WHERE NAME = #{name}
     </select>
 
 
@@ -67,9 +59,9 @@
             CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
             ACCESS_TYPE, DOWNLOAD_COUNT, IS_ACTIVE, CREATED_AT
         ) VALUES (
-            #{categoryId}, #{title}, #{description}, #{filePath}, #{fileType},
-            #{accessType}, #{downloadCount}, #{isActive}, SYSDATE
-        )
+                     #{categoryId}, #{title}, #{description}, #{filePath}, #{fileType},
+                     #{accessType}, #{downloadCount}, #{isActive}, SYSDATE
+                 )
     </insert>
 
     <insert id="insertDocumentBatch" parameterType="list">
@@ -100,8 +92,7 @@
     </select>
 
     <select id="selectDocumentById" parameterType="long" resultMap="documentResultMap">
-        SELECT * FROM DOCUMENTS
-        WHERE ID = #{id}
+        SELECT * FROM DOCUMENTS WHERE ID = #{id}
     </select>
 
     <select id="countDocuments" resultType="int">
@@ -109,12 +100,9 @@
     </select>
 
     <select id="countDocumentsByCategory" parameterType="long" resultType="int">
-        SELECT COUNT(*) FROM DOCUMENTS
-        WHERE CATEGORY_ID = #{categoryId}
+        SELECT COUNT(*) FROM DOCUMENTS WHERE CATEGORY_ID = #{categoryId}
     </select>
 
-    <!-- ========== 삭제 (테스트용) ========== -->
-    
     <delete id="deleteAllDocuments">
         DELETE FROM DOCUMENTS
     </delete>
@@ -122,5 +110,42 @@
     <delete id="deleteAllCategories">
         DELETE FROM DOCUMENT_CATEGORIES
     </delete>
+
+
+    <!-- ===== 기존 팀원 코드 (수정 금지) ===== -->
+    <select id="selectDocumentsByUserId" parameterType="string" resultMap="documentResultMap">
+        SELECT D.*, C.NAME AS CATEGORY_NAME, H.DOWNLOAD_DATE AS CREATED_AT
+        FROM DOCUMENTS D
+                 INNER JOIN DOWNLOAD_HISTORY H ON D.ID = H.DOCUMENT_ID
+                 LEFT JOIN DOCUMENT_CATEGORIES C ON D.CATEGORY_ID = C.ID
+        WHERE H.USER_ID = #{userId}
+        ORDER BY H.DOWNLOAD_DATE DESC
+    </select>
+
+    <insert id="insertDownloadHistory">
+        INSERT INTO DOWNLOAD_HISTORY (
+            USER_ID, DOCUMENT_ID, DOWNLOAD_DATE
+        ) VALUES (
+                     #{userId}, #{documentId}, SYSDATE
+                 )
+    </insert>
+
+    <select id="selectFilePathById" resultType="string">
+        SELECT D.FILE_PATH
+        FROM DOCUMENTS D
+                 INNER JOIN DOWNLOAD_HISTORY H ON D.ID = H.DOCUMENT_ID
+        WHERE D.ID = #{documentId} AND H.USER_ID = #{userId}
+    </select>
+
+    <!-- ===== 마이페이지용 추가 쿼리 (DOWNLOAD_DATE 없는 경우 대비) ===== -->
+    <!-- DOWNLOAD_HISTORY 테이블의 실제 날짜 컬럼명을 모를 경우 DOCUMENTS.CREATED_AT 기준으로 조회 -->
+    <select id="selectDocumentsByUserIdForMypage" parameterType="string" resultMap="documentResultMap">
+        SELECT D.*, C.NAME AS CATEGORY_NAME, D.CREATED_AT
+        FROM DOCUMENTS D
+                 INNER JOIN DOWNLOAD_HISTORY H ON D.ID = H.DOCUMENT_ID
+                 LEFT JOIN DOCUMENT_CATEGORIES C ON D.CATEGORY_ID = C.ID
+        WHERE H.USER_ID = #{userId}
+        ORDER BY D.CREATED_AT DESC
+    </select>
 
 </mapper>

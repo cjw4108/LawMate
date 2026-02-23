@@ -80,7 +80,7 @@
                     </div>
                     <div class="mt-1">
                         변호사이신가요?
-                        <a href="${pageContext.request.contextPath}/lawyer">
+                        <a href="${pageContext.request.contextPath}/signup/lawyer">
                             변호사 회원가입
                         </a>
                     </div>

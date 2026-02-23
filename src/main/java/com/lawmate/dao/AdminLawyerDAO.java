@@ -1,53 +1,32 @@
 package com.lawmate.dao;
 
 import com.lawmate.dto.LawyerApprovalDTO;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Repository
-public class AdminLawyerDAO {
+@Mapper
+public interface AdminLawyerDAO {
 
-    // 임시 메모리 (DB 전환 가능)
-    private final List<LawyerApprovalDTO> lawyers = new ArrayList<>();
+    // 승인 대기 목록 조회
+    List<LawyerApprovalDTO> findPendingLawyers();
 
-    public AdminLawyerDAO() {
-        LawyerApprovalDTO l1 = new LawyerApprovalDTO();
-        l1.setLawyerId("lawyer02");
-        l1.setLawyerName("김변호");
-        l1.setEmail("lawyer02@lawmate.com");
-        l1.setStatus("PENDING");
+    // 전체 변호사 목록 조회 (상태 필터용)
+    List<LawyerApprovalDTO> findAllLawyers();
 
-        lawyers.add(l1);
-    }
+    // 변호사 상세 조회
+    LawyerApprovalDTO findByLawyerId(String lawyerId);
 
-    /* 승인 대기 목록 */
-    public List<LawyerApprovalDTO> findPendingLawyers() {
-        List<LawyerApprovalDTO> result = new ArrayList<>();
-        for (LawyerApprovalDTO l : lawyers) {
-            if ("PENDING".equals(l.getStatus())) {
-                result.add(l);
-            }
-        }
-        return result;
-    }
+    // 승인 처리
+    int approve(String lawyerId);
 
-    /* 승인 */
-    public void approve(String lawyerId) {
-        for (LawyerApprovalDTO l : lawyers) {
-            if (l.getLawyerId().equals(lawyerId)) {
-                l.setStatus("APPROVED");
-            }
-        }
-    }
+    // 반려 처리 (반려 사유 포함)
+    int reject(@Param("lawyerId") String lawyerId,
+               @Param("rejectReason") String rejectReason);
 
-    /* 반려 */
-    public void reject(String lawyerId) {
-        for (LawyerApprovalDTO l : lawyers) {
-            if (l.getLawyerId().equals(lawyerId)) {
-                l.setStatus("REJECTED");
-            }
-        }
-    }
+    // 상태 업데이트 (승인/반려 통합)
+    int updateStatus(@Param("lawyerId") String lawyerId,
+                     @Param("status") String status,
+                     @Param("rejectReason") String rejectReason);
 }

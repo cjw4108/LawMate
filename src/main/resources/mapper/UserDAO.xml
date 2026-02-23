@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lawmate.dao.UserDAO">
+
+    <select id="login" resultType="com.lawmate.dto.UserDTO">
+        SELECT * FROM USERS
+        WHERE USER_ID = #{userId} AND PASSWORD = #{password}
+    </select>
+
+    <insert id="signup" parameterType="com.lawmate.dto.UserDTO">
+        INSERT INTO USERS (USER_ID, PASSWORD, NAME, EMAIL, ROLE)
+        VALUES (#{userId}, #{password}, #{userName}, #{email}, 'ROLE_USER')
+    </insert>
+
+    <insert id="saveLawyer" parameterType="com.lawmate.dto.UserDTO">
+        INSERT INTO USERS (
+            USER_ID,
+            PASSWORD,
+            NAME,
+            EMAIL,
+            ROLE
+        ) VALUES (
+                     #{userId},
+                     #{password},
+                     #{userName},
+                     #{email},
+                     'ROLE_LAWYER'
+                 )
+    </insert>
+
+    <select id="existsByUserId" resultType="int">
+        SELECT COUNT(*) FROM USERS WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="findByUserId" resultType="com.lawmate.dto.UserDTO">
+        SELECT * FROM USERS WHERE USER_ID = #{userId}
+    </select>
+
+    <update id="updateProfile">
+        UPDATE USERS SET NAME = #{userName}, EMAIL = #{email} WHERE USER_ID = #{userId}
+    </update>
+
+</mapper>
