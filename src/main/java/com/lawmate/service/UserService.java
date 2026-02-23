@@ -11,11 +11,31 @@ public class UserService {
 
     private final UserDAO userDAO;
 
+    /**
+     * 회원가입 (일반 / 변호사 공용)
+     */
     public boolean signup(UserDTO user) {
-        return userDAO.save(user);
+
+        // 일반 회원
+        if ("USER".equals(user.getRole())) {
+            user.setLawyerStatus(null);
+            user.setLicenseFile(null);
+            return userDAO.save(user);
+        }
+
+        // 변호사 회원
+        if ("LAWYER".equals(user.getRole())) {
+            user.setLawyerStatus("PENDING"); // 관리자 승인 대기
+            return userDAO.save(user);
+        }
+
+        return false;
     }
 
+    /**
+     * 로그인
+     */
     public UserDTO login(String userId, String password) {
-        return null;
+        return userDAO.login(userId, password);
     }
 }
