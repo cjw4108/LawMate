@@ -13,8 +13,7 @@
             email,
             role,
             lawyer_status  AS lawyerStatus,
-            license_file   AS licenseFile,
-            specialty
+            license_file   AS licenseFile
         FROM users
         WHERE user_id = #{userId}
           AND password = #{password}
@@ -34,8 +33,7 @@
             email,
             role,
             lawyer_status,
-            license_file,
-            specialty
+            license_file
         ) VALUES (
                      #{userId},
                      #{password},
@@ -43,8 +41,7 @@
                      #{email},
                      #{role},
                      #{lawyerStatus},
-                     #{licenseFile},
-                     #{specialty}
+                     #{licenseFile}
                  )
     </insert>
 
@@ -55,8 +52,7 @@
             email,
             role,
             lawyer_status  AS lawyerStatus,
-            license_file   AS licenseFile,
-            specialty
+            license_file   AS licenseFile
         FROM users
         WHERE role = 'LAWYER'
           AND lawyer_status = 'PENDING'

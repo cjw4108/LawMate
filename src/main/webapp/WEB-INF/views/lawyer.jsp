@@ -45,13 +45,25 @@
             <div class="login-card">
                 <h2 class="text-center mb-4">변호사 회원가입</h2>
 
+                <%-- 서버에서 전달된 에러 메시지가 있을 경우 표시 --%>
+                <% if (request.getAttribute("error") != null) { %>
+                <div class="alert alert-danger text-center"><%= request.getAttribute("error") %></div>
+                <% } %>
+
+                <%-- 파일 업로드를 위해 enctype="multipart/form-data" 필수 적용 --%>
                 <form action="${pageContext.request.contextPath}/signup" method="post" enctype="multipart/form-data">
 
+                    <%-- UserDTO의 role 필드에 'LAWYER' 값 전달 --%>
                     <input type="hidden" name="role" value="LAWYER">
 
                     <div class="mb-3">
+                        <label class="form-label">성함 *</label>
+                        <input type="text" name="userName" class="form-control" placeholder="성함을 입력해주세요" required>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">아이디 *</label>
-                        <input type="text" name="userId" class="form-control" placeholder="아이디 입력" required>
+                        <input type="text" name="userId" class="form-control" placeholder="사용할 아이디 입력" required>
                     </div>
 
                     <div class="mb-3">
@@ -66,7 +78,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">이메일 *</label>
-                        <input type="email" name="email" class="form-control" placeholder="example@email.com" required>
+                        <input type="email" name="email" class="form-control" placeholder="example@lawmate.com" required>
                     </div>
 
                     <div class="mb-4">
@@ -74,10 +86,12 @@
                         <input type="file" name="licenseFile" class="form-control" required>
                     </div>
 
-                    <button type="submit" class="btn btn-dark w-100 mb-3">회원가입</button>
+                    <button type="submit" class="btn btn-dark w-100 mb-3">변호사 회원가입 신청</button>
 
                     <div class="text-center">
-                        <a href="${pageContext.request.contextPath}/login">이미 계정이 있으신가요? → 로그인</a>
+                        <a href="${pageContext.request.contextPath}/login" style="text-decoration: none; font-size: 14px; color: #666;">
+                            이미 계정이 있으신가요? → <span style="color: #0d6efd;">로그인</span>
+                        </a>
                     </div>
                 </form>
             </div>

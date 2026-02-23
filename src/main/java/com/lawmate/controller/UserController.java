@@ -9,6 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,7 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    // 1. 화면 이동용 (GET)
     @GetMapping("/login")
     public String loginForm() { return "login"; }
 
@@ -26,21 +29,44 @@ public class UserController {
     @GetMapping("/lawyer")
     public String lawyerForm() { return "lawyer"; }
 
-    // 2. 데이터 처리용 (POST)
+    /* 회원가입 처리 */
+    @PostMapping("/signup")
+    public String signup(UserDTO user, @RequestParam(value = "licenseFile", required = false) MultipartFile file, Model model) {
+        if ("LAWYER".equals(user.getRole()) && file != null && !file.isEmpty()) {
+            try {
+                String uploadDir = "C:/upload/license/";
+                File dir = new File(uploadDir);
+                if (!dir.exists()) dir.mkdirs();
+                String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                file.transferTo(new File(uploadDir + saveName));
+                user.setLicenseFile(saveName);
+            } catch (IOException e) {
+                model.addAttribute("error", "파일 업로드 실패");
+                return "lawyer";
+            }
+        }
+        boolean result = userService.signup(user); // UserService의 signup 호출
+        if (result) return "redirect:/login";
+        model.addAttribute("error", "가입 실패: 중복된 아이디입니다.");
+        return "LAWYER".equals(user.getRole()) ? "lawyer" : "signup";
+    }
+
+    /* 로그인 처리 */
     @PostMapping("/login")
     public String login(@RequestParam String userId, @RequestParam String password, HttpSession session, Model model) {
         UserDTO user = userService.login(userId, password);
         if (user != null) {
             session.setAttribute("loginUser", user);
-            return "redirect:/main";
+            session.setAttribute("role", user.getRole());
+            return "redirect:/home"; // HomeController가 관리하는 /home으로 이동
         }
-        model.addAttribute("error", "로그인 실패");
+        model.addAttribute("error", "로그인 정보가 틀렸습니다.");
         return "login";
     }
 
-    @PostMapping("/signup")
-    public String signup(UserDTO user) {
-        userService.signup(user);
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "redirect:/login";
     }
 }
