@@ -5,7 +5,6 @@
 
 <mapper namespace="com.lawmate.dao.UserDAO">
 
-    <!-- 로그인 -->
     <select id="login" resultType="com.lawmate.dto.UserDTO">
         SELECT
             user_id        AS userId,
@@ -19,14 +18,12 @@
           AND password = #{password}
     </select>
 
-    <!-- 아이디 중복 체크 -->
     <select id="existsByUserId" resultType="int">
         SELECT COUNT(*)
         FROM users
         WHERE user_id = #{userId}
     </select>
 
-    <!-- 회원가입 -->
     <insert id="save">
         INSERT INTO users (
             user_id,
@@ -45,9 +42,7 @@
                  )
     </insert>
 
-    <!-- 승인 대기 변호사 -->
-    <select id="findPendingLawyers"
-            resultType="com.lawmate.dto.UserDTO">
+    <select id="findPendingLawyers" resultType="com.lawmate.dto.UserDTO">
         SELECT
             user_id        AS userId,
             email,

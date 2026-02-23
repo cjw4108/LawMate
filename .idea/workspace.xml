@@ -4,16 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment=".">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/AdminDAO.java" afterDir="false" />
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="..">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminLawyerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminLawyerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/adminDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/adminDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/AdminDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminLawyerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminLawyerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/UserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,7 +214,7 @@
       <workItem from="1771545187256" duration="4818000" />
       <workItem from="1771565153503" duration="11427000" />
       <workItem from="1771801608404" duration="3841000" />
-      <workItem from="1771806410917" duration="1951000" />
+      <workItem from="1771806410917" duration="6709000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -405,7 +400,23 @@
       <option name="project" value="LOCAL" />
       <updated>1771807695403</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="..">
+      <option name="closed" value="true" />
+      <created>1771808414535</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1771808414535</updated>
+    </task>
+    <task id="LOCAL-00025" summary="..">
+      <option name="closed" value="true" />
+      <created>1771812354292</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1771812354292</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -433,16 +444,12 @@
     <MESSAGE value="우선 안에 내용데이터는 완료(연동은 지금 하는중)" />
     <MESSAGE value="분리는 완료 실제 구동은" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value=".." />
+    <option name="LAST_COMMIT_MESSAGE" value=".." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java</url>
-          <line>21</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/webapp/WEB-INF/views/index.jsp</url>
           <line>60</line>
