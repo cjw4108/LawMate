@@ -7,16 +7,12 @@ import java.util.List;
 
 @Mapper
 public interface UserDAO {
-
-    /* 로그인 - @Param 추가로 XML과 변수명을 연결 */
+    // XML의 #{userId}와 #{password}가 이 @Param 이름과 연결됩니다.
     UserDTO login(@Param("userId") String userId, @Param("password") String password);
 
-    /* 회원가입 */
-    int save(UserDTO user); // 반환 타입을 int(영향받은 행 수)로 변경하는 것이 관례입니다.
+    // 가입 성공 시 1, 실패 시 0을 반환하도록 int 타입을 권장합니다.
+    int save(UserDTO user);
 
-    /* 아이디 중복 체크 */
+    // 아이디 중복 확인 시 사용 (1이면 이미 있음)
     int existsByUserId(String userId);
-
-    /* 관리자 – 승인 대기 변호사 조회 */
-    List<UserDTO> findPendingLawyers();
 }

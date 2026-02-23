@@ -15,33 +15,44 @@ public class UserService {
     /**
      * 회원가입 (일반 / 변호사 공용)
      */
-    @Transactional // 데이터 저장 중 에러 발생 시 롤백을 위해 추가
+    @Transactional
     public boolean signup(UserDTO user) {
 
-        // 1. 아이디 중복 체크 (기존 DAO 활용)
+        // 1. 아이디 중복 체크
         if (userDAO.existsByUserId(user.getUserId()) > 0) {
             return false;
         }
 
-        // 2. 권한(Role)에 따른 처리
+        // 2. 비밀번호 일치 확인 (DTO에 추가한 passwordConfirm 활용)
+        if (user.getPasswordConfirm() != null && !user.getPassword().equals(user.getPasswordConfirm())) {
+            return false;
+        }
+
+        // 3. 권한(Role)에 따른 처리
         if ("USER".equals(user.getRole())) {
             user.setLawyerStatus(null);
             user.setLicenseFile(null);
         } else if ("LAWYER".equals(user.getRole())) {
-            user.setLawyerStatus("PENDING"); // 변호사는 승인 대기 상태로 시작
+            // 변호사는 기본적으로 승인 대기 상태로 시작
+            if (user.getLawyerStatus() == null) {
+                user.setLawyerStatus("PENDING");
+            }
         } else {
-            // Role이 정의되지 않은 경우 기본값 설정 혹은 거절
             user.setRole("USER");
         }
 
-        // 3. DB 저장 (1 이상이면 성공)
+        // 4. DB 저장
         return userDAO.save(user) > 0;
     }
 
     /**
-     * 로그인
+     * 로그인 처리
      */
     public UserDTO login(String userId, String password) {
-        return userDAO.login(userId, password);
+        // DAO에서 아이디와 비밀번호로 사용자 조회
+        UserDTO user = userDAO.login(userId, password);
+
+        // 추가 로직: 로그인이 성공했더라도 탈퇴 회원이나 차단 회원을 걸러낼 수 있음
+        return user;
     }
 }

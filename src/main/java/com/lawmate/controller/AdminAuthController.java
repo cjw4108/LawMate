@@ -12,36 +12,25 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminAuthController {
 
-    private final AdminService AdminService;
+    private final AdminService adminService; // 대문자 시작에서 소문자로 관례적 변경
 
-    // 관리자 로그인 페이지
     @GetMapping("/login")
     public String adminLoginForm() {
         return "admin/adminLogin";
     }
 
-    // 관리자 로그인 처리
     @PostMapping("/login")
-    public String adminLogin(AdminDTO adminDTO,
-                             HttpSession session) {
-
-        AdminDTO loginAdmin = com.lawmate.service.AdminService. login(adminDTO);
+    public String adminLogin(AdminDTO adminDTO, HttpSession session) {
+        // static 방식이 아닌 주입받은 service 인스턴스 사용
+        AdminDTO loginAdmin = adminService.login(adminDTO);
 
         if (loginAdmin == null) {
-            session.setAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
+            session.setAttribute("errorMsg", "관리자 정보가 올바르지 않습니다.");
             return "redirect:/admin/login";
         }
 
-        // 관리자 세션 저장 (완전 분리)
         session.setAttribute("loginAdmin", loginAdmin);
-
-        return "redirect:/admin/approve";
-    }
-
-    // 관리자 로그아웃
-    @GetMapping("/logout")
-    public String adminLogout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/admin/login";
+        // 이동할 메인 페이지 경로 확인 필요
+        return "redirect:/admin/main";
     }
 }

@@ -9,10 +9,12 @@
         SELECT
             user_id        AS userId,
             password,
+            user_name      AS userName,
             email,
             role,
             lawyer_status  AS lawyerStatus,
-            license_file   AS licenseFile
+            license_file   AS licenseFile,
+            specialty
         FROM users
         WHERE user_id = #{userId}
           AND password = #{password}
@@ -28,27 +30,33 @@
         INSERT INTO users (
             user_id,
             password,
+            user_name,
             email,
             role,
             lawyer_status,
-            license_file
+            license_file,
+            specialty
         ) VALUES (
                      #{userId},
                      #{password},
+                     #{userName},
                      #{email},
                      #{role},
                      #{lawyerStatus},
-                     #{licenseFile}
+                     #{licenseFile},
+                     #{specialty}
                  )
     </insert>
 
     <select id="findPendingLawyers" resultType="com.lawmate.dto.UserDTO">
         SELECT
             user_id        AS userId,
+            user_name      AS userName,
             email,
             role,
             lawyer_status  AS lawyerStatus,
-            license_file   AS licenseFile
+            license_file   AS licenseFile,
+            specialty
         FROM users
         WHERE role = 'LAWYER'
           AND lawyer_status = 'PENDING'
