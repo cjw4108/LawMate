@@ -20,9 +20,9 @@ public class UserController {
 
     private final UserService userService;
 
-    // [중요] /login GET 매핑은 UserPageController와 중복되므로 여기서 삭제하거나 주석 처리합니다.
-    // @GetMapping("/login")
-    // public String loginForm() { return "login"; }
+
+      @GetMapping("/login")
+     public String loginForm() { return "login"; }
 
     @GetMapping("/signup")
     public String signupForm() { return "signup"; }
