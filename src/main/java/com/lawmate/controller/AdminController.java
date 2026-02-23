@@ -2,7 +2,7 @@ package com.lawmate.controller;
 
 import com.lawmate.dto.adminDTO;
 import com.lawmate.dto.Question;
-import com.lawmate.service.adminService;
+import com.lawmate.service.AdminService;
 import com.lawmate.service.QuestionService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.List;
 public class AdminController {
 
     private final QuestionService questionService; // 서비스 연결
-    private final adminService adminService;
+    private final AdminService adminService;
 
     /* ================= 관리자 로그인 ================= */
 

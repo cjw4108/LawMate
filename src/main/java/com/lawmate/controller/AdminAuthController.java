@@ -1,7 +1,7 @@
 package com.lawmate.controller;
 
 import com.lawmate.dto.adminDTO;
-import com.lawmate.service.adminService;
+import com.lawmate.service.AdminService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminAuthController {
 
-    private final adminService AdminService;
+    private final AdminService AdminService;
 
     // 관리자 로그인 페이지
     @GetMapping("/login")
@@ -25,7 +25,7 @@ public class AdminAuthController {
     public String adminLogin(adminDTO adminDTO,
                              HttpSession session) {
 
-        adminDTO loginAdmin = adminService. login(adminDTO);
+        adminDTO loginAdmin = com.lawmate.service.AdminService. login(adminDTO);
 
         if (loginAdmin == null) {
             session.setAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");

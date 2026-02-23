@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="분리는 완료 실제 구동은">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminLawyerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminLawyerService.java" afterDir="false" />
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment=".">
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +213,7 @@
       <workItem from="1771545187256" duration="4818000" />
       <workItem from="1771565153503" duration="11427000" />
       <workItem from="1771801608404" duration="3841000" />
-      <workItem from="1771806410917" duration="496000" />
+      <workItem from="1771806410917" duration="856000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -366,7 +367,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771806666822</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary=".">
+      <option name="closed" value="true" />
+      <created>1771806986611</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1771806986611</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,7 +402,8 @@
     <MESSAGE value="12345" />
     <MESSAGE value="우선 안에 내용데이터는 완료(연동은 지금 하는중)" />
     <MESSAGE value="분리는 완료 실제 구동은" />
-    <option name="LAST_COMMIT_MESSAGE" value="분리는 완료 실제 구동은" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -5,18 +5,15 @@ import com.lawmate.dto.adminDTO;
 import org.springframework.stereotype.Service;
 
 @Service
-public class adminService {
+public class AdminService {
 
     private final adminDAO adminDAO;
 
-    public adminService(adminDAO adminDAO) {
+    public AdminService(adminDAO adminDAO) {
         this.adminDAO = adminDAO;
     }
 
-    public static adminDTO login(String adminId, String adminPw) {
+    public adminDTO login(String adminId, String adminPw) {
         return adminDAO.login(adminId, adminPw);
-    }
-
-    public static adminDTO login(adminDTO adminDTO) {
     }
 }
