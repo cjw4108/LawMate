@@ -1,0 +1,19 @@
+Index: src/main/java/com/lawmate/controller/AdminAuthController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.lawmate.controller;\r\n\r\nimport com.lawmate.dto.adminDTO;\r\nimport com.lawmate.service.adminService;\r\nimport jakarta.servlet.http.HttpSession;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.stereotype.Controller;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\n@Controller\r\n@RequestMapping(\"/admin\")\r\n@RequiredArgsConstructor\r\npublic class AdminAuthController {\r\n\r\n    private final adminService AdminService;\r\n\r\n    // 관리자 로그인 페이지\r\n    @GetMapping(\"/login\")\r\n    public String adminLoginForm() {\r\n        return \"admin/adminLogin\";\r\n    }\r\n\r\n    // 관리자 로그인 처리\r\n    @PostMapping(\"/login\")\r\n    public String adminLogin(adminDTO adminDTO,\r\n                             HttpSession session) {\r\n\r\n        adminDTO loginAdmin = adminService.login(adminDTO);\r\n\r\n        if (loginAdmin == null) {\r\n            session.setAttribute(\"errorMsg\", \"아이디 또는 비밀번호가 올바르지 않습니다.\");\r\n            return \"redirect:/admin/login\";\r\n        }\r\n\r\n        // 관리자 세션 저장 (완전 분리)\r\n        session.setAttribute(\"loginAdmin\", loginAdmin);\r\n\r\n        return \"redirect:/admin/approve\";\r\n    }\r\n\r\n    // 관리자 로그아웃\r\n    @GetMapping(\"/logout\")\r\n    public String adminLogout(HttpSession session) {\r\n        session.invalidate();\r\n        return \"redirect:/admin/login\";\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/lawmate/controller/AdminAuthController.java b/src/main/java/com/lawmate/controller/AdminAuthController.java
+--- a/src/main/java/com/lawmate/controller/AdminAuthController.java	(revision 02397dd870ede78899f5f42aaaa07a6e4d0893a8)
++++ b/src/main/java/com/lawmate/controller/AdminAuthController.java	(date 1771575810355)
+@@ -25,7 +25,7 @@
+     public String adminLogin(adminDTO adminDTO,
+                              HttpSession session) {
+ 
+-        adminDTO loginAdmin = adminService.login(adminDTO);
++        adminDTO loginAdmin = adminService. login(adminDTO);
+ 
+         if (loginAdmin == null) {
+             session.setAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");

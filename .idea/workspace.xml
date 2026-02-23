@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="분리는 완료 실제 구동은">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminLawyerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/adminLawyerService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,6 +212,7 @@
       <workItem from="1771545187256" duration="4818000" />
       <workItem from="1771565153503" duration="11427000" />
       <workItem from="1771801608404" duration="3841000" />
+      <workItem from="1771806410917" duration="496000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -356,7 +358,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771801838192</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="분리는 완료 실제 구동은">
+      <option name="closed" value="true" />
+      <created>1771806666822</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1771806666822</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
