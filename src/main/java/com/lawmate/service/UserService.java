@@ -14,4 +14,7 @@ public class UserService {
     public boolean signup(UserDTO user) {
         return userDAO.save(user);
     }
+
+    public UserDTO login(String userId, String password) {
+    }
 }
