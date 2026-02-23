@@ -31,4 +31,11 @@ public class ConsultService {
 
         return dao.getConsult(id);
     }
+
+    public String updateConsult(ConsultDto upt) {
+        return dao.updateConsult(upt)>0?"수정 성공":"수정 되지 않았습니다.";
+    }
+    public String deleteConsult(int id) {
+        return dao.deleteConsult(id)>0?"삭제 성공":"삭제가 되지 않았습니다";
+    }
 }
