@@ -14,7 +14,7 @@
         });
 
         $("#delBtn").click(function() {
-            alert(${consult.id})
+            //alert(${consult.id})
             if (confirm("정말로 삭제하시겠습니까?")) {
                 $("#frm").attr("action", "deleteConsult");
                 $("#frm").submit();
@@ -32,7 +32,7 @@
                 }
             }
             if(msg.indexOf("삭제")>-1){
-                alert(msg)
+                //alert(msg)
                 location.href = "consultList";
             }
         }

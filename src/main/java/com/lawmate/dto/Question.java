@@ -43,4 +43,7 @@ public class Question {
         // null 방지를 위해 생성 시 0으로 초기화합니다
         if (this.reportCount == null) this.reportCount = 0;
     }
+
+    private int favoriteCount;
+
 }
