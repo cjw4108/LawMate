@@ -44,4 +44,8 @@ public class AdminLawyerService {
     public void updateLawyerStatus(String lawyerId, String status, String rejectReason) {
         adminLawyerDAO.updateStatus(lawyerId, status, rejectReason);
     }
+
+    public static Object findPendingLawyers() {
+        return null;
+    }
 }

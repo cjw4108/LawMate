@@ -4,13 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성 완료 안에 내용이나 그런거는 각자 담당자가 넣으시면 됩니다">
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성 완료">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/AdminLawyerMapper.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/DocumentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/DocumentDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/DocumentLoaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/DocumentLoaderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/DocumentMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/DocumentMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/docs.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/docs.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminAuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminLawyerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminLawyerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/AdminDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/AdminDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminLawyerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminLawyerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/AdminMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/AdminMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/approve.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/approve.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/signup.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/signup.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +231,7 @@
       <workItem from="1771819890791" duration="6126000" />
       <workItem from="1771826112777" duration="85000" />
       <workItem from="1771826219206" duration="14092000" />
-      <workItem from="1771866548184" duration="29202000" />
+      <workItem from="1771866548184" duration="39065000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -550,7 +553,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771894031248</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성 완료">
+      <option name="closed" value="true" />
+      <created>1771896290717</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1771896290717</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -583,7 +594,8 @@
     <MESSAGE value="25" />
     <MESSAGE value="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!" />
     <MESSAGE value="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성 완료 안에 내용이나 그런거는 각자 담당자가 넣으시면 됩니다" />
-    <option name="LAST_COMMIT_MESSAGE" value="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성 완료 안에 내용이나 그런거는 각자 담당자가 넣으시면 됩니다" />
+    <MESSAGE value="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성 완료" />
+    <option name="LAST_COMMIT_MESSAGE" value="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성 완료" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

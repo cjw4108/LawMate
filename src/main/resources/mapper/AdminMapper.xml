@@ -8,7 +8,6 @@
     <select id="login"
             parameterType="com.lawmate.dto.AdminDTO"
             resultType="com.lawmate.dto.AdminDTO">
-
         SELECT
             admin_id   AS adminId,
             admin_pw   AS adminPw,
@@ -16,7 +15,40 @@
         FROM admin
         WHERE admin_id = #{adminId}
           AND admin_pw = #{adminPw}
-
     </select>
+
+    <select id="selectPendingLawyers" resultType="com.lawmate.dto.UserDTO">
+        SELECT
+        user_id     AS userId,
+        user_name   AS userName,
+        role,
+        status,
+        license_file AS licenseFile,
+        join_date   AS joinDate
+        FROM users
+        WHERE 1=1
+        <if test="role != null and role != ''">
+            AND role = #{role}
+        </if>
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (user_name LIKE '%' || #{keyword} || '%' OR user_id LIKE '%' || #{keyword} || '%')
+        </if>
+        ORDER BY join_date DESC
+    </select>
+
+    <update id="updateLawyerStatus">
+        UPDATE users
+        SET
+        status = #{status},
+        reject_reason = #{rejectReason},
+        <if test="status == 'APPROVED'">
+            role = 'LAWYER',
+        </if>
+        updated_at = SYSDATE
+        WHERE user_id = #{userId}
+    </update>
 
 </mapper>
