@@ -28,7 +28,7 @@
                 <li style="margin-right: 20px;"><a href="/consult/consultList" class="nav-link text-dark">상담신청</a></li>
                 <li style="margin-right: 20px;"><a href="/docs" class="nav-link text-dark">서류양식</a></li>
                 <li style="margin-right: 20px;"><a href="/home#" class="nav-link text-dark">AI 상담</a></li>
-
+                <li style="margin-right: 20px;"><a href="/admin/main" class="nav-link text-dark">관리자페이지</a></li>
                 <!-- 우측 메뉴: 서류함, 로그인/마이페이지 -->
                 <li style="margin-right: 30px; position: relative;">
                     <a href="/cart" title="내 서류함" style="text-decoration: none;">
