@@ -58,14 +58,14 @@
 
                             <!-- 일반 회원 -->
                             <c:if test="${loginUser.role eq 'ROLE_USER'}">
-                                <li><a class="dropdown-item" href="/mypage/user">마이페이지</a></li>
-                                <li><a class="dropdown-item" href="/mypage/user/consult">상담 내역</a></li>
-                                <li><a class="dropdown-item" href="/mypage/user/profile">문서 관리</a></li>
+                                <li><a class="dropdown-item" href="#">마이페이지</a></li>
+                                <li><a class="dropdown-item" href="#">상담 내역</a></li>
+                                <li><a class="dropdown-item" href="#">문서 관리</a></li>
                             </c:if>
 
                             <!-- 변호사 -->
                             <c:if test="${loginUser.role eq 'ROLE_LAWYER'}">
-                                <li><a class="dropdown-item" href="/mypage/lawyer">변호사 마이페이지</a></li>
+                                <li><a class="dropdown-item" href="#">변호사 마이페이지</a></li>
                             </c:if>
 
                             <!-- 관리자 -->
