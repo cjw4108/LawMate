@@ -13,13 +13,13 @@ import java.util.List;
 @Mapper
 public interface DocumentDAO {
 
-    // 카테고리 관련
+    // ── 카테고리 관련 (팀원 공통) ──
     void insertCategory(DocumentCategoryDTO category);
     List<DocumentCategoryDTO> selectAllCategories();
     DocumentCategoryDTO selectCategoryById(Long id);
     DocumentCategoryDTO selectCategoryByName(String name);
 
-    // 문서 관련
+    // ── 문서 관련 (팀원 공통) ──
     void insertDocument(DocumentDTO document);
     void insertDocumentBatch(List<DocumentDTO> documents);
     List<DocumentDTO> selectAllDocuments();
@@ -28,24 +28,25 @@ public interface DocumentDAO {
     int countDocuments();
     int countDocumentsByCategory(Long categoryId);
 
-    // 삭제 (테스트용)
+    // ── 삭제 (테스트용) ──
     void deleteAllDocuments();
     void deleteAllCategories();
 
-    // ====== 마이페이지 - 회원별 문서 이력 ======
+    // ── 문서 파일 경로 조회 (다운로드용 공통) ──
+    String selectFilePathById(@Param("id") Long id);
 
-    // 회원별 다운로드 문서 이력 조회
-    List<DocumentDTO> selectDocumentsByUserId(String userId);
+    // ── 마이페이지 전용 (본인 추가분) ──
 
-    // 문서 다운로드 이력 저장
-    void insertDownloadHistory(@Param("userId") String userId,
-                               @Param("documentId") Long documentId);
-
-    // 문서 파일 경로 조회 (다운로드용)
-    String selectFilePathById(@Param("documentId") Long documentId,
-                              @Param("userId") String userId);
-
-    String selectFilePathById(Long documentId);
-
+    /**
+     * [내 기능] 회원별 문서 다운로드 이력 조회
+     * Mapper ID: selectDocumentsByUserIdForMypage
+     */
     List<DocumentDTO> selectDocumentsByUserIdForMypage(String userId);
+
+    /**
+     * [내 기능] 문서 다운로드 이력 저장 (중복 에러 방지를 위해 ID 변경)
+     * Mapper ID: insertDownloadHistoryForMypage
+     */
+    void insertDownloadHistoryForMypage(@Param("userId") String userId,
+                                        @Param("documentId") Long documentId);
 }

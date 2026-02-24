@@ -21,16 +21,17 @@ public class AdminAuthController {
 
     @PostMapping("/login")
     public String adminLogin(AdminDTO adminDTO, HttpSession session) {
-        // static 방식이 아닌 주입받은 service 인스턴스 사용
-        AdminDTO loginAdmin = adminService.login(adminDTO);
+        AdminDTO loginAdmin = AdminService.login(adminDTO);
 
         if (loginAdmin == null) {
             session.setAttribute("errorMsg", "관리자 정보가 올바르지 않습니다.");
             return "redirect:/admin/login";
         }
 
+        // 1. 세션 저장 (키값: loginAdmin)
         session.setAttribute("loginAdmin", loginAdmin);
-        // 이동할 메인 페이지 경로 확인 필요
-        return "redirect:/admin/main";
+
+        // 2. 승인 관리 페이지로 이동 (본인의 @GetMapping("/approve") 경로와 일치)
+        return "redirect:/admin/lawyer/approve";
     }
 }
