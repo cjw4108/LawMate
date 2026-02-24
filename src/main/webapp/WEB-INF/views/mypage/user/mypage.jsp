@@ -180,6 +180,9 @@
             <div class="profile-avatar">🙍</div>
             <div class="profile-name">${not empty user.userName ? user.userName : user.userId} 님</div>
             <div class="profile-email">${user.email}</div>
+            <div class="badge-row">
+                <span class="badge badge-user">일반회원</span>
+            </div>
         </div>
         <nav class="side-menu">
             <button class="side-menu-item active" onclick="switchTab('tab-main', this)">🏠 마이페이지</button>
@@ -192,18 +195,36 @@
     <main>
         <div id="tab-main" class="tab-content active">
             <div class="card">
-                <h3>기본 정보</h3>
-                <p>아이디: ${user.userId}</p>
-                <p>이메일: ${user.email}</p>
-                <p>가입일: ${user.joinDate}</p>
+                <div class="card-title">
+                    <div class="card-title-icon">👤</div> 기본 정보
+                </div>
+                <div class="info-row">
+                    <div class="info-label">아이디</div>
+                    <div class="info-value">${user.userId}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">이름</div>
+                    <div class="info-value">${user.userName}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">이메일</div>
+                    <div class="info-value">${user.email}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">가입일</div>
+                    <div class="info-value">${user.joinDate}</div>
+                </div>
             </div>
         </div>
 
         <div id="tab-consult" class="tab-content">
             <div class="card">
+                <div class="card-title">
+                    <div class="card-title-icon">💬</div> 상담 내역
+                </div>
                 <c:choose>
                     <c:when test="${empty consultList}">
-                        <p>상담 내역이 없습니다.</p>
+                        <div class="empty-msg">상담 내역이 없습니다.</div>
                     </c:when>
                     <c:otherwise>
                         <table class="data-table">
@@ -226,10 +247,12 @@
 
         <div id="tab-docs" class="tab-content">
             <div class="card">
-                <h3>문서 다운로드 이력</h3>
+                <div class="card-title">
+                    <div class="card-title-icon">📄</div> 문서 다운로드 이력
+                </div>
                 <c:choose>
                     <c:when test="${empty docList}">
-                        <p>다운로드한 문서가 없습니다.</p>
+                        <div class="empty-msg">다운로드한 문서가 없습니다.</div>
                     </c:when>
                     <c:otherwise>
                         <table class="data-table">
@@ -237,15 +260,41 @@
                             <tbody>
                             <c:forEach var="doc" items="${docList}">
                                 <tr>
-                                    <td>${doc.title}</td> <%-- docName -> title 로 수정 --%>
-                                    <td>${doc.createdAt}</td>
-                                    <td><a href="${pageContext.request.contextPath}/docs/download/${doc.id}" class="btn-sm">다운로드</a></td> <%-- docId -> id 로 수정 --%>
+                                    <td style="text-align: left;">${doc.title}</td>
+                                    <td><fmt:formatDate value="${doc.createdAt}" pattern="yyyy-MM-dd"/></td>
+                                    <td>
+                                            <%-- Controller에 맞춘 다운로드 경로 --%>
+                                        <a href="${pageContext.request.contextPath}/docs/download?id=${doc.id}" class="btn-sm">다운로드</a>
+                                    </td>
                                 </tr>
                             </c:forEach>
                             </tbody>
                         </table>
                     </c:otherwise>
                 </c:choose>
+            </div>
+        </div>
+
+        <div id="tab-profile" class="tab-content">
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-title-icon">✏️</div> 프로필 수정
+                </div>
+                <form action="${pageContext.request.contextPath}/mypage/update" method="post">
+                    <div class="form-group">
+                        <label>아이디 (수정불가)</label>
+                        <input type="text" value="${user.userId}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>이름 (별명)</label>
+                        <input type="text" name="userName" value="${user.userName}" placeholder="이름을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label>이메일</label>
+                        <input type="email" name="email" value="${user.email}">
+                    </div>
+                    <button type="submit" class="btn-primary">수정 내용 저장</button>
+                </form>
             </div>
         </div>
     </main>
