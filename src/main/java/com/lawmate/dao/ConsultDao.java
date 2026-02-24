@@ -46,3 +46,4 @@ public interface ConsultDao {
     // [내 부분] 마이페이지 대시보드용 상담 건수 조회
     int getConsultCountByUserId(@Param("userId") String userId);
 }
+

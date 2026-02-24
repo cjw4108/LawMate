@@ -5,6 +5,28 @@ Accept: */*
 Cookie: JSESSIONID=A6181E423BF469B06E9C4B5AD4050562
 content-length: 0
 
+<> 2026-02-23T113524.200.json
+
+###
+
+POST http://localhost:8080/admin/load
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=A6181E423BF469B06E9C4B5AD4050562
+content-length: 0
+
+<> 2026-02-23T113336.200.json
+
+###
+
+POST http://localhost:8080/admin/load
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.3.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+Cookie: JSESSIONID=A6181E423BF469B06E9C4B5AD4050562
+content-length: 0
+
 <> 2026-02-17T144309.200.json
 
 ###
