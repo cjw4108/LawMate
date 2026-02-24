@@ -2,6 +2,7 @@ package com.lawmate.controller;
 
 import com.lawmate.dao.CartDAO;
 import com.lawmate.dto.CartDTO;
+import com.lawmate.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,8 @@ public class CartController {
 
     @GetMapping("/cart")
     public String cartPage(HttpSession session, Model model) {
-        String userId = (String) session.getAttribute("userId");
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        String userId = loginUser != null ? loginUser.getUserId() : null;
 
         if (userId == null) {
             return "redirect:/login";
@@ -39,7 +41,8 @@ public class CartController {
             HttpSession session) {
 
         Map<String, Object> result = new HashMap<>();
-        String userId = (String) session.getAttribute("userId");
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        String userId = loginUser != null ? loginUser.getUserId() : null;
 
         System.out.println("=== 장바구니 추가 시도 ===");
         System.out.println("userId: " + userId);
@@ -84,7 +87,8 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getCartCount(HttpSession session) {
         Map<String, Object> result = new HashMap<>();
-        String userId = (String) session.getAttribute("userId");
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        String userId = loginUser != null ? loginUser.getUserId() : null;
 
         if (userId == null) {
             result.put("count", 0);
@@ -103,7 +107,8 @@ public class CartController {
             HttpSession session) {
 
         Map<String, Object> result = new HashMap<>();
-        String userId = (String) session.getAttribute("userId");
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        String userId = loginUser != null ? loginUser.getUserId() : null;
 
         if (userId == null) {
             result.put("success", false);
@@ -131,7 +136,8 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> clearCart(HttpSession session) {
         Map<String, Object> result = new HashMap<>();
-        String userId = (String) session.getAttribute("userId");
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        String userId = loginUser != null ? loginUser.getUserId() : null;
 
         if (userId == null) {
             result.put("success", false);

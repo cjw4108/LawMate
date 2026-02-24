@@ -165,7 +165,7 @@
 
 <main class="main">
     <div class="cart-container">
-        <h1 class="cart-title">📁 내 서류함</h1>
+        <h1 class="cart-title">내 서류함</h1>
 
         <c:choose>
             <c:when test="${empty cartList}">
@@ -189,10 +189,10 @@
                             </div>
                             <div class="cart-item-actions">
                                 <button class="btn-download" onclick="downloadFile(${item.documentId})">
-                                    📥 다운로드
+                                     다운로드
                                 </button>
                                 <button class="btn-delete" onclick="deleteCartItem(${item.id})">
-                                    🗑️ 삭제
+                                     삭제
                                 </button>
                             </div>
                         </div>
@@ -215,7 +215,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // 개별 다운로드
+
     function downloadFile(documentId) {
         window.location.href = '/docs/download/' + documentId;
     }
@@ -239,7 +239,6 @@
         });
     }
 
-    // 전체 삭제
     function clearCart() {
         if (!confirm('서류함을 비우시겠습니까?')) return;
 
