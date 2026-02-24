@@ -25,11 +25,23 @@
                     <i class="bi bi-exclamation-triangle"></i> 신고
                 </button>
                 <div>
-                    <%-- 찜하기 버튼: 서버에서 전달받은 isFavorite 상태에 따라 아이콘 변경 --%>
-                    <button id="favBtn" class="btn btn-sm btn-outline-danger me-1" onclick="toggleFavorite(${question.id})">
-                        <i id="heartIcon" class="bi ${isFavorite ? 'bi-heart-fill' : 'bi-heart'}"></i> 찜하기
+                    <button id="favBtn"
+                            class="btn btn-sm btn-outline-danger me-1"
+                            onclick="toggleFavorite(${question.id})">
+
+                        <i id="heartIcon"
+                           class="bi ${isFavorite == true ? 'bi-heart-fill text-danger' : 'bi-heart'}">
+                        </i>
+
+                        <span id="favoriteCount">
+                            ${question.favoriteCount}
+                        </span>
                     </button>
-                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-share"></i> 공유</button>
+
+                    <button class="btn btn-sm btn-outline-primary"
+                            onclick="shareQuestion(${question.id})">
+                        <i class="bi bi-share"></i> 공유
+                    </button>
                 </div>
             </div>
 
@@ -105,16 +117,27 @@
             url: '/qna/favorite/' + id,
             type: 'POST',
             success: function(data) {
-                const icon = document.getElementById('heartIcon');
-                if(data === 'added') {
-                    icon.classList.replace('bi-heart', 'bi-heart-fill');
-                    alert("찜 목록에 추가되었습니다.");
-                } else if(data === 'removed') {
-                    icon.classList.replace('bi-heart-fill', 'bi-heart');
-                    alert("찜 목록에서 제거되었습니다.");
+
+                if (data.status === 'login_required') {
+                    alert("로그인이 필요한 기능입니다.");
+                    location.href = '/login';
+                    return;
                 }
-            },
-            error: function() { alert("로그인이 필요한 기능입니다."); }
+
+                const icon = document.getElementById('heartIcon');
+                const countSpan = document.getElementById('favoriteCount');
+
+                if (data.status === 'added') {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill', 'text-danger');
+                } else {
+                    icon.classList.remove('bi-heart-fill', 'text-danger');
+                    icon.classList.add('bi-heart');
+                }
+
+                // ⭐ 여기서 숫자 업데이트
+                countSpan.innerText = data.count;
+            }
         });
     }
 
@@ -124,6 +147,25 @@
         if(countBadge) {
             let current = parseInt(countBadge.innerText) || 0;
             countBadge.innerText = Math.max(0, current + diff);
+        }
+    }
+
+    // 공유
+    function shareQuestion(questionId) {
+
+        const url = window.location.origin + "/qna/detail/" + questionId;
+        const title = document.title;
+
+        if (navigator.share) {
+            navigator.share({
+                title: title,
+                text: "이 질문을 확인해보세요!",
+                url: url
+            }).catch(err => console.log(err));
+        } else {
+            // 지원 안하는 브라우저용 fallback
+            navigator.clipboard.writeText(url);
+            alert("링크가 복사되었습니다!");
         }
     }
 </script>
