@@ -25,11 +25,15 @@ public class CartController {
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
         String userId = loginUser != null ? loginUser.getUserId() : null;
 
+        System.out.println("=== 보관함 조회 ===");
+        System.out.println("userId: " + userId);
+
         if (userId == null) {
             return "redirect:/login";
         }
 
         List<CartDTO> cartList = cartDAO.selectCartByUserId(userId);
+        System.out.println("cartList 크기: " + cartList.size());
         model.addAttribute("cartList", cartList);
         return "cart";
     }

@@ -317,6 +317,8 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 <script>
+    var isLoggedIn = ${not empty sessionScope.loginUser ? 'true' : 'false'};
+
     let allCards = [];
     let currentPage = 1;
     const cardsPerPage = 6;
@@ -441,7 +443,7 @@
                 '<span class="badge ' + getBadgeClass(categoryName) + '">' + categoryName + '</span>' +
                 '<h3 class="card-title">' + card.title + '</h3>' +
                 '<div class="card-info">' + (card.description || '') + '</div>' +
-                '<button class="card-button" onclick="event.stopPropagation(); downloadFile(' + card.id + ')" style="background: #3b82f6;">다운로드</button>';
+                '<button class="card-button" onclick="event.stopPropagation(); handleDownload(' + card.id + ')" style="background: #3b82f6;">다운로드</button>';
 
             cardGrid.appendChild(cardElement);
         });
@@ -533,6 +535,16 @@
     function removeAutocomplete() {
         const existing = document.getElementById('autocompleteBox');
         if (existing) existing.remove();
+    }
+
+    function handleDownload(id) {
+        if (!isLoggedIn) {
+            if (confirm('로그인이 필요합니다.\n로그인 페이지로 이동하시겠습니까?')) {
+                location.href = '/login';
+            }
+            return;
+        }
+        downloadFile(id);
     }
 
     function loadRanking() {
