@@ -1,4 +1,5 @@
 package com.lawmate.controller;
+
 import com.lawmate.dto.AdminDTO;
 import com.lawmate.dto.LawyerApprovalDTO;
 import com.lawmate.service.AdminLawyerService;
@@ -26,8 +27,8 @@ public class AdminLawyerController {
             return "redirect:/admin/login";
         }
 
-        // [수정 완료] 클래스명이 아닌 주입받은 adminLawyerService 변수 사용 및 괄호 처리
-        List<LawyerApprovalDTO> pendingList = (List<LawyerApprovalDTO>) adminLawyerService.findPendingLawyers();
+        // ✅ 수정: static 메서드 대신 인스턴스 메서드 호출
+        List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers();
         model.addAttribute("pendingList", pendingList);
 
         return "admin/approve";
@@ -45,7 +46,6 @@ public class AdminLawyerController {
             return "redirect:/admin/login";
         }
 
-        // 서비스의 통합 업데이트 메서드 호출
         adminLawyerService.updateLawyerStatus(userId, targetStatus, rejectReason);
 
         return "redirect:/admin/lawyer/approve";

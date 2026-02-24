@@ -45,7 +45,5 @@ public class AdminLawyerService {
         adminLawyerDAO.updateStatus(lawyerId, status, rejectReason);
     }
 
-    public static Object findPendingLawyers() {
-        return null;
-    }
+    // ✅ 수정: static 메서드 삭제
 }

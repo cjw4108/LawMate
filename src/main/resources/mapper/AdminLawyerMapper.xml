@@ -5,67 +5,58 @@
 
     <select id="findPendingLawyers" resultType="com.lawmate.dto.LawyerApprovalDTO">
         SELECT
-            user_id AS userId,
-            user_name AS userName,
-            role,
-            status,
-            join_date AS joinDate
-        FROM users
-        WHERE status = 'PENDING'
-        ORDER BY join_date DESC
+            USER_ID      AS userId,
+            USER_NAME    AS userName,
+            ROLE         AS role,
+            LAWYER_STATUS AS status
+        FROM USERS
+        WHERE LAWYER_STATUS = 'PENDING'
+        ORDER BY USER_ID DESC
     </select>
 
     <select id="findAllLawyers" resultType="com.lawmate.dto.LawyerApprovalDTO">
         SELECT
-            user_id AS userId,
-            user_name AS userName,
-            role,
-            status,
-            join_date AS joinDate
-        FROM users
-        WHERE role = 'LAWYER' OR status = 'PENDING'
-        ORDER BY join_date DESC
+            USER_ID      AS userId,
+            USER_NAME    AS userName,
+            ROLE         AS role,
+            LAWYER_STATUS AS status
+        FROM USERS
+        WHERE ROLE = 'ROLE_LAWYER' OR LAWYER_STATUS = 'PENDING'
+        ORDER BY USER_ID DESC
     </select>
 
     <select id="findByLawyerId" resultType="com.lawmate.dto.LawyerApprovalDTO">
         SELECT
-            user_id AS userId,
-            user_name AS userName,
-            license_file AS licenseFile,
-            status,
-            reject_reason AS rejectReason
-        FROM users
-        WHERE user_id = #{lawyerId}
+            USER_ID       AS userId,
+            USER_NAME     AS userName,
+            LAWYER_STATUS AS status,
+            REJECT_REASON AS rejectReason
+        FROM USERS
+        WHERE USER_ID = #{lawyerId}
     </select>
 
     <update id="approve">
-        UPDATE users
+        UPDATE USERS
         SET
-            status = 'APPROVED',
-            role = 'LAWYER',
-            updated_at = SYSDATE
-        WHERE user_id = #{lawyerId}
+            LAWYER_STATUS = 'APPROVED',
+            ROLE = 'ROLE_LAWYER'
+        WHERE USER_ID = #{lawyerId}
     </update>
 
     <update id="reject">
-        UPDATE users
+        UPDATE USERS
         SET
-            status = 'REJECTED',
-            reject_reason = #{rejectReason},
-            updated_at = SYSDATE
-        WHERE user_id = #{lawyerId}
+            LAWYER_STATUS = 'REJECTED',
+            REJECT_REASON = #{rejectReason}
+        WHERE USER_ID = #{lawyerId}
     </update>
 
     <update id="updateStatus">
-        UPDATE users
+        UPDATE USERS
         SET
-        status = #{status},
-        reject_reason = #{rejectReason},
-        <if test="status == 'APPROVED'">
-            role = 'LAWYER',
-        </if>
-        updated_at = SYSDATE
-        WHERE user_id = #{lawyerId}
+            LAWYER_STATUS = #{status},
+            REJECT_REASON = #{rejectReason}
+        WHERE USER_ID = #{lawyerId}
     </update>
 
 </mapper>
