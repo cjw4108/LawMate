@@ -51,9 +51,9 @@ public class UserController {
                 session.invalidate();
                 return "login";
             }
-            return "redirect:/mypage/lawyer"; // 변호사 마이페이지로 이동
+            return "redirect:/home"; // 변호사 마이페이지로 이동
         } else {
-            return "redirect:/mypage/my-page"; // 일반회원 마이페이지로 이동
+            return "redirect:/home"; // 일반회원 마이페이지로 이동
         }
     }
 

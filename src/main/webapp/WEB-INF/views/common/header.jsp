@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="loginUser" value="${sessionScope.loginUser}" />
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -36,16 +38,48 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="/login" class="btn btn-primary rounded-pill px-4 text-white">
-                        <span>로그인</span> <i class="bi bi-chevron-down ms-1"></i>
-                    </a>
-                    <ul class="shadow border-0">
-                        <li><a href="/mypage/user">마이페이지</a></li>
-                        <li><a href="/mypage/user/consult">상담 내역</a></li>
-                        <li><a href="/mypage/user/profile">문서 관리</a></li>
-                        <hr class="dropdown-divider">
-                        <li><a href="/admin/main" class="text-danger fw-bold">관리자 페이지</a></li>
-                    </ul>
+                <li class="dropdown">
+
+                    <!-- 로그인 안 된 경우 -->
+                    <c:if test="${empty loginUser}">
+                        <a href="/login" class="btn btn-primary rounded-pill px-4 text-white">
+                            로그인
+                        </a>
+                    </c:if>
+
+                    <!-- 로그인 된 경우 -->
+                    <c:if test="${not empty loginUser}">
+                        <a href="#" class="btn btn-primary rounded-pill px-4 text-white" data-bs-toggle="dropdown">
+                                ${loginUser.userId}님
+                            <i class="bi bi-chevron-down ms-1"></i>
+                        </a>
+
+                        <ul class="dropdown-menu shadow border-0">
+
+                            <!-- 일반 회원 -->
+                            <c:if test="${loginUser.role eq 'ROLE_USER'}">
+                                <li><a class="dropdown-item" href="/mypage/user">마이페이지</a></li>
+                                <li><a class="dropdown-item" href="/mypage/user/consult">상담 내역</a></li>
+                                <li><a class="dropdown-item" href="/mypage/user/profile">문서 관리</a></li>
+                            </c:if>
+
+                            <!-- 변호사 -->
+                            <c:if test="${loginUser.role eq 'ROLE_LAWYER'}">
+                                <li><a class="dropdown-item" href="/mypage/lawyer">변호사 마이페이지</a></li>
+                            </c:if>
+
+                            <!-- 관리자 -->
+                            <c:if test="${loginUser.role eq 'ROLE_ADMIN'}">
+                                <li><a class="dropdown-item text-danger fw-bold" href="/admin/main">관리자 페이지</a></li>
+                            </c:if>
+
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="/logout">로그아웃</a></li>
+                        </ul>
+                    </c:if>
+
+                </li>
+
                 </li>
             </ul>
         </nav>
