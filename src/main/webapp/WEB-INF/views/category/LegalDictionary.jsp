@@ -65,11 +65,13 @@
                 <div class="col-lg-12 mt-4" data-aos="fade-up" data-aos-delay="250">
                     <div class="d-flex justify-content-center">
                         <div class="input-group" style="max-width: 680px;">
-                            <input type="text" id="searchInput" class="form-control form-control-lg"
+                            <input type="text" id="searchInput" class="form-control border-0 ms-3"
                                    placeholder="법률 용어 검색... (예: 집행유예, 가압류, 변론)"
                                    value="${keyword}"
                                    onkeydown="if(event.key==='Enter') doSearch()">
-                            <button class="btn btn-primary px-4" onclick="doSearch()">검색</button>
+                            <button class="btn btn-link text-dark me-2" onclick="doSearch()">
+                                <i class="bi bi-search fs-4"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
