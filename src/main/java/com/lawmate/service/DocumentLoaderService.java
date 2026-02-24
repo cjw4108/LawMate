@@ -85,7 +85,8 @@ public class DocumentLoaderService {
         ClassPathResource resource = new ClassPathResource("legal-forms/legal_forms.json");
         List<Map<String, String>> data = objectMapper.readValue(
                 resource.getInputStream(),
-                new TypeReference<List<Map<String, String>>>() {}
+                new TypeReference<List<Map<String, String>>>() {
+                }
         );
         log.info("  ✓ {}개 항목 발견", data.size());
         return data;
@@ -129,31 +130,28 @@ public class DocumentLoaderService {
         log.warn("삭제 완료");
     }
 
-    // ==========================================
+// ==========================================
     // [내 기능] 마이페이지 전용 추가 메서드
     // ==========================================
 
     /**
-     * 회원별 문서 이력 조회 (이미지 d7253f 컨트롤러 연동)
+     * 회원별 문서 이력 조회 (컨트롤러에서 이 메서드를 호출함)
      */
     public List<DocumentDTO> getUserDownloadList(String userId) {
         log.info("사용자 [{}]의 문서 다운로드 이력 조회 시작", userId);
-        return documentDAO.selectDocumentsByUserId(userId);
+
+        // [중요] 팀원의 selectDocumentsByUserId 대신 ForMypage 메서드 호출
+        return documentDAO.selectDocumentsByUserIdForMypage(userId);
     }
 
     /**
-     * 문서 파일 경로 조회 및 다운로드 이력 기록
+     * 문서 파일 경로 조회 및 다운로드 기록
      */
     public String getFilePath(Long documentId, String userId) {
-        // 1. 파일 경로 조회 (팀원이 만든 메서드 활용 가능 여부 확인 후 호출)
         String filePath = documentDAO.selectFilePathById(documentId);
-
         if (filePath != null) {
-            // 2. 다운로드 이력 저장 (본인 전용 쿼리 호출)
             documentDAO.insertDownloadHistory(userId, documentId);
-            log.info("사용자 [{}]의 문서(ID: {}) 다운로드 이력 기록 완료", userId, documentId);
         }
-
         return filePath;
     }
 }

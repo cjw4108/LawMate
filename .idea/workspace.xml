@@ -7,6 +7,11 @@
     <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/DocumentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/DocumentDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/ConsultService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/ConsultService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/DocumentLoaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/DocumentLoaderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/DocumentMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/DocumentMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -224,7 +229,7 @@
       <workItem from="1771819890791" duration="6126000" />
       <workItem from="1771826112777" duration="85000" />
       <workItem from="1771826219206" duration="14092000" />
-      <workItem from="1771866548184" duration="24373000" />
+      <workItem from="1771866548184" duration="26851000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -530,7 +535,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771888174469</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!">
+      <option name="closed" value="true" />
+      <created>1771891342823</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1771891342823</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -582,10 +595,20 @@
           <line>6</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/lawmate/controller/ConsultController.java</url>
+          <line>54</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/lawmate/controller/ConsultController.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminService.java</url>
           <line>15</line>
-          <properties class="com.lawmate.service.AdminService">
+          <properties class="com.lawmate.service.AdminService" method="login">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>

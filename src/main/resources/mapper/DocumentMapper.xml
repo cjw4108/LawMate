@@ -147,5 +147,4 @@
         WHERE H.USER_ID = #{userId}
         ORDER BY D.CREATED_AT DESC
     </select>
-
 </mapper>

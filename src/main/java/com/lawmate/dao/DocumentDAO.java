@@ -46,4 +46,6 @@ public interface DocumentDAO {
                               @Param("userId") String userId);
 
     String selectFilePathById(Long documentId);
+
+    List<DocumentDTO> selectDocumentsByUserIdForMypage(String userId);
 }

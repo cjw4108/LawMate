@@ -175,77 +175,39 @@
 </head>
 <body>
 <div class="layout">
-
-    <!-- ── 사이드바 ── -->
     <aside class="sidebar">
         <div class="profile-card">
             <div class="profile-avatar">🙍</div>
             <div class="profile-name">${not empty user.userName ? user.userName : user.userId} 님</div>
             <div class="profile-email">${user.email}</div>
-            <div class="badge-row">
-                <span class="badge badge-user">일반 회원</span>
-            </div>
         </div>
         <nav class="side-menu">
-            <button class="side-menu-item active" onclick="switchTab('tab-main', this)">
-                <span class="menu-icon">🏠</span> 마이페이지
-            </button>
-            <button class="side-menu-item" onclick="switchTab('tab-consult', this)">
-                <span class="menu-icon">💬</span> 상담 내역
-            </button>
-            <button class="side-menu-item" onclick="switchTab('tab-docs', this)">
-                <span class="menu-icon">📄</span> 문서
-            </button>
-            <button class="side-menu-item" onclick="switchTab('tab-profile', this)">
-                <span class="menu-icon">✏️</span> 프로필 수정
-            </button>
+            <button class="side-menu-item active" onclick="switchTab('tab-main', this)">🏠 마이페이지</button>
+            <button class="side-menu-item" onclick="switchTab('tab-consult', this)">💬 상담 내역</button>
+            <button class="side-menu-item" onclick="switchTab('tab-docs', this)">📄 문서</button>
+            <button class="side-menu-item" onclick="switchTab('tab-profile', this)">✏️ 프로필 수정</button>
         </nav>
     </aside>
 
-    <!-- ── 메인 컨텐츠 ── -->
     <main>
-
-        <!-- ① 마이페이지 -->
         <div id="tab-main" class="tab-content active">
             <div class="card">
-                <div class="card-title"><div class="card-title-icon">👤</div> 기본 정보</div>
-                <div class="info-row"><span class="info-label">아이디</span><span class="info-value">${user.userId}</span></div>
-                <div class="info-row">
-                    <span class="info-label">이름</span>
-                    <span class="info-value ${empty user.userName ? 'empty' : ''}">${not empty user.userName ? user.userName : '미입력'}</span>
-                </div>
-                <div class="info-row"><span class="info-label">이메일</span><span class="info-value">${user.email}</span></div>
-                <div class="info-row"><span class="info-label">회원 유형</span><span class="info-value">일반 회원</span></div>
-                <div class="info-row"><span class="info-label">가입일</span><span class="info-value">${user.joinDate}</span></div>
-                <button class="btn-primary" onclick="switchTab('tab-profile', document.querySelectorAll('.side-menu-item')[3])">정보 수정</button>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><div class="card-title-icon">📋</div> 상담 현황</div>
-                <div class="stat-card">
-                    <div class="stat-icon">💬</div>
-                    <div>
-                        <div class="stat-num">${consultCount}</div>
-                        <div class="stat-label">진행 중인 상담</div>
-                    </div>
-                </div>
-                <button class="btn-outline" onclick="switchTab('tab-consult', document.querySelectorAll('.side-menu-item')[1])">상담 내역 보기 →</button>
+                <h3>기본 정보</h3>
+                <p>아이디: ${user.userId}</p>
+                <p>이메일: ${user.email}</p>
+                <p>가입일: ${user.joinDate}</p>
             </div>
         </div>
 
-        <!-- ② 상담 내역 -->
         <div id="tab-consult" class="tab-content">
             <div class="card">
-                <div class="card-title"><div class="card-title-icon">💬</div> 상담 내역</div>
                 <c:choose>
                     <c:when test="${empty consultList}">
-                        <p class="empty-msg">상담 내역이 없습니다.</p>
+                        <p>상담 내역이 없습니다.</p>
                     </c:when>
                     <c:otherwise>
                         <table class="data-table">
-                            <thead>
-                            <tr><th>상담번호</th><th>상담유형</th><th>상담일자</th><th>상태</th><th>상세보기</th></tr>
-                            </thead>
+                            <thead><tr><th>번호</th><th>유형</th><th>날짜</th><th>상태</th></tr></thead>
                             <tbody>
                             <c:forEach var="c" items="${consultList}">
                                 <tr>
@@ -253,7 +215,6 @@
                                     <td>${c.consultType}</td>
                                     <td>${c.consultDate}</td>
                                     <td><span class="${c.status == '완료' ? 'status-done' : 'status-ing'}">${c.status}</span></td>
-                                    <td><a href="${pageContext.request.contextPath}/consult/${c.consultNo}" class="btn-sm">보기</a></td>
                                 </tr>
                             </c:forEach>
                             </tbody>
@@ -263,25 +224,22 @@
             </div>
         </div>
 
-        <!-- ③ 문서 -->
         <div id="tab-docs" class="tab-content">
             <div class="card">
-                <div class="card-title"><div class="card-title-icon">📄</div> 문서 이력</div>
+                <h3>문서 다운로드 이력</h3>
                 <c:choose>
                     <c:when test="${empty docList}">
-                        <p class="empty-msg">다운로드한 문서가 없습니다.</p>
+                        <p>다운로드한 문서가 없습니다.</p>
                     </c:when>
                     <c:otherwise>
                         <table class="data-table">
-                            <thead>
-                            <tr><th>문서명</th><th>생성일</th><th>다운로드</th></tr>
-                            </thead>
+                            <thead><tr><th>문서명</th><th>생성일</th><th>관리</th></tr></thead>
                             <tbody>
                             <c:forEach var="doc" items="${docList}">
                                 <tr>
-                                    <td>${doc.docName}</td>
+                                    <td>${doc.title}</td> <%-- docName -> title 로 수정 --%>
                                     <td>${doc.createdAt}</td>
-                                    <td><a href="${pageContext.request.contextPath}/docs/download/${doc.docId}" class="btn-sm">다운로드</a></td>
+                                    <td><a href="${pageContext.request.contextPath}/docs/download/${doc.id}" class="btn-sm">다운로드</a></td> <%-- docId -> id 로 수정 --%>
                                 </tr>
                             </c:forEach>
                             </tbody>
@@ -290,33 +248,6 @@
                 </c:choose>
             </div>
         </div>
-
-        <!-- ④ 프로필 수정 -->
-        <div id="tab-profile" class="tab-content">
-            <div class="card">
-                <div class="card-title"><div class="card-title-icon">✏️</div> 프로필 수정</div>
-                <form action="${pageContext.request.contextPath}/mypage/my-page/profile/update" method="post">
-                    <div class="form-group">
-                        <label>아이디 (수정 불가)</label>
-                        <input type="text" value="${user.userId}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>이름</label>
-                        <input type="text" name="userName" value="${user.userName}" placeholder="이름 입력">
-                    </div>
-                    <div class="form-group">
-                        <label>이메일</label>
-                        <input type="email" name="email" value="${user.email}">
-                    </div>
-                    <div class="form-group">
-                        <label>가입일 (수정 불가)</label>
-                        <input type="text" value="${user.joinDate}" disabled>
-                    </div>
-                    <button type="submit" class="btn-primary">수정 저장</button>
-                </form>
-            </div>
-        </div>
-
     </main>
 </div>
 
@@ -327,30 +258,6 @@
         document.getElementById(tabId).classList.add('active');
         btn.classList.add('active');
     }
-
-    // 상담내역/문서는 컨트롤러에서 model로 못 받으면 fetch로 가져오기
-    window.addEventListener('DOMContentLoaded', function() {
-        // consultList가 없으면 fetch로 가져오기
-        <c:if test="${empty consultList}">
-        fetch('${pageContext.request.contextPath}/mypage/my-page/consult', {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        }).then(res => res.ok ? res.json() : null)
-            .then(list => {
-                if (!list || list.length === 0) return;
-                const tbody = document.querySelector('#tab-consult table tbody');
-                if (!tbody) return;
-                tbody.innerHTML = list.map(c => `
-                  <tr>
-                      <td>${c.consultNo}</td>
-                      <td>${c.consultType}</td>
-                      <td>${c.consultDate}</td>
-                      <td><span class="${c.status === '완료' ? 'status-done' : 'status-ing'}">${c.status}</span></td>
-                      <td><a href="/consult/${c.consultNo}" class="btn-sm">보기</a></td>
-                  </tr>
-              `).join('');
-            }).catch(() => {});
-        </c:if>
-    });
 </script>
 </body>
 </html>
