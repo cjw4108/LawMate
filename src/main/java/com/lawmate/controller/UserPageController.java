@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/mypage/user")
+@RequestMapping("/mypage")
 @RequiredArgsConstructor
 public class UserPageController {
 
@@ -21,26 +21,29 @@ public class UserPageController {
     private final ConsultService consultService;
     private final DocumentLoaderService documentService;
 
-    // 마이페이지 메인 - 모든 탭 데이터 한번에 전달
-    @GetMapping("")
+    // 1. 마이페이지 메인 접속 URL: localhost:8080/mypage/docs
+    @GetMapping("/docs")
     public String userDashboard(HttpSession session, Model model) {
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
-        if (loginUser == null || !"ROLE_USER".equals(loginUser.getRole())) {
+        // 세션 체크 (로그인 안 되어 있으면 로그인 페이지로)
+        if (loginUser == null) {
             return "redirect:/login";
         }
 
         String userId = loginUser.getUserId();
 
+        // DB 데이터 연동
         model.addAttribute("user", userService.getUserById(userId));
         model.addAttribute("consultCount", consultService.getConsultCountByUserId(userId));
-        model.addAttribute("consultList", consultService.getConsultListByUserId(userId));  // 상담 탭용
-        model.addAttribute("docList", documentService.getUserDownloadList(userId));         // 문서 탭용
+        model.addAttribute("consultList", consultService.getConsultListByUserId(userId));
+        model.addAttribute("docList", documentService.getUserDownloadList(userId));
 
+        // 뷰 파일 위치: src/main/resources/templates/mypage/user/mypage.html 확인!
         return "mypage/user/mypage";
     }
 
-    // 프로필 수정 처리
+    // 2. 프로필 수정 처리
     @PostMapping("/profile/update")
     public String updateProfile(UserDTO userDTO, HttpSession session) {
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
@@ -49,39 +52,9 @@ public class UserPageController {
         userDTO.setUserId(loginUser.getUserId());
         userService.updateProfile(userDTO);
 
-        // 세션 정보 최신화
+        // 세션 정보 최신화 후 다시 메인으로 리다이렉트
         session.setAttribute("loginUser", userService.getUserById(loginUser.getUserId()));
-        return "redirect:/user/mypage";
-    }
-
-    // 아래는 혹시 팀원들이 개별 URL로 쓸 경우를 위해 유지
-    @GetMapping("/consult")
-    public String userConsultList(HttpSession session, Model model) {
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-        if (loginUser == null || !"ROLE_USER".equals(loginUser.getRole())) {
-            return "redirect:/login";
-        }
-        model.addAttribute("consultList", consultService.getConsultListByUserId(loginUser.getUserId()));
-        return "mypage/user/consult";
-    }
-
-    @GetMapping("/docs")
-    public String userDocuments(HttpSession session, Model model) {
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-        if (loginUser == null || !"ROLE_USER".equals(loginUser.getRole())) {
-            return "redirect:/login";
-        }
-        model.addAttribute("docList", documentService.getUserDownloadList(loginUser.getUserId()));
-        return "mypage/user/docs";
-    }
-
-    @GetMapping("/profile")
-    public String userProfile(HttpSession session, Model model) {
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-        if (loginUser == null || !"ROLE_USER".equals(loginUser.getRole())) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", userService.getUserById(loginUser.getUserId()));
-        return "mypage/user/profile";
+        String s = "redirect:/mypage/docs";
+        return s;
     }
 }

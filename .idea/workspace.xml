@@ -4,40 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="25">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/ConsultMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mapper/UserDAO.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/docs.jsp" afterDir="false" />
+    <list default="true" id="48680a8d-9597-479f-8607-38f9fe562af1" name="변경" comment="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminLawyerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/AdminLawyerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/LawyerMypageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/LawyerMypageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserMypageController.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/controller/UserPageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/AdminLawyerDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/AdminLawyerDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/ConsultDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/ConsultDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/DocumentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/DocumentDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dao/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/ConsultDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/ConsultDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/DocumentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/DocumentDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/LawyerApprovalDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/LawyerApprovalDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/dto/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminLawyerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/AdminLawyerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/ConsultService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/ConsultService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/DocumentLoaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/DocumentLoaderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lawmate/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/DocumentMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/DocumentMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/UserMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/lawyer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/lawyer.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/login.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/consult.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/consult.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/mypage.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/profile.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/lawyer/profile.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/consult.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/consult.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/mypage.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/mypage/user/profile.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/signup.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/signup.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -255,7 +224,7 @@
       <workItem from="1771819890791" duration="6126000" />
       <workItem from="1771826112777" duration="85000" />
       <workItem from="1771826219206" duration="14092000" />
-      <workItem from="1771866548184" duration="21477000" />
+      <workItem from="1771866548184" duration="24373000" />
     </task>
     <task id="LOCAL-00001" summary="홈">
       <option name="closed" value="true" />
@@ -545,7 +514,23 @@
       <option name="project" value="LOCAL" />
       <updated>1771830328390</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!">
+      <option name="closed" value="true" />
+      <created>1771888164877</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1771888164877</updated>
+    </task>
+    <task id="LOCAL-00038" summary="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!">
+      <option name="closed" value="true" />
+      <created>1771888174469</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1771888174469</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -576,7 +561,8 @@
     <MESSAGE value="12345" />
     <MESSAGE value="123454" />
     <MESSAGE value="25" />
-    <option name="LAST_COMMIT_MESSAGE" value="25" />
+    <MESSAGE value="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!" />
+    <option name="LAST_COMMIT_MESSAGE" value="일반회원 변호사 회원가입 로그인 가능  vs 각 마이페이지 우선 화면 구성까지!!" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
