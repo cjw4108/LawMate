@@ -1,5 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
+<script type="text/javascript">
+    $(document).ready(function(){
+        let msg = "${msg}"  // 모델에 등록 성공 메시지를 가져올 때 처리 하는 내용..
+        if(msg!=''){	// 초기 등록화면과 구분하기 위해..
+            if(confirm(msg+"\n조회화면 이동하시겠습니까?")){
+                location.href="consultList"
+            }
+        }
+        $("#lstBtn").click(function(){
+            location.href="consultList"
+        })
+    });
+</script>
 
 <main class="main" style="padding-top: 100px;">
     <div class="container shadow-sm border rounded p-0" style="max-width: 600px;">
