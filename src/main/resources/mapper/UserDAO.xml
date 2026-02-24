@@ -6,40 +6,29 @@
 
     <select id="login" resultType="com.lawmate.dto.UserDTO">
         SELECT * FROM USERS
-        WHERE USER_ID = #{userId} AND PASSWORD = #{password}
+        WHERE USER_ID = #{userId, jdbcType=VARCHAR} AND PASSWORD = #{password, jdbcType=VARCHAR}
     </select>
 
     <insert id="signup" parameterType="com.lawmate.dto.UserDTO">
         INSERT INTO USERS (USER_ID, PASSWORD, NAME, EMAIL, ROLE)
-        VALUES (#{userId}, #{password}, #{userName}, #{email}, 'ROLE_USER')
+        VALUES (#{userId, jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR}, #{userName, jdbcType=VARCHAR}, #{email, jdbcType=VARCHAR}, 'ROLE_USER')
     </insert>
 
     <insert id="saveLawyer" parameterType="com.lawmate.dto.UserDTO">
-        INSERT INTO USERS (
-            USER_ID,
-            PASSWORD,
-            NAME,
-            EMAIL,
-            ROLE
-        ) VALUES (
-                     #{userId},
-                     #{password},
-                     #{userName},
-                     #{email},
-                     'ROLE_LAWYER'
-                 )
+        INSERT INTO USERS (USER_ID, PASSWORD, NAME, EMAIL, ROLE)
+        VALUES (#{userId, jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR}, #{userName, jdbcType=VARCHAR}, #{email, jdbcType=VARCHAR}, 'ROLE_LAWYER')
     </insert>
 
     <select id="existsByUserId" resultType="int">
-        SELECT COUNT(*) FROM USERS WHERE USER_ID = #{userId}
+        SELECT COUNT(*) FROM USERS WHERE USER_ID = #{userId, jdbcType=VARCHAR}
     </select>
 
     <select id="findByUserId" resultType="com.lawmate.dto.UserDTO">
-        SELECT * FROM USERS WHERE USER_ID = #{userId}
+        SELECT * FROM USERS WHERE USER_ID = #{userId, jdbcType=VARCHAR}
     </select>
 
     <update id="updateProfile">
-        UPDATE USERS SET NAME = #{userName}, EMAIL = #{email} WHERE USER_ID = #{userId}
+        UPDATE USERS SET NAME = #{userName, jdbcType=VARCHAR}, EMAIL = #{email, jdbcType=VARCHAR} WHERE USER_ID = #{userId, jdbcType=VARCHAR}
     </update>
 
 </mapper>
