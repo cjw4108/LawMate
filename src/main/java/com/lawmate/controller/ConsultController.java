@@ -41,18 +41,4 @@ public class ConsultController {
         return "consult\\consultDetail";
     }
 
-    @PostMapping("updateConsult")
-    public String updateConsult(ConsultDto upt, Model d) {
-        d.addAttribute("msg", service.updateConsult(upt));
-        // 수정된 이후 내용을 상세화면에서 확인..
-        d.addAttribute("consult", service.getConsult(upt.getId()));
-        return "consult\\consultDetail";
-    }
-
-    @PostMapping("deleteConsult")
-    public String deleteConsult(@RequestParam("id") int id, Model d) {
-        System.out.println("id = " + id + ";");
-        d.addAttribute("msg", service.deleteConsult(id) );
-        return "consult\\consultDetail";
-    }
 }
