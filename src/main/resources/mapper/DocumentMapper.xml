@@ -32,7 +32,6 @@
         <result property="categoryName" column="CATEGORY_NAME"/>
     </resultMap>
 
-
     <insert id="insertCategory" parameterType="com.lawmate.dto.DocumentCategoryDTO">
         INSERT INTO DOCUMENT_CATEGORIES (
             NAME, DESCRIPTION, PARENT_ID, DISPLAY_ORDER, IS_ACTIVE, CREATED_AT
@@ -53,7 +52,6 @@
         SELECT * FROM DOCUMENT_CATEGORIES WHERE NAME = #{name}
     </select>
 
-
     <insert id="insertDocument" parameterType="com.lawmate.dto.DocumentDTO">
         INSERT INTO DOCUMENTS (
             CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
@@ -64,18 +62,6 @@
                  )
     </insert>
 
-    <insert id="insertDocumentBatch" parameterType="list">
-        <foreach collection="list" item="doc" separator=";">
-            INSERT INTO DOCUMENTS (
-            CATEGORY_ID, TITLE, DESCRIPTION, FILE_PATH, FILE_TYPE,
-            ACCESS_TYPE, DOWNLOAD_COUNT, IS_ACTIVE, CREATED_AT
-            ) VALUES (
-            #{doc.categoryId}, #{doc.title}, #{doc.description}, #{doc.filePath}, #{doc.fileType},
-            #{doc.accessType}, #{doc.downloadCount}, #{doc.isActive}, SYSDATE
-            )
-        </foreach>
-    </insert>
-
     <select id="selectAllDocuments" resultMap="documentResultMap">
         SELECT D.*, C.NAME AS CATEGORY_NAME
         FROM DOCUMENTS D
@@ -83,24 +69,12 @@
         ORDER BY D.CREATED_AT DESC
     </select>
 
-    <select id="selectDocumentsByCategory" parameterType="long" resultMap="documentResultMap">
-        SELECT D.*, C.NAME AS CATEGORY_NAME
-        FROM DOCUMENTS D
-                 LEFT JOIN DOCUMENT_CATEGORIES C ON D.CATEGORY_ID = C.ID
-        WHERE D.CATEGORY_ID = #{categoryId}
-        ORDER BY D.CREATED_AT DESC
-    </select>
-
     <select id="selectDocumentById" parameterType="long" resultMap="documentResultMap">
         SELECT * FROM DOCUMENTS WHERE ID = #{id}
     </select>
 
-    <select id="countDocuments" resultType="int">
-        SELECT COUNT(*) FROM DOCUMENTS
-    </select>
-
-    <select id="countDocumentsByCategory" parameterType="long" resultType="int">
-        SELECT COUNT(*) FROM DOCUMENTS WHERE CATEGORY_ID = #{categoryId}
+    <select id="selectFilePathById" resultType="string">
+        SELECT FILE_PATH FROM DOCUMENTS WHERE ID = #{id}
     </select>
 
     <delete id="deleteAllDocuments">
@@ -111,8 +85,14 @@
         DELETE FROM DOCUMENT_CATEGORIES
     </delete>
 
+    <select id="countDocuments" resultType="int">
+        SELECT COUNT(*) FROM DOCUMENTS
+    </select>
 
-    <!-- ===== 기존 팀원 코드 (수정 금지) ===== -->
+    <select id="countDocumentsByCategory" parameterType="long" resultType="int">
+        SELECT COUNT(*) FROM DOCUMENTS WHERE CATEGORY_ID = #{categoryId}
+    </select>
+
     <select id="selectDocumentsByUserId" parameterType="string" resultMap="documentResultMap">
         SELECT D.*, C.NAME AS CATEGORY_NAME, H.DOWNLOAD_DATE AS CREATED_AT
         FROM DOCUMENTS D
@@ -130,21 +110,21 @@
                  )
     </insert>
 
-    <select id="selectFilePathById" resultType="string">
-        SELECT D.FILE_PATH
-        FROM DOCUMENTS D
-                 INNER JOIN DOWNLOAD_HISTORY H ON D.ID = H.DOCUMENT_ID
-        WHERE D.ID = #{documentId} AND H.USER_ID = #{userId}
-    </select>
+    <insert id="insertDownloadHistoryForMypage">
+        INSERT INTO DOWNLOAD_HISTORY (
+            USER_ID, DOCUMENT_ID, CREATED_AT
+        ) VALUES (
+                     #{userId}, #{documentId}, SYSDATE
+                 )
+    </insert>
 
-    <!-- ===== 마이페이지용 추가 쿼리 (DOWNLOAD_DATE 없는 경우 대비) ===== -->
-    <!-- DOWNLOAD_HISTORY 테이블의 실제 날짜 컬럼명을 모를 경우 DOCUMENTS.CREATED_AT 기준으로 조회 -->
     <select id="selectDocumentsByUserIdForMypage" parameterType="string" resultMap="documentResultMap">
-        SELECT D.*, C.NAME AS CATEGORY_NAME, D.CREATED_AT
+        SELECT D.*, C.NAME AS CATEGORY_NAME, H.CREATED_AT
         FROM DOCUMENTS D
                  INNER JOIN DOWNLOAD_HISTORY H ON D.ID = H.DOCUMENT_ID
                  LEFT JOIN DOCUMENT_CATEGORIES C ON D.CATEGORY_ID = C.ID
         WHERE H.USER_ID = #{userId}
-        ORDER BY D.CREATED_AT DESC
+        ORDER BY H.CREATED_AT DESC
     </select>
+
 </mapper>

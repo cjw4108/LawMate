@@ -43,7 +43,11 @@
     <div class="card p-4" style="width: 400px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <h3 class="text-center mb-4">회원가입(일반)</h3>
 
-        <form action="${pageContext.request.contextPath}/signup" method="post">
+        <% if (request.getAttribute("error") != null) { %>
+        <div class="alert alert-danger">${error}</div>
+        <% } %>
+
+        <form action="${pageContext.request.contextPath}/signup" method="post" id="signupForm">
             <%-- DTO 자동입력을 위한 히든 필드 --%>
             <input type="hidden" name="role" value="ROLE_USER">
             <input type="hidden" name="lawyerStatus" value="NONE">
@@ -55,12 +59,13 @@
 
             <div class="mb-3">
                 <label class="form-label">비밀번호 <span class="text-danger">*</span></label>
-                <input type="password" name="password" class="form-control" placeholder="비밀번호 입력" required>
+                <input type="password" name="password" id="password" class="form-control" placeholder="비밀번호 입력" required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">비밀번호 확인 <span class="text-danger">*</span></label>
-                <input type="password" name="passwordConfirm" class="form-control" placeholder="비밀번호 재 입력" required>
+                <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control" placeholder="비밀번호 재 입력" required>
+                <div id="pwHint" style="font-size:12px; margin-top:4px;"></div>
             </div>
 
             <div class="mb-4">
@@ -76,5 +81,39 @@
         </div>
     </div>
 </div>
+
+<script>
+    // 비밀번호 확인 실시간 체크
+    document.getElementById('passwordConfirm').addEventListener('input', function() {
+        var pw   = document.getElementById('password').value;
+        var hint = document.getElementById('pwHint');
+        if (!this.value) { hint.textContent = ''; return; }
+        if (pw === this.value) {
+            hint.textContent = '비밀번호가 일치합니다.';
+            hint.style.color = '#198754';
+        } else {
+            hint.textContent = '비밀번호가 일치하지 않습니다.';
+            hint.style.color = '#dc3545';
+        }
+    });
+
+    // 제출 전 검증
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        var uid   = document.querySelector('[name=userId]').value.trim();
+        var pw    = document.getElementById('password').value;
+        var pwc   = document.getElementById('passwordConfirm').value;
+        var email = document.querySelector('[name=email]').value.trim();
+
+        if (!uid || !pw || !pwc || !email) {
+            e.preventDefault();
+            alert('모든 항목을 입력해주세요.');
+            return;
+        }
+        if (pw !== pwc) {
+            e.preventDefault();
+            alert('비밀번호가 일치하지 않습니다.');
+        }
+    });
+</script>
 </body>
 </html>

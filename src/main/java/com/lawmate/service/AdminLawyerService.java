@@ -44,4 +44,6 @@ public class AdminLawyerService {
     public void updateLawyerStatus(String lawyerId, String status, String rejectReason) {
         adminLawyerDAO.updateStatus(lawyerId, status, rejectReason);
     }
+
+    // ✅ 수정: static 메서드 삭제
 }

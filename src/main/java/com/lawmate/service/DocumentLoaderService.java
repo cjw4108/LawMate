@@ -28,7 +28,7 @@ public class DocumentLoaderService {
         this.objectMapper = objectMapper;
     }
 
-    // [기존 팀원 코드] 법률 양식 데이터 초기 로드 로직
+    // [기존 팀원 코드] 법률 양식 데이터 초기 로드 로직 (수정 금지)
     public void loadLegalForms() throws IOException {
         log.info("=".repeat(60));
         log.info("법률 양식 데이터 로드 시작");
@@ -131,16 +131,15 @@ public class DocumentLoaderService {
     }
 
 // ==========================================
-    // [내 기능] 마이페이지 전용 추가 메서드
-    // ==========================================
+// [내 기능] 마이페이지 전용 추가 메서드
+// ==========================================
 
     /**
      * 회원별 문서 이력 조회 (컨트롤러에서 이 메서드를 호출함)
      */
     public List<DocumentDTO> getUserDownloadList(String userId) {
         log.info("사용자 [{}]의 문서 다운로드 이력 조회 시작", userId);
-
-        // [중요] 팀원의 selectDocumentsByUserId 대신 ForMypage 메서드 호출
+        // [수정] 팀원의 selectDocumentsByUserId는 ORA-00904 에러 위험이 있어 내 전용 쿼리 호출
         return documentDAO.selectDocumentsByUserIdForMypage(userId);
     }
 
@@ -148,9 +147,14 @@ public class DocumentLoaderService {
      * 문서 파일 경로 조회 및 다운로드 기록
      */
     public String getFilePath(Long documentId, String userId) {
+        // 1. 파일 경로 조회
         String filePath = documentDAO.selectFilePathById(documentId);
+
         if (filePath != null) {
-            documentDAO.insertDownloadHistory(userId, documentId);
+            log.info("사용자 [{}]가 문서 [{}]를 다운로드함", userId, documentId);
+            // 2. [수정 포인트] insertDownloadHistory -> insertDownloadHistoryForMypage 로 변경
+            // 이렇게 해야 MyBatis의 중복 ID 충돌 에러가 발생하지 않습니다.
+            documentDAO.insertDownloadHistoryForMypage(userId, documentId);
         }
         return filePath;
     }

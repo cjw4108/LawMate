@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lawmate.dao.AdminLawyerDAO">
+
+    <select id="findPendingLawyers" resultType="com.lawmate.dto.LawyerApprovalDTO">
+        SELECT
+            USER_ID      AS userId,
+            USER_NAME    AS userName,
+            ROLE         AS role,
+            LAWYER_STATUS AS status
+        FROM USERS
+        WHERE LAWYER_STATUS = 'PENDING'
+        ORDER BY USER_ID DESC
+    </select>
+
+    <select id="findAllLawyers" resultType="com.lawmate.dto.LawyerApprovalDTO">
+        SELECT
+            USER_ID      AS userId,
+            USER_NAME    AS userName,
+            ROLE         AS role,
+            LAWYER_STATUS AS status
+        FROM USERS
+        WHERE ROLE = 'ROLE_LAWYER' OR LAWYER_STATUS = 'PENDING'
+        ORDER BY USER_ID DESC
+    </select>
+
+    <select id="findByLawyerId" resultType="com.lawmate.dto.LawyerApprovalDTO">
+        SELECT
+            USER_ID       AS userId,
+            USER_NAME     AS userName,
+            LAWYER_STATUS AS status,
+            REJECT_REASON AS rejectReason
+        FROM USERS
+        WHERE USER_ID = #{lawyerId}
+    </select>
+
+    <update id="approve">
+        UPDATE USERS
+        SET
+            LAWYER_STATUS = 'APPROVED',
+            ROLE = 'ROLE_LAWYER'
+        WHERE USER_ID = #{lawyerId}
+    </update>
+
+    <update id="reject">
+        UPDATE USERS
+        SET
+            LAWYER_STATUS = 'REJECTED',
+            REJECT_REASON = #{rejectReason}
+        WHERE USER_ID = #{lawyerId}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE USERS
+        SET
+            LAWYER_STATUS = #{status},
+            REJECT_REASON = #{rejectReason}
+        WHERE USER_ID = #{lawyerId}
+    </update>
+
+</mapper>

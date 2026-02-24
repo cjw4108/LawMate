@@ -41,35 +41,39 @@
 </head>
 <body>
 <div class="mypage-container">
+    <%-- 탭 영역: 기획안 1번 항목 반영 --%>
     <div class="tab-nav">
         <a href="${pageContext.request.contextPath}/mypage/my-page">마이페이지</a>
         <a href="${pageContext.request.contextPath}/mypage/my-page/consult">상담 내역</a>
         <a href="${pageContext.request.contextPath}/mypage/my-page/docs" class="active">문서</a>
-        <a href="${pageContext.request.contextPath}/mypage/my-page/profile">프로필</a>
+        <a href="${pageContext.request.contextPath}/mypage/my-page/profile">관리</a>
     </div>
 
+    <%-- 문서 이력 영역: 기획안 4번 항목 반영 --%>
     <div class="card-box">
         <div class="section-title">📄 문서 이력</div>
         <c:choose>
             <c:when test="${empty docList}">
-                <p class="empty-msg">다운로드한 문서가 없습니다.</p>
-            </c:when>
+                <div class="empty-msg">다운로드한 문서 내역이 없습니다.</div>
+            </c:otherwise>
             <c:otherwise>
                 <table class="data-table">
                     <thead>
                     <tr>
-                        <th>문서명</th>
-                        <th>생성일</th>
-                        <th>다운로드</th>
+                        <th style="width: 55%;">문서명</th>
+                        <th style="width: 25%;">생성일</th>
+                        <th style="width: 20%;">다운로드</th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:forEach var="doc" items="${docList}">
                         <tr>
-                            <td>${doc.docName}</td>
-                            <td>${doc.createdAt}</td>
+                            <td>${doc.title}</td>
+                                <%-- DB에서 가져온 Date 객체를 YYYY-MM-DD 형식으로 출력 --%>
+                            <td><fmt:formatDate value="${doc.createdAt}" pattern="yyyy-MM-dd"/></td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/docs/download/${doc.docId}" class="btn-sm">다운로드</a>
+                                    <%-- 본인이 구현한 DocumentLoaderService.getFilePath() 호출용 URL --%>
+                                <a href="${pageContext.request.contextPath}/docs/download?id=${doc.id}" class="btn-download">[다운로드]</a>
                             </td>
                         </tr>
                     </c:forEach>

@@ -317,6 +317,8 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 <script>
+    var isLoggedIn = ${not empty sessionScope.loginUser ? 'true' : 'false'};
+
     let allCards = [];
     let currentPage = 1;
     const cardsPerPage = 6;
@@ -441,7 +443,7 @@
                 '<span class="badge ' + getBadgeClass(categoryName) + '">' + categoryName + '</span>' +
                 '<h3 class="card-title">' + card.title + '</h3>' +
                 '<div class="card-info">' + (card.description || '') + '</div>' +
-                '<button class="card-button" onclick="event.stopPropagation(); downloadFile(' + card.id + ')" style="background: #3b82f6;">다운로드</button>';
+                '<button class="card-button" onclick="event.stopPropagation(); handleDownload(' + card.id + ')" style="background: #3b82f6;">다운로드</button>';
 
             cardGrid.appendChild(cardElement);
         });
@@ -535,6 +537,16 @@
         if (existing) existing.remove();
     }
 
+    function handleDownload(id) {
+        if (!isLoggedIn) {
+            if (confirm('로그인이 필요합니다.\n로그인 페이지로 이동하시겠습니까?')) {
+                location.href = '/login';
+            }
+            return;
+        }
+        downloadFile(id);
+    }
+
     function loadRanking() {
         $.ajax({
             url: "/api/ranking",
@@ -546,13 +558,30 @@
                 for (let i = 0; i < data.length; i++) {
                     if (data[i] == null || i >= 6) break;
                     let color = colors[i % colors.length];
+                    let keyword = data[i];
+
                     $("#rank-container").append(
-                        '<a href="#" class="btn btn-outline-' + color + ' rounded-pill px-4 py-2"># ' + data[i] + '</a>'
+                        '<a href="javascript:void(0);" class="btn btn-outline-' + color +
+                        ' rounded-pill px-4 py-2 rank-tag" data-keyword="' + keyword + '"># ' + keyword + '</a>'
                     );
                 }
             }
         });
     }
+
+    $(document).on('click', '.rank-tag', function() {
+        const keyword = $(this).data('keyword');
+        $('#searchInput').val(keyword);
+        searchKeyword = keyword;
+        removeAutocomplete();
+        loadDocuments(1, selectedCategoryId, searchKeyword);
+
+        $.ajax({
+            url: "/api/search/log",
+            type: "POST",
+            data: { query: searchKeyword }
+        });
+    });
 
     function addToCart(documentId) {
         $.ajax({
