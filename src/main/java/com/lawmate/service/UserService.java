@@ -16,31 +16,36 @@ public class UserService {
     private final UserDAO userDAO;
     private final String uploadPath = "C:/lawmate/uploads/";
 
-    // 1. 일반 회원가입 (기존 로직 그대로 유지)
+    // 1. 일반 회원가입
     @Transactional
     public boolean signup(UserDTO user) {
         if (userDAO.existsByUserId(user.getUserId()) > 0) {
             return false;
         }
 
+        // 권한 설정
         user.setRole("ROLE_USER");
-        user.setLawyerStatus("NONE");
+
+        // 🔴 [수정] lawyerStatus -> status로 변경 (DTO와 일치)
+        user.setStatus("ACTIVE");
 
         userDAO.signup(user);
         return true;
     }
 
-    // 2. 변호사 회원가입 (에러 방지를 위해 수정된 최종 로직)
+    // 2. 변호사 회원가입
     @Transactional
     public boolean signupLawyer(UserDTO user, MultipartFile licenseFile) {
+        if (userDAO.existsByUserId(user.getUserId()) > 0) {
+            return false;
+        }
+
         if (licenseFile != null && !licenseFile.isEmpty()) {
             try {
-                // 파일은 지정된 경로(C:/lawmate/uploads/)에 물리적으로 저장
                 String savedName = saveFile(licenseFile);
 
-                // 🔴 [에러 해결 핵심] DB에 LICENSE_FILE 컬럼이 없으므로 DTO에 세팅하지 않음.
-                // 이렇게 해야 MyBatis가 존재하지 않는 컬럼에 데이터를 넣으려다 에러(ORA-00904)를 내지 않습니다.
-                // user.setLicenseFile(savedName);
+                // 🔴 [수정] 이제 DB에 컬럼을 추가했으므로 DTO에 세팅해도 됩니다.
+                user.setLicenseFile(savedName);
 
                 System.out.println("변호사 증빙파일 저장 완료: " + savedName);
             } catch (Exception e) {
@@ -49,11 +54,14 @@ public class UserService {
             }
         }
 
-        // XML에서 LICENSE_FILE 항목이 제거된 saveLawyer 쿼리를 호출
+        // 변호사는 기본 권한 ROLE_LAWYER와 대기 상태 PENDING 설정
+        user.setRole("ROLE_LAWYER");
+        user.setStatus("PENDING");
+
         return userDAO.saveLawyer(user) > 0;
     }
 
-    // 3. 로그인 및 기타 기능 (기존 유지)
+    // 3. 로그인 및 기타 기능
     public UserDTO login(String userId, String password) {
         return userDAO.login(userId, password);
     }
