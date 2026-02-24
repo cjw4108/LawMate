@@ -558,13 +558,30 @@
                 for (let i = 0; i < data.length; i++) {
                     if (data[i] == null || i >= 6) break;
                     let color = colors[i % colors.length];
+                    let keyword = data[i];
+
                     $("#rank-container").append(
-                        '<a href="#" class="btn btn-outline-' + color + ' rounded-pill px-4 py-2"># ' + data[i] + '</a>'
+                        '<a href="javascript:void(0);" class="btn btn-outline-' + color +
+                        ' rounded-pill px-4 py-2 rank-tag" data-keyword="' + keyword + '"># ' + keyword + '</a>'
                     );
                 }
             }
         });
     }
+
+    $(document).on('click', '.rank-tag', function() {
+        const keyword = $(this).data('keyword');
+        $('#searchInput').val(keyword);
+        searchKeyword = keyword;
+        removeAutocomplete();
+        loadDocuments(1, selectedCategoryId, searchKeyword);
+
+        $.ajax({
+            url: "/api/search/log",
+            type: "POST",
+            data: { query: searchKeyword }
+        });
+    });
 
     function addToCart(documentId) {
         $.ajax({
