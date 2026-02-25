@@ -63,7 +63,7 @@ public class QuestionService {
     }
 
     // ============================
-    // 제목 검색 → DTO로 변환
+    // 제목 검색
     // ============================
     @Transactional(readOnly = true)
     public List<QuestionListDTO> search(String keyword) {
@@ -77,8 +77,8 @@ public class QuestionService {
                         q.getUserId(),
                         q.getTitle(),
                         q.getContent(),
-                        q.getAnswered(),
-                        q.getReportCount(),
+                        q.getAnswered() == null ? 0 : q.getAnswered(),
+                        q.getReportCount() == null ? 0 : q.getReportCount(),
                         q.getCreatedAt(),
                         replyRepository.countByQuestionId(q.getId()),
                         questionRepository.countFavoriteByQuestion(q.getId())
@@ -86,6 +86,9 @@ public class QuestionService {
                 .toList();
     }
 
+    // ============================
+    // 내가 찜한 글
+    // ============================
     @Transactional(readOnly = true)
     public List<QuestionListDTO> findMyFavorites(String userId) {
 
@@ -97,8 +100,8 @@ public class QuestionService {
                         q.getUserId(),
                         q.getTitle(),
                         q.getContent(),
-                        q.getAnswered(),
-                        q.getReportCount(),
+                        q.getAnswered() == null ? 0 : q.getAnswered(),
+                        q.getReportCount() == null ? 0 : q.getReportCount(),
                         q.getCreatedAt(),
                         replyRepository.countByQuestionId(q.getId()),
                         questionRepository.countFavoriteByQuestion(q.getId())
@@ -106,13 +109,16 @@ public class QuestionService {
                 .toList();
     }
 
+    // ============================
+    // 단건 조회
+    // ============================
     @Transactional(readOnly = true)
     public Question findById(Long id) {
         return questionRepository.findById(id).orElse(null);
     }
 
     // ============================
-    // 🔥 통합 리스트 (타입 통일 완료)
+    // 🔥 통합 리스트
     // ============================
     @Transactional(readOnly = true)
     public List<QuestionListDTO> getList(String keyword, String sort, String userId) {
@@ -161,7 +167,7 @@ public class QuestionService {
     }
 
     // ============================
-    // 신고 관련
+    // 신고
     // ============================
     @Transactional
     public void report(Long qnaId, String reason, String userId) {
@@ -184,7 +190,7 @@ public class QuestionService {
     }
 
     // ============================
-    // 답변 관련
+    // 답변 등록
     // ============================
     @Transactional
     public void registerReply(Long id, String content, String userId) {
@@ -206,32 +212,58 @@ public class QuestionService {
         return replyRepository.findByQuestionIdOrderByCreatedAtAsc(questionId);
     }
 
-    // ============================
-    // Object[] → DTO 매핑
-    // ============================
-    private List<QuestionListDTO> mapToDTO(List<Object[]> rows) {
-
-        return rows.stream().map(row -> new QuestionListDTO(
-                ((Number) row[0]).longValue(),
-                (String) row[1],
-                (String) row[2],
-                (String) row[3],
-                row[4] == null ? 0 : ((Number) row[4]).intValue(),
-                row[5] == null ? 0 : ((Number) row[5]).intValue(),
-                ((Timestamp) row[6]).toLocalDateTime(),
-                ((Number) row[7]).intValue(),
-                ((Number) row[8]).intValue()
-        )).toList();
+    @Transactional(readOnly = true)
+    public int getReplyCount(Long questionId) {
+        return replyRepository.countByQuestionId(questionId);
     }
 
+    // ============================
+    // 신고된 글 목록 (관리자)
+    // ============================
     @Transactional(readOnly = true)
     public List<Question> findReportedQuestions() {
         return questionRepository
                 .findByReportCountGreaterThanOrderByReportCountDesc(0);
     }
 
-    @Transactional(readOnly = true)
-    public int getReplyCount(Long questionId) {
-        return replyRepository.countByQuestionId(questionId);
+    // ============================
+    // 🔥 Object[] → DTO 안전 매핑
+    // ============================
+    private List<QuestionListDTO> mapToDTO(List<Object[]> rows) {
+
+        return rows.stream().map(row -> {
+
+            Long id = row[0] == null ? 0L : ((Number) row[0]).longValue();
+            String userId = row[1] == null ? "" : row[1].toString();
+            String title = row[2] == null ? "" : row[2].toString();
+            String content = row[3] == null ? "" : row[3].toString();
+
+            Integer answered = row[4] == null ? 0 : ((Number) row[4]).intValue();
+            Integer reportCount = row[5] == null ? 0 : ((Number) row[5]).intValue();
+
+            LocalDateTime createdAt;
+            if (row[6] instanceof Timestamp ts) {
+                createdAt = ts.toLocalDateTime();
+            } else if (row[6] instanceof LocalDateTime ldt) {
+                createdAt = ldt;
+            } else {
+                createdAt = LocalDateTime.now();
+            }
+
+            int replyCount = row[7] == null ? 0 : ((Number) row[7]).intValue();
+            int favoriteCount = row[8] == null ? 0 : ((Number) row[8]).intValue();
+
+            return new QuestionListDTO(
+                    id,
+                    userId,
+                    title,
+                    content,
+                    answered,
+                    reportCount,
+                    createdAt,
+                    replyCount,
+                    favoriteCount
+            );
+        }).toList();
     }
 }
