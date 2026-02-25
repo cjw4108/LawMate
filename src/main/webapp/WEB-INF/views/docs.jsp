@@ -200,7 +200,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 offset-lg-1">
                     <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
-                        <h1 class="mb-4"><span class="accent-text">서류 양식</span></h1>
+                        <h1 class="mb-4 text-left fw-bold">서류 양식</h1>
                         <div class="company-badge mb-4"><i class="bi bi-gear-fill me-2"></i>법정 제출에 필요한 서류 양식을 작성하고 다운로드할 수 있습니다.</div>
                     </div>
                 </div>
@@ -240,7 +240,7 @@
                            class="form-control border-0 ms-3"
                            placeholder="검색어를 입력해주세요."
                            style="box-shadow: none; background: transparent; padding: 0.25rem 0;">
-                    <button class="btn btn-link text-Fdark me-2">
+                    <button class="btn btn-link text-Fdark me-2" onclick="doSearch()">
                         <i class="bi bi-search fs-4"></i>
                     </button>
                 </div>
@@ -251,7 +251,7 @@
         </div>
     </section>
 
-    <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0;">
+    <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0; margin-top: 4rem">
         <div class="container">
             <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 간편 작성 (2차예정)</h3>
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
@@ -303,7 +303,7 @@
         </div>
     </section>
 
-    <section id="about" class="about section" data-aos="zoom-out" data-aos-delay="300" style="padding-top: 0 !important;">
+    <section id="about" class="about section" data-aos="zoom-out" data-aos-delay="300" style="padding-top: 0 !important; margin-top: 3rem">
         <div class="container">
             <h3 class="mb-4 text-left fw-bold">전체 서류 양식 목록</h3>
             <div class="card-grid" id="cardGrid"></div>
@@ -379,6 +379,21 @@
                 if (searchKeyword) {
                     $.ajax({ url: "/api/search/log", type: "POST", data: { query: searchKeyword } });
                 }
+            }
+        });
+
+        window.doSearch = function() {
+            searchKeyword = $('#searchInput').val().trim();
+            removeAutocomplete();
+            loadDocuments(1, selectedCategoryId, searchKeyword);
+            if (searchKeyword) {
+                $.ajax({ url: "/api/search/log", type: "POST", data: { query: searchKeyword } });
+            }
+        }
+
+        $('#searchInput').on('keydown', function(e) {
+            if (e.keyCode === 13) {
+                doSearch();
             }
         });
 
