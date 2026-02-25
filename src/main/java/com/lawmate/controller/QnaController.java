@@ -4,6 +4,7 @@ import com.lawmate.dto.Question;
 import com.lawmate.dto.UserDTO;
 import com.lawmate.service.QuestionService;
 import com.lawmate.entity.ReplyEntity;
+import com.lawmate.dto.QuestionListDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +37,8 @@ public class QnaController {
             return "redirect:/login";
         }
 
-        List<Question> list = questionService.getList(keyword, sort, userId);
-
-        for (Question q : list) {
-            int replyCount = questionService.getReplyCount(q.getId());
-            int favoriteCount = questionService.getFavoriteCount(q.getId());
-
-            q.setReplyCount(replyCount);
-            q.setFavoriteCount(favoriteCount);
-        }
+        List<QuestionListDTO> list =
+                questionService.getList(keyword, sort, userId);
 
         model.addAttribute("list", list);
         model.addAttribute("currentSort", sort);
@@ -178,4 +172,6 @@ public class QnaController {
 
         return "redirect:/qna/list";
     }
+
+
 }
