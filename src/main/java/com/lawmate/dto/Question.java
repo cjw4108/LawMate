@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "QUESTIONS")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,21 +30,26 @@ public class Question {
     @Column(name = "ADOPTED_ANSWER")
     private Long adoptedAnswer;
 
-    // 명시적으로 컬럼 이름을 지정하고 기본값을 0으로 설정합니다
+    // 신고 횟수
     @Column(name = "REPORT_COUNT", nullable = false)
     private Integer reportCount = 0;
 
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
+    // DB에는 없고 화면 표시용
+    @Transient
+    private Integer replyCount;
+
+    // DB에는 없고 화면 표시용 (좋아요 수)
+    @Transient
+    private Integer favoriteCount;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+
         if (this.answered == null) this.answered = 0;
-        // null 방지를 위해 생성 시 0으로 초기화합니다
         if (this.reportCount == null) this.reportCount = 0;
     }
-
-    private int favoriteCount;
-
 }

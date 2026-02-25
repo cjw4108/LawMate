@@ -2,12 +2,15 @@ package com.lawmate.service;
 
 import com.lawmate.dao.QuestionRepository;
 import com.lawmate.dao.QuestionReportRepository;
+import com.lawmate.dao.ReplyRepository;
 import com.lawmate.dto.Question;
 import com.lawmate.dto.QuestionReport;
+import com.lawmate.entity.ReplyEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +21,7 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuestionReportRepository reportRepository;
+    private final ReplyRepository replyRepository;
 
     // =========================
     // 질문 저장
@@ -27,7 +31,7 @@ public class QuestionService {
     }
 
     // =========================
-    // 목록 조회
+    // 기본 목록 조회
     // =========================
     @Transactional(readOnly = true)
     public List<Question> findAllByOrderByCreatedAtDesc() {
@@ -35,8 +39,8 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public List<Question> findAllByOrderByAnsweredDesc() {
-        return questionRepository.findAllByOrderByAnsweredDesc();
+    public List<Question> findAllByOrderByReplyCountDesc() {
+        return questionRepository.findAllByOrderByReplyCountDesc();
     }
 
     @Transactional(readOnly = true)
@@ -60,25 +64,43 @@ public class QuestionService {
     }
 
     // =========================
+    // 통합 리스트 (검색 + 정렬)
+    // =========================
+    @Transactional(readOnly = true)
+    public List<Question> getList(String keyword, String sort, String userId) {
+
+        if (keyword != null && !keyword.isEmpty()) {
+            return questionRepository
+                    .findByTitleContainingOrderByCreatedAtDesc(keyword);
+        }
+
+        switch (sort) {
+            case "replies":
+                return questionRepository.findAllByOrderByReplyCountDesc();
+            case "likes":
+                return questionRepository.findAllByOrderByLikesDesc();
+            case "favorite":
+                if (userId == null) return Collections.emptyList();
+                return questionRepository.findMyFavorites(userId);
+            case "latest":
+            default:
+                return questionRepository.findAllByOrderByCreatedAtDesc();
+        }
+    }
+
+    // =========================
     // 찜 관련
     // =========================
-
     @Transactional(readOnly = true)
     public boolean isFavorite(Long id, String userId) {
         return questionRepository.countFavorite(id, userId) > 0;
     }
 
-    /**
-     * ⭐ 찜 개수 조회 (AJAX 숫자 업데이트용)
-     */
     @Transactional(readOnly = true)
     public int getFavoriteCount(Long id) {
         return questionRepository.countFavoriteByQuestion(id);
     }
 
-    /**
-     * 찜 토글
-     */
     @Transactional
     public String toggleFavorite(Long id, String userId) {
 
@@ -121,46 +143,30 @@ public class QuestionService {
     }
 
     // =========================
-    // 통합 리스트 (검색 + 정렬)
-    // =========================
-    @Transactional(readOnly = true)
-    public List<Question> getList(String keyword, String sort, String userId) {
-
-        if (keyword != null && !keyword.isEmpty()) {
-            return questionRepository
-                    .findByTitleContainingOrderByCreatedAtDesc(keyword);
-        }
-
-        switch (sort) {
-            case "replies":
-                return questionRepository.findAllByOrderByAnsweredDesc();
-            case "likes":
-                return questionRepository.findAllByOrderByLikesDesc();
-            case "favorite":
-                if (userId == null) return Collections.emptyList();
-                return questionRepository.findMyFavorites(userId);
-            case "latest":
-            default:
-                return questionRepository.findAllByOrderByCreatedAtDesc();
-        }
-    }
-
-    // =========================
-    // 답변 등록
+    // 답변 관련
     // =========================
     @Transactional
     public void registerReply(Long id, String content, String userId) {
 
-        Question question = questionRepository.findById(id)
+        questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        int currentAnswered =
-                (question.getAnswered() == null) ? 0 : question.getAnswered();
+        ReplyEntity entity = new ReplyEntity();
+        entity.setQuestionId(id);
+        entity.setUserId(userId);
+        entity.setContent(content);
+        entity.setCreatedAt(LocalDateTime.now());
 
-        question.setAnswered(currentAnswered + 1);
+        replyRepository.save(entity);
+    }
 
-        questionRepository.save(question);
+    @Transactional(readOnly = true)
+    public List<ReplyEntity> getReplies(Long questionId) {
+        return replyRepository.findByQuestionIdOrderByCreatedAtAsc(questionId);
+    }
 
-        // replyRepository 저장 로직이 있다면 여기에 추가
+    @Transactional(readOnly = true)
+    public int getReplyCount(Long questionId) {
+        return replyRepository.countByQuestionId(questionId);
     }
 }

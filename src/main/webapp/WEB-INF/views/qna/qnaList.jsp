@@ -6,7 +6,7 @@
 <main class="main" style="padding-top: 100px;">
     <div class="container">
 
-        <%-- 검색 영역 --%>
+        <!-- 검색 영역 -->
         <div class="row mb-5 justify-content-center">
             <div class="col-lg-8">
                 <form action="/qna/list" method="get" id="searchForm">
@@ -22,7 +22,7 @@
                         </button>
                     </div>
 
-                    <%-- 정렬 버튼 --%>
+                    <!-- 정렬 버튼 -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="btn-group shadow-sm bg-white p-1 rounded">
 
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <%-- QNA 리스트 --%>
+        <!-- QNA 리스트 -->
         <div class="qna-list mb-5">
 
             <c:choose>
@@ -69,14 +69,17 @@
                             <div class="card-body p-4">
                                 <div class="d-flex justify-content-between align-items-start">
 
-                                        <%-- 왼쪽 영역 --%>
+                                    <!-- 왼쪽 영역 -->
                                     <div>
 
-                                        <span class="badge ${question.answered > 0 ?
-                                            'bg-success-subtle text-success' :
-                                            'bg-primary-subtle text-primary'} mb-2">
+                                        <!-- 답변 상태 뱃지 -->
+                                        <span class="badge ${
+                                                question.replyCount > 0
+                                                ? 'bg-success-subtle text-success'
+                                                : 'bg-primary-subtle text-primary'
+                                            } mb-2">
 
-                                                ${question.answered > 0 ? '답변 완료' : '답변 대기'}
+                                                ${question.replyCount > 0 ? '답변 완료' : '답변 대기'}
 
                                         </span>
 
@@ -95,19 +98,19 @@
                                         </p>
                                     </div>
 
-                                        <%-- 오른쪽 영역 (답변수 + 찜수) --%>
+                                    <!-- 오른쪽 영역 (답변수 + 찜수) -->
                                     <div class="d-flex gap-2">
 
-                                            <%-- 답변 수 --%>
+                                        <!-- 답변 수 -->
                                         <div class="text-center bg-light p-2 rounded"
                                              style="min-width: 70px;">
                                             <span class="d-block fw-bold small">답변</span>
                                             <span class="text-primary fw-bold">
-                                                    ${question.answered}
+                                                    ${question.replyCount != null ? question.replyCount : 0}
                                             </span>
                                         </div>
 
-                                            <%-- 찜 수 --%>
+                                        <!-- 찜 수 -->
                                         <div class="text-center bg-light p-2 rounded"
                                              style="min-width: 70px;">
                                             <span class="d-block fw-bold small">
@@ -144,7 +147,7 @@
 
         </div>
 
-        <%-- 글쓰기 버튼 --%>
+        <!-- 글쓰기 버튼 -->
         <a href="/qna/write" class="btn btn-dark w-100 py-3 rounded-3 shadow">
             <i class="bi bi-pencil-square me-2"></i> 새로운 질문 등록하기
         </a>
