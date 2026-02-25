@@ -39,11 +39,11 @@ public class ConsultService {
 
     public Object updateConsult(ConsultDto upt) {
 
-        return null;
+        return dao.updateConsult(upt)>0?"수정 성공":"수정 되지 않았습니다.";
     }
 
     public Object deleteConsult(int id) {
-        return null;
+        return dao.deleteConsult(id)>0?"삭제 성공":"삭제가 되지 않았습니다";
     }
 
     public Object getLawyerConsultList(String userId) {
