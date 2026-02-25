@@ -21,6 +21,7 @@ public class UserDTO {
     public void setLawyerStatus(String lawyerStatus) {
         this.lawyerStatus = lawyerStatus;
     }
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate joinDate = LocalDate.now();
 
@@ -40,12 +41,5 @@ public class UserDTO {
     @Override
     public String toString() {
         return "UserDTO [userId=" + userId + ", role=" + role + ", status=" + status + "]";
-    }
-
-    public Object getLawyerStatus() {
-        return null;
-    }
-
-    public void setLawyerStatus(String none) {
     }
 }
