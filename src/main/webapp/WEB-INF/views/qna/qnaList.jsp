@@ -18,7 +18,7 @@
                                placeholder="궁금한 법률 내용을 검색해보세요."
                                value="${param.keyword}">
                         <button type="submit" class="btn btn-primary rounded-pill px-4">
-                            <i class="bi bi-search me-1"></i> 질문 찾기
+                            <i class="bi bi-search me-1"></i> 검색
                         </button>
                     </div>
 
