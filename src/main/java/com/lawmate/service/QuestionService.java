@@ -4,12 +4,14 @@ import com.lawmate.dao.QuestionRepository;
 import com.lawmate.dao.QuestionReportRepository;
 import com.lawmate.dao.ReplyRepository;
 import com.lawmate.dto.Question;
+import com.lawmate.dto.QuestionListDTO;
 import com.lawmate.dto.QuestionReport;
 import com.lawmate.entity.ReplyEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -31,37 +33,37 @@ public class QuestionService {
     }
 
     // =====================================================
-    // 🔥 최신순 (최적화 버전 - JOIN 1번)
+    // 🔥 최신순 (JOIN 1번)
     // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> findAllByOrderByCreatedAtDesc() {
-        return mapToQuestionList(
+    public List<QuestionListDTO> findAllByOrderByCreatedAtDesc() {
+        return mapToDTO(
                 questionRepository.findAllWithCountsOrderByLatest()
         );
     }
 
     // =====================================================
-    // 🔥 답변 많은 순 (최적화 버전)
+    // 🔥 답변 많은 순
     // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> findAllByOrderByReplyCountDesc() {
-        return mapToQuestionList(
+    public List<QuestionListDTO> findAllByOrderByReplyCountDesc() {
+        return mapToDTO(
                 questionRepository.findAllWithCountsOrderByReply()
         );
     }
 
     // =====================================================
-    // 🔥 좋아요 많은 순 (최적화 버전)
+    // 🔥 좋아요 많은 순
     // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> findAllByOrderByLikesDesc() {
-        return mapToQuestionList(
+    public List<QuestionListDTO> findAllByOrderByLikesDesc() {
+        return mapToDTO(
                 questionRepository.findAllWithCountsOrderByLikes()
         );
     }
 
     // =====================================================
-    // 제목 검색 (검색은 기본 정렬 유지)
+    // 제목 검색 (검색은 기존 엔티티 반환)
     // =====================================================
     @Transactional(readOnly = true)
     public List<Question> search(String keyword) {
@@ -80,10 +82,10 @@ public class QuestionService {
     }
 
     // =====================================================
-    // 🔥 통합 리스트 (검색 + 정렬)
+    // 🔥 통합 리스트
     // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> getList(String keyword, String sort, String userId) {
+    public List<?> getList(String keyword, String sort, String userId) {
 
         if (keyword != null && !keyword.isEmpty()) {
             return search(keyword);
@@ -186,22 +188,20 @@ public class QuestionService {
     }
 
     // =====================================================
-    // 🔥 Object[] → Question 매핑 메서드 (핵심)
+    // 🔥 Object[] → DTO 매핑 (안전 버전)
     // =====================================================
-    private List<Question> mapToQuestionList(List<Object[]> rows) {
+    private List<QuestionListDTO> mapToDTO(List<Object[]> rows) {
 
-        return rows.stream().map(row -> {
-
-            Question q = (Question) row[0];
-
-            int replyCount = ((Number) row[1]).intValue();
-            int favoriteCount = ((Number) row[2]).intValue();
-
-            q.setReplyCount(replyCount);
-            q.setFavoriteCount(favoriteCount);
-
-            return q;
-
-        }).toList();
+        return rows.stream().map(row -> new QuestionListDTO(
+                ((Number) row[0]).longValue(),          // ID
+                (String) row[1],                       // USER_ID
+                (String) row[2],                       // TITLE
+                (String) row[3],                       // CONTENT
+                row[4] == null ? 0 : ((Number) row[4]).intValue(),  // ANSWERED
+                row[5] == null ? 0 : ((Number) row[5]).intValue(),  // REPORT_COUNT
+                ((Timestamp) row[6]).toLocalDateTime(),             // CREATED_AT
+                ((Number) row[7]).intValue(),          // replyCount
+                ((Number) row[8]).intValue()           // favoriteCount
+        )).toList();
     }
 }
