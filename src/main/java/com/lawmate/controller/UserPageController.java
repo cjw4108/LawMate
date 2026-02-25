@@ -37,7 +37,6 @@ public class UserPageController {
         model.addAttribute("user", userService.getUserById(userId));
         model.addAttribute("consultCount", consultService.getConsultCountByUserId(userId));
         model.addAttribute("consultList", consultService.getConsultListByUserId(userId));
-        model.addAttribute("docList", documentService.getUserDownloadList(userId));
 
         // JSP 경로
         return "mypage/user/mypage";
