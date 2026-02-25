@@ -4,12 +4,14 @@ import com.lawmate.dao.QuestionRepository;
 import com.lawmate.dao.QuestionReportRepository;
 import com.lawmate.dao.ReplyRepository;
 import com.lawmate.dto.Question;
+import com.lawmate.dto.QuestionListDTO;
 import com.lawmate.dto.QuestionReport;
 import com.lawmate.entity.ReplyEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -23,34 +25,50 @@ public class QuestionService {
     private final QuestionReportRepository reportRepository;
     private final ReplyRepository replyRepository;
 
-    // =========================
+    // =====================================================
     // 질문 저장
-    // =========================
+    // =====================================================
     public void save(Question question) {
         questionRepository.save(question);
     }
 
-    // =========================
-    // 기본 목록 조회
-    // =========================
+    // =====================================================
+    // 🔥 최신순 (JOIN 1번)
+    // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> findAllByOrderByCreatedAtDesc() {
-        return questionRepository.findAllByOrderByCreatedAtDesc();
+    public List<QuestionListDTO> findAllByOrderByCreatedAtDesc() {
+        return mapToDTO(
+                questionRepository.findAllWithCountsOrderByLatest()
+        );
     }
 
+    // =====================================================
+    // 🔥 답변 많은 순
+    // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> findAllByOrderByReplyCountDesc() {
-        return questionRepository.findAllByOrderByReplyCountDesc();
+    public List<QuestionListDTO> findAllByOrderByReplyCountDesc() {
+        return mapToDTO(
+                questionRepository.findAllWithCountsOrderByReply()
+        );
     }
 
+    // =====================================================
+    // 🔥 좋아요 많은 순
+    // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> findAllByOrderByLikesDesc() {
-        return questionRepository.findAllByOrderByLikesDesc();
+    public List<QuestionListDTO> findAllByOrderByLikesDesc() {
+        return mapToDTO(
+                questionRepository.findAllWithCountsOrderByLikes()
+        );
     }
 
+    // =====================================================
+    // 제목 검색 (검색은 기존 엔티티 반환)
+    // =====================================================
     @Transactional(readOnly = true)
     public List<Question> search(String keyword) {
-        return questionRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
+        return questionRepository
+                .findByTitleContainingOrderByCreatedAtDesc(keyword);
     }
 
     @Transactional(readOnly = true)
@@ -63,34 +81,33 @@ public class QuestionService {
         return questionRepository.findById(id).orElse(null);
     }
 
-    // =========================
-    // 통합 리스트 (검색 + 정렬)
-    // =========================
+    // =====================================================
+    // 🔥 통합 리스트
+    // =====================================================
     @Transactional(readOnly = true)
-    public List<Question> getList(String keyword, String sort, String userId) {
+    public List<?> getList(String keyword, String sort, String userId) {
 
         if (keyword != null && !keyword.isEmpty()) {
-            return questionRepository
-                    .findByTitleContainingOrderByCreatedAtDesc(keyword);
+            return search(keyword);
         }
 
         switch (sort) {
             case "replies":
-                return questionRepository.findAllByOrderByReplyCountDesc();
+                return findAllByOrderByReplyCountDesc();
             case "likes":
-                return questionRepository.findAllByOrderByLikesDesc();
+                return findAllByOrderByLikesDesc();
             case "favorite":
                 if (userId == null) return Collections.emptyList();
-                return questionRepository.findMyFavorites(userId);
+                return findMyFavorites(userId);
             case "latest":
             default:
-                return questionRepository.findAllByOrderByCreatedAtDesc();
+                return findAllByOrderByCreatedAtDesc();
         }
     }
 
-    // =========================
+    // =====================================================
     // 찜 관련
-    // =========================
+    // =====================================================
     @Transactional(readOnly = true)
     public boolean isFavorite(Long id, String userId) {
         return questionRepository.countFavorite(id, userId) > 0;
@@ -113,9 +130,9 @@ public class QuestionService {
         }
     }
 
-    // =========================
+    // =====================================================
     // 신고 관련
-    // =========================
+    // =====================================================
     @Transactional
     public void report(Long qnaId, String reason, String userId) {
 
@@ -142,9 +159,9 @@ public class QuestionService {
                 .findByReportCountGreaterThanOrderByReportCountDesc(0);
     }
 
-    // =========================
+    // =====================================================
     // 답변 관련
-    // =========================
+    // =====================================================
     @Transactional
     public void registerReply(Long id, String content, String userId) {
 
@@ -168,5 +185,23 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public int getReplyCount(Long questionId) {
         return replyRepository.countByQuestionId(questionId);
+    }
+
+    // =====================================================
+    // 🔥 Object[] → DTO 매핑 (안전 버전)
+    // =====================================================
+    private List<QuestionListDTO> mapToDTO(List<Object[]> rows) {
+
+        return rows.stream().map(row -> new QuestionListDTO(
+                ((Number) row[0]).longValue(),          // ID
+                (String) row[1],                       // USER_ID
+                (String) row[2],                       // TITLE
+                (String) row[3],                       // CONTENT
+                row[4] == null ? 0 : ((Number) row[4]).intValue(),  // ANSWERED
+                row[5] == null ? 0 : ((Number) row[5]).intValue(),  // REPORT_COUNT
+                ((Timestamp) row[6]).toLocalDateTime(),             // CREATED_AT
+                ((Number) row[7]).intValue(),          // replyCount
+                ((Number) row[8]).intValue()           // favoriteCount
+        )).toList();
     }
 }
