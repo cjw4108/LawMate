@@ -33,4 +33,11 @@ public class UserDTO {
     public String toString() {
         return "UserDTO [userId=" + userId + ", role=" + role + ", status=" + status + "]";
     }
+
+    public Object getLawyerStatus() {
+        return null;
+    }
+
+    public void setLawyerStatus(String none) {
+    }
 }
