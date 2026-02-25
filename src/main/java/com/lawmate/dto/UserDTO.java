@@ -12,7 +12,15 @@ public class UserDTO {
     private String userName; // 매퍼의 userName과 매칭
     private String nickname;
     private String email;
+    private String lawyerStatus;
 
+    public String getLawyerStatus() {
+        return lawyerStatus;
+    }
+
+    public void setLawyerStatus(String lawyerStatus) {
+        this.lawyerStatus = lawyerStatus;
+    }
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate joinDate = LocalDate.now();
 

@@ -28,20 +28,25 @@ public class DocumentLoaderService {
         this.objectMapper = objectMapper;
     }
 
-    // [기존 팀원 코드] 법률 양식 데이터 초기 로드 로직 (수정 금지)
     public void loadLegalForms() throws IOException {
         log.info("=".repeat(60));
         log.info("법률 양식 데이터 로드 시작");
         log.info("=".repeat(60));
+
         createCategories();
+
         List<Map<String, String>> jsonData = readJsonFile();
+
         List<DocumentDTO> documents = convertToDocuments(jsonData);
+
         log.info("DB 저장 중...");
         for (DocumentDTO doc : documents) {
             documentDAO.insertDocument(doc);
         }
         log.info("  ✓ {}개 문서 저장 완료", documents.size());
+
         printStatistics();
+
         log.info("=".repeat(60));
         log.info("법률 양식 데이터 로드 완료!");
         log.info("=".repeat(60));
@@ -49,8 +54,13 @@ public class DocumentLoaderService {
 
     private void createCategories() {
         log.info("카테고리 생성 중...");
+
         try {
+            // 이미 있는지 확인
+            log.info("selectAllCategories 호출 전...");
             List<DocumentCategoryDTO> existing = documentDAO.selectAllCategories();
+            log.info("selectAllCategories 호출 후! 개수: {}", existing.size());
+
             if (!existing.isEmpty()) {
                 log.info("기존 카테고리 사용 ({}개)", existing.size());
                 for (DocumentCategoryDTO category : existing) {
@@ -58,20 +68,30 @@ public class DocumentLoaderService {
                 }
                 return;
             }
+
             String[] categories = {"부동산", "민사", "형사", "이혼/가족", "노동", "기타"};
             String[] descriptions = {
-                    "부동산 관련 법률 서식", "민사 관련 법률 서식", "형사 관련 법률 서식",
-                    "이혼 및 가족 관련 법률 서식", "노동 관련 법률 서식", "기타 법률 서식"
+                    "부동산 관련 법률 서식",
+                    "민사 관련 법률 서식",
+                    "형사 관련 법률 서식",
+                    "이혼 및 가족 관련 법률 서식",
+                    "노동 관련 법률 서식",
+                    "기타 법률 서식"
             };
+
             for (int i = 0; i < categories.length; i++) {
                 DocumentCategoryDTO category = new DocumentCategoryDTO();
                 category.setName(categories[i]);
                 category.setDescription(descriptions[i]);
                 category.setDisplayOrder(i + 1);
                 category.setIsActive(1);
+
                 documentDAO.insertCategory(category);
+
+                // 생성된 카테고리 조회
                 DocumentCategoryDTO created = documentDAO.selectCategoryByName(categories[i]);
                 categoryMapping.put(created.getName(), created.getId());
+
                 log.info("  ✓ 카테고리 생성: {} (ID: {})", created.getName(), created.getId());
             }
         } catch (Exception e) {
@@ -82,32 +102,45 @@ public class DocumentLoaderService {
 
     private List<Map<String, String>> readJsonFile() throws IOException {
         log.info("JSON 파일 읽는 중...");
+
         ClassPathResource resource = new ClassPathResource("legal-forms/legal_forms.json");
         List<Map<String, String>> data = objectMapper.readValue(
                 resource.getInputStream(),
-                new TypeReference<List<Map<String, String>>>() {
-                }
+                new TypeReference<List<Map<String, String>>>() {}
         );
+
         log.info("  ✓ {}개 항목 발견", data.size());
         return data;
     }
 
     private List<DocumentDTO> convertToDocuments(List<Map<String, String>> jsonData) {
         log.info("DTO 변환 중...");
+
         List<DocumentDTO> documents = new ArrayList<>();
+
         for (Map<String, String> item : jsonData) {
             String category = item.get("category");
             String title = item.get("title");
             String subcategory = item.get("subcategory");
             String filePath = item.get("file_path");
+
             Long categoryId = categoryMapping.get(category);
             if (categoryId == null) {
                 log.warn("  ⚠ 알 수 없는 카테고리: {}", category);
                 continue;
             }
-            DocumentDTO doc = new DocumentDTO(categoryId, title, subcategory, filePath, "HWP");
+
+            DocumentDTO doc = new DocumentDTO(
+                    categoryId,
+                    title,
+                    subcategory,
+                    filePath,
+                    "HWP"
+            );
+
             documents.add(doc);
         }
+
         log.info("  ✓ {}개 문서 변환 완료", documents.size());
         return documents;
     }
@@ -115,6 +148,7 @@ public class DocumentLoaderService {
     private void printStatistics() {
         log.info("\n통계:");
         log.info("  - 전체 문서: {}개", documentDAO.countDocuments());
+
         List<DocumentCategoryDTO> categories = documentDAO.selectAllCategories();
         for (DocumentCategoryDTO category : categories) {
             int count = documentDAO.countDocumentsByCategory(category.getId());
@@ -128,34 +162,5 @@ public class DocumentLoaderService {
         documentDAO.deleteAllCategories();
         categoryMapping.clear();
         log.warn("삭제 완료");
-    }
-
-// ==========================================
-// [내 기능] 마이페이지 전용 추가 메서드
-// ==========================================
-
-    /**
-     * 회원별 문서 이력 조회 (컨트롤러에서 이 메서드를 호출함)
-     */
-    public List<DocumentDTO> getUserDownloadList(String userId) {
-        log.info("사용자 [{}]의 문서 다운로드 이력 조회 시작", userId);
-        // [수정] 팀원의 selectDocumentsByUserId는 ORA-00904 에러 위험이 있어 내 전용 쿼리 호출
-        return documentDAO.selectDocumentsByUserIdForMypage(userId);
-    }
-
-    /**
-     * 문서 파일 경로 조회 및 다운로드 기록
-     */
-    public String getFilePath(Long documentId, String userId) {
-        // 1. 파일 경로 조회
-        String filePath = documentDAO.selectFilePathById(documentId);
-
-        if (filePath != null) {
-            log.info("사용자 [{}]가 문서 [{}]를 다운로드함", userId, documentId);
-            // 2. [수정 포인트] insertDownloadHistory -> insertDownloadHistoryForMypage 로 변경
-            // 이렇게 해야 MyBatis의 중복 ID 충돌 에러가 발생하지 않습니다.
-            documentDAO.insertDownloadHistoryForMypage(userId, documentId);
-        }
-        return filePath;
     }
 }

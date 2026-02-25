@@ -18,7 +18,6 @@
         .quick-form-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-            border-color: #3b82f6;
         }
 
         .quick-form-icon {
@@ -257,9 +256,9 @@
             <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 간편 작성 (2차예정)</h3>
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6">
-                    <a href="/forms/complaint" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <i class="bi bi-file-text" style="font-size: 1.8rem; color: white;"></i>
+                    <a href="/forms/complaint" class="quick-form-card" style="text-decoration: none; --hover-color: #667eea;">
+                        <div class="quick-form-icon" style="background: #f5f3ff;">
+                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #667eea;"></i>
                         </div>
                         <div class="quick-form-content">
                             <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">소장</h4>
@@ -268,9 +267,9 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <a href="/forms/written-preparation" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: white;"></i>
+                    <a href="/forms/written-preparation" class="quick-form-card" style="text-decoration: none; --hover-color: #f5576c;">
+                        <div class="quick-form-icon" style="background: #fff0f3;">
+                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #f5576c;"></i>
                         </div>
                         <div class="quick-form-content">
                             <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">준비서면</h4>
@@ -279,9 +278,9 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <a href="/forms/accusation" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                            <i class="bi bi-shield-exclamation" style="font-size: 1.8rem; color: white;"></i>
+                    <a href="/forms/accusation" class="quick-form-card" style="text-decoration: none; --hover-color: #4facfe;">
+                        <div class="quick-form-icon" style="background: #eff8ff;">
+                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #4facfe;"></i>
                         </div>
                         <div class="quick-form-content">
                             <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">고소장</h4>
@@ -290,9 +289,9 @@
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <a href="/forms/content-certification" class="quick-form-card" style="text-decoration: none;">
-                        <div class="quick-form-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                            <i class="bi bi-envelope-check" style="font-size: 1.8rem; color: white;"></i>
+                    <a href="/forms/content-certification" class="quick-form-card" style="text-decoration: none; --hover-color: #43e97b;">
+                        <div class="quick-form-icon" style="background: #f0fdf4;">
+                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #43e97b;"></i>
                         </div>
                         <div class="quick-form-content">
                             <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">내용증명</h4>
@@ -421,7 +420,7 @@
     }
 
     function renderCards() {
-        const cardGrid = document.getElementById('cardGrid');
+        var cardGrid = document.getElementById('cardGrid');
         cardGrid.innerHTML = '';
 
         if (allCards.length === 0) {
@@ -430,21 +429,28 @@
         }
 
         allCards.forEach(function(card) {
-            const cardElement = document.createElement('div');
+            var cardElement = document.createElement('div');
             cardElement.className = 'card';
-            cardElement.style.cursor = 'pointer';
             cardElement.onclick = function(e) {
                 e.stopPropagation();
                 addToCart(card.id);
             };
 
-            const categoryName = card.categoryName || '기타';
-            cardElement.innerHTML =
-                '<span class="badge ' + getBadgeClass(categoryName) + '">' + categoryName + '</span>' +
-                '<h3 class="card-title">' + card.title + '</h3>' +
-                '<div class="card-info">' + (card.description || '') + '</div>' +
-                '<button class="card-button" onclick="event.stopPropagation(); handleDownload(' + card.id + ')" style="background: #3b82f6;">다운로드</button>';
+            var categoryName = card.categoryName || '기타';
 
+            var html = '';
+            html += '<span class="badge ' + getBadgeClass(categoryName) + '">' + categoryName + '</span>';
+            html += '<h3 class="card-title">' + card.title + '</h3>';
+            html += '<div class="card-info">' + (card.description || '') + '</div>';
+
+            html += '<div style="display: flex; justify-content: flex-end; margin-top: auto;">';
+            html +=     '<button class="btn btn-outline-primary" style="display: inline-flex; align-items: center; padding: 5px 12px; font-size: 14px;" ';
+            html +=     'onclick="event.stopPropagation(); handleDownload(' + card.id + ')">';
+            html +=         '<i class="bi bi-download"></i><span style="margin-left: 5px;"> 다운로드</span>';
+            html +=     '</button>';
+            html += '</div>';
+
+            cardElement.innerHTML = html;
             cardGrid.appendChild(cardElement);
         });
     }
