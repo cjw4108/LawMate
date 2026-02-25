@@ -28,14 +28,6 @@ public class DocumentController {
     @Autowired
     private DocumentDAO documentDAO;
 
-    // 테스트용 임시 로그인 세션 만들면 삭제할것
-    @PostMapping("/api/test/login")
-    @ResponseBody
-    public String testLogin(HttpSession session) {
-        session.setAttribute("userId", "testUser");
-        return "ok";
-    }
-
     @GetMapping("/docs")
     public String document() {
         return "docs";
