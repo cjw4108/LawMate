@@ -46,7 +46,7 @@
             </div>
 
             <%-- 답변 영역 --%>
-            <h5 class="fw-bold mb-3">답변 (${question.answered})</h5>
+            <h5 class="fw-bold mb-3">답변 (${replyCount})</h5>
             <div id="answerList">
                 <c:choose>
                     <c:when test="${not empty replies}">
@@ -79,6 +79,15 @@
                     <button class="btn btn-dark px-4" type="submit">등록</button>
                 </div>
             </form>
+
+            <%-- 돌아가기 --%>
+            <div class="text-center mt-4">
+                <a href="/qna/list?sort=${sort}&keyword=${keyword}"
+                   class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> 목록으로 돌아가기
+                </a>
+            </div>
+
         </div>
     </div>
 </main>

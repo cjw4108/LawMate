@@ -3,6 +3,8 @@ package com.lawmate.controller;
 import com.lawmate.dto.Question;
 import com.lawmate.dto.UserDTO;
 import com.lawmate.service.QuestionService;
+import com.lawmate.entity.ReplyEntity;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -28,15 +30,21 @@ public class QnaController {
                        HttpSession session) {
 
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-
         String userId = (loginUser != null) ? loginUser.getUserId() : null;
 
-        // 찜 목록은 로그인 필요
         if ("favorite".equals(sort) && userId == null) {
             return "redirect:/login";
         }
 
         List<Question> list = questionService.getList(keyword, sort, userId);
+
+        for (Question q : list) {
+            int replyCount = questionService.getReplyCount(q.getId());
+            int favoriteCount = questionService.getFavoriteCount(q.getId());
+
+            q.setReplyCount(replyCount);
+            q.setFavoriteCount(favoriteCount);
+        }
 
         model.addAttribute("list", list);
         model.addAttribute("currentSort", sort);
@@ -48,16 +56,36 @@ public class QnaController {
     // 2. 질문 상세 보기
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable Long id,
+                         @RequestParam(required = false) String sort,
+                         @RequestParam(required = false) String keyword,
                          Model model,
                          HttpSession session) {
 
         Question question = questionService.findById(id);
-
         if (question == null) {
             return "redirect:/qna/list";
         }
 
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        boolean isFavorite = false;
+        if (loginUser != null) {
+            isFavorite = questionService.isFavorite(id, loginUser.getUserId());
+        }
+
+        question.setFavoriteCount(questionService.getFavoriteCount(id));
+
+        List<ReplyEntity> replies = questionService.getReplies(id);
+        int replyCount = questionService.getReplyCount(id);
+
         model.addAttribute("question", question);
+        model.addAttribute("replies", replies);
+        model.addAttribute("replyCount", replyCount);
+        model.addAttribute("isFavorite", isFavorite);
+
+        // 🔥 추가
+        model.addAttribute("sort", sort);
+        model.addAttribute("keyword", keyword);
 
         return "qna/qnaDetail";
     }
@@ -76,9 +104,7 @@ public class QnaController {
             return result;
         }
 
-        // 🔥 수정된 부분 (String 반환)
         String status = questionService.toggleFavorite(id, loginUser.getUserId());
-
         int updatedCount = questionService.getFavoriteCount(id);
 
         result.put("status", status);
@@ -122,5 +148,34 @@ public class QnaController {
         } catch (Exception e) {
             return "error";
         }
+    }
+
+    // 6. 게시글 작성 폼
+    @GetMapping("/write")
+    public String writeForm(HttpSession session) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        return "qna/qnaWrite";
+    }
+
+    // 7. 게시글 작성 처리
+    @PostMapping("/write")
+    public String write(Question question, HttpSession session) {
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        question.setUserId(loginUser.getUserId());
+        questionService.save(question);
+
+        return "redirect:/qna/list";
     }
 }
