@@ -1,54 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lawmate.dao.AdminDAO">
 
-    <select id="login"
-            parameterType="com.lawmate.dto.AdminDTO"
-            resultType="com.lawmate.dto.AdminDTO">
+    <select id="login" resultType="com.lawmate.dto.AdminDTO">
         SELECT
-            admin_id   AS adminId,
-            admin_pw   AS adminPw,
-            admin_name AS adminName
-        FROM admin
-        WHERE admin_id = #{adminId}
-          AND admin_pw = #{adminPw}
+            USER_ID   AS adminId,
+            PASSWORD  AS adminPw,
+            NAME      AS adminName
+        FROM PRJ01.USERS
+        WHERE USER_ID = #{adminId}
+          AND PASSWORD = #{adminPw}
+          AND ROLE = 'ADMIN'
     </select>
 
-    <select id="selectPendingLawyers" resultType="com.lawmate.dto.UserDTO">
+    <select id="findPendingLawyers" resultType="com.lawmate.dto.UserDTO">
         SELECT
-        user_id     AS userId,
-        user_name   AS userName,
-        role,
-        status,
-        license_file AS licenseFile,
-        join_date   AS joinDate
-        FROM users
-        WHERE 1=1
-        <if test="role != null and role != ''">
-            AND role = #{role}
-        </if>
-        <if test="status != null and status != ''">
-            AND status = #{status}
-        </if>
+        USER_ID       AS userId,
+        NAME          AS userName,
+        ROLE          AS role,
+        LAWYER_STATUS AS status,
+        CREATED_AT    AS joinDate
+        FROM PRJ01.USERS
+        WHERE ROLE = 'LAWYER'
+        AND LAWYER_STATUS = 'PENDING'
         <if test="keyword != null and keyword != ''">
-            AND (user_name LIKE '%' || #{keyword} || '%' OR user_id LIKE '%' || #{keyword} || '%')
+            AND (NAME LIKE '%' || #{keyword} || '%' OR USER_ID LIKE '%' || #{keyword} || '%')
         </if>
-        ORDER BY join_date DESC
+        ORDER BY CREATED_AT DESC
     </select>
 
     <update id="updateLawyerStatus">
-        UPDATE users
+        UPDATE PRJ01.USERS
         SET
-        status = #{status},
-        reject_reason = #{rejectReason},
-        <if test="status == 'APPROVED'">
-            role = 'LAWYER',
+        LAWYER_STATUS = #{status},
+        <if test="rejectReason != null">
+            REJECT_REASON = #{rejectReason},
         </if>
-        updated_at = SYSDATE
-        WHERE user_id = #{userId}
+        UPDATED_AT = SYSDATE
+        WHERE USER_ID = #{userId}
     </update>
 
 </mapper>
