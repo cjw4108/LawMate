@@ -24,4 +24,6 @@ public interface DocumentDAO {
 
     void deleteAllDocuments();
     void deleteAllCategories();
+
+    List<DocumentDTO> searchByKeyword(String keyword);
 }

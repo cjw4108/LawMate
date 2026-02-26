@@ -1,9 +1,9 @@
 package com.lawmate.controller;
 
 import com.lawmate.dao.DocumentDAO;
-import com.lawmate.dto.DocumentCategoryDTO;
 import com.lawmate.dto.DocumentDTO;
 import com.lawmate.service.DocumentLoaderService;
+import com.lawmate.service.DocumentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -23,10 +23,13 @@ import java.util.Map;
 public class DocumentController {
 
     @Autowired
+    private DocumentService documentService;
+
+    @Autowired
     private DocumentLoaderService documentLoaderService;
 
     @Autowired
-    private DocumentDAO documentDAO;
+    private DocumentDAO documentDAO; // 다운로드에서만 사용
 
     @GetMapping("/docs")
     public String document() {
@@ -40,41 +43,20 @@ public class DocumentController {
             @RequestParam(defaultValue = "6") int size,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String keyword) {
+        return documentService.getDocuments(page, size, categoryId, keyword);
+    }
 
-        List<DocumentDTO> allDocs;
-        if (categoryId != null) {
-            allDocs = documentDAO.selectDocumentsByCategory(categoryId);
-        } else {
-            allDocs = documentDAO.selectAllDocuments();
-        }
-
-        if (keyword != null && !keyword.isEmpty()) {
-            final String kw = keyword.toLowerCase();
-            allDocs = allDocs.stream()
-                    .filter(d -> d.getTitle().toLowerCase().contains(kw))
-                    .collect(java.util.stream.Collectors.toList());
-        }
-
-        int total = allDocs.size();
-        int fromIndex = (page - 1) * size;
-        int toIndex = Math.min(fromIndex + size, total);
-        List<DocumentDTO> pageDocs = fromIndex < total ? allDocs.subList(fromIndex, toIndex) : new java.util.ArrayList<>();
-
-        List<DocumentCategoryDTO> categories = documentDAO.selectAllCategories();
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("documents", pageDocs);
-        result.put("categories", categories);
-        result.put("total", total);
-        result.put("totalPages", Math.max(1, (int) Math.ceil((double) total / size)));
-        result.put("currentPage", page);
-        return result;
+    // 자동완성 전용 API
+    @GetMapping("/api/documents/autocomplete")
+    @ResponseBody
+    public List<DocumentDTO> autocomplete(@RequestParam String keyword) {
+        return documentService.autocomplete(keyword);
     }
 
     @GetMapping("/docs/download/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long id) {
         try {
-            DocumentDTO doc = documentDAO.selectDocumentById(id);
+            DocumentDTO doc = documentService.getDocumentById(id);
             ClassPathResource resource = new ClassPathResource(doc.getFilePath());
 
             String filename = resource.getFilename();
@@ -109,8 +91,7 @@ public class DocumentController {
     @ResponseBody
     public String test() {
         try {
-            List<DocumentCategoryDTO> list = documentDAO.selectAllCategories();
-            return "카테고리 개수: " + list.size();
+            return "카테고리 개수: " + documentDAO.selectAllCategories().size();
         } catch (Exception e) {
             return "에러: " + e.getMessage();
         }

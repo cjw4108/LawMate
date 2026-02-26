@@ -166,7 +166,6 @@
 <main class="main">
     <div class="cart-container">
         <h1 class="cart-title">내 서류함</h1>
-
         <c:choose>
             <c:when test="${empty cartList}">
                 <div class="cart-empty">

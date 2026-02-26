@@ -45,6 +45,16 @@
                  )
     </insert>
 
+    <select id="searchByKeyword" parameterType="string" resultMap="documentResultMap">
+        SELECT D.*, C.NAME AS CATEGORY_NAME
+        FROM DOCUMENTS D
+                 LEFT JOIN DOCUMENT_CATEGORIES C ON D.CATEGORY_ID = C.ID
+        WHERE LOWER(D.TITLE) LIKE '%' || LOWER(#{keyword}) || '%'
+          AND D.IS_ACTIVE = 1
+        ORDER BY D.DOWNLOAD_COUNT DESC
+            FETCH FIRST 8 ROWS ONLY
+    </select>
+
     <select id="selectAllCategories" resultMap="categoryResultMap">
         SELECT * FROM DOCUMENT_CATEGORIES
         ORDER BY DISPLAY_ORDER

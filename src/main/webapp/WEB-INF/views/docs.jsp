@@ -253,7 +253,7 @@
 
     <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0; margin-top: 4rem">
         <div class="container">
-            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 간편 작성 (2차예정)</h3>
+            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 간편 작성</h3>
             <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
                 <div class="col-lg-3 col-md-6">
                     <a href="/forms/complaint" class="quick-form-card" style="text-decoration: none; --hover-color: #667eea;">
@@ -516,11 +516,10 @@
         if (!keyword || keyword.length < 1) return;
 
         $.ajax({
-            url: '/api/documents?page=1&size=100',
+            url: '/api/documents/autocomplete?keyword=' + keyword,
             type: 'GET',
             success: function(data) {
-                const kw = keyword.toLowerCase();
-                const matched = data.documents.filter(d => d.title.toLowerCase().includes(kw)).slice(0, 8);
+                const matched = data;
 
                 if (matched.length === 0) return;
 

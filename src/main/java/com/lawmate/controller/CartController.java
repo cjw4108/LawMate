@@ -25,7 +25,7 @@ public class CartController {
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
         String userId = loginUser != null ? loginUser.getUserId() : null;
 
-        System.out.println("=== 보관함 조회 ===");
+        System.out.println("=== 서류함 조회 ===");
         System.out.println("userId: " + userId);
 
         if (userId == null) {
@@ -48,10 +48,6 @@ public class CartController {
         UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
         String userId = loginUser != null ? loginUser.getUserId() : null;
 
-        System.out.println("=== 장바구니 추가 시도 ===");
-        System.out.println("userId: " + userId);
-        System.out.println("documentId: " + documentId);
-
         if (userId == null) {
             result.put("success", false);
             result.put("message", "로그인이 필요합니다.");
@@ -63,7 +59,7 @@ public class CartController {
             int exists = cartDAO.checkDuplicate(userId, documentId);
             if (exists > 0) {
                 result.put("success", false);
-                result.put("message", "이미 장바구니에 담긴 서류입니다.");
+                result.put("message", "이미 서류함에 담긴 양식입니다.");
                 return ResponseEntity.ok(result);
             }
 
@@ -75,7 +71,7 @@ public class CartController {
             int count = cartDAO.countCartByUserId(userId);
 
             result.put("success", true);
-            result.put("message", "장바구니에 담았습니다.");
+            result.put("message", "서류함에 담았습니다.");
             result.put("cartCount", count);
             return ResponseEntity.ok(result);
 
