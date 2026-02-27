@@ -1,71 +1,68 @@
 package com.lawmate.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 public class QuestionListDTO {
 
     private Long id;
-    private String userId;
     private String title;
     private String content;
+    private String writer;          // JSP에서 사용
     private Integer answered;
     private Integer reportCount;
+    private Integer favoriteCount;
     private LocalDateTime createdAt;
-    private int replyCount;
-    private int favoriteCount;
+    private Integer deleted;
+    private String reportReason;    // 모달용
 
-    // 🔹 관리자 확장 필드
-    private Integer deleted;        // 0 or 1
-    private String reportReason;    // 신고 사유
+    // 기본 생성자
+    public QuestionListDTO() {}
 
-    // ================================
-    // ✅ 일반 게시판용 생성자 (9개)
-    // ================================
-    public QuestionListDTO(Long id,
-                           String userId,
-                           String title,
-                           String content,
-                           Integer answered,
-                           Integer reportCount,
-                           LocalDateTime createdAt,
-                           int replyCount,
-                           int favoriteCount) {
-
+    // 전체 생성자
+    public QuestionListDTO(Long id, String title, String content, String writer,
+                           Integer answered, Integer reportCount, Integer favoriteCount,
+                           LocalDateTime createdAt, Integer deleted, String reportReason) {
         this.id = id;
-        this.userId = userId;
         this.title = title;
         this.content = content;
+        this.writer = writer;
         this.answered = answered;
         this.reportCount = reportCount;
-        this.createdAt = createdAt;
-        this.replyCount = replyCount;
         this.favoriteCount = favoriteCount;
-    }
-
-    // =====================================
-    // ✅ 관리자 확장 생성자 (11개)
-    // =====================================
-    public QuestionListDTO(Long id,
-                           String userId,
-                           String title,
-                           String content,
-                           Integer answered,
-                           Integer reportCount,
-                           LocalDateTime createdAt,
-                           int replyCount,
-                           int favoriteCount,
-                           Integer deleted,
-                           String reportReason) {
-
-        this(id, userId, title, content, answered, reportCount,
-                createdAt, replyCount, favoriteCount);
-
+        this.createdAt = createdAt;
         this.deleted = deleted;
         this.reportReason = reportReason;
     }
+
+    // ================= Getter / Setter =================
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
+
+    public String getWriter() { return writer; }
+    public void setWriter(String writer) { this.writer = writer; }
+
+    public Integer getAnswered() { return answered; }
+    public void setAnswered(Integer answered) { this.answered = answered; }
+
+    public Integer getReportCount() { return reportCount; }
+    public void setReportCount(Integer reportCount) { this.reportCount = reportCount; }
+
+    public Integer getFavoriteCount() { return favoriteCount; }
+    public void setFavoriteCount(Integer favoriteCount) { this.favoriteCount = favoriteCount; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Integer getDeleted() { return deleted; }
+    public void setDeleted(Integer deleted) { this.deleted = deleted; }
+
+    public String getReportReason() { return reportReason; }
+    public void setReportReason(String reportReason) { this.reportReason = reportReason; }
 }

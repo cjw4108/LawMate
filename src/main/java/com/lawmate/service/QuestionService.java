@@ -7,7 +7,6 @@ import com.lawmate.dto.Question;
 import com.lawmate.dto.QuestionListDTO;
 import com.lawmate.dto.QuestionReport;
 import com.lawmate.entity.ReplyEntity;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +16,20 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuestionReportRepository reportRepository;
     private final ReplyRepository replyRepository;
+
+    public QuestionService(QuestionRepository questionRepository,
+                           QuestionReportRepository reportRepository,
+                           ReplyRepository replyRepository) {
+        this.questionRepository = questionRepository;
+        this.reportRepository = reportRepository;
+        this.replyRepository = replyRepository;
+    }
 
     // ============================
     // 질문 저장
@@ -41,16 +47,11 @@ public class QuestionService {
     }
 
     // ============================
-    // 일반 게시판 기능
+    // 게시글 리스트
     // ============================
     @Transactional(readOnly = true)
     public List<QuestionListDTO> findAllByOrderByCreatedAtDesc() {
         return mapToDTO(questionRepository.findAllWithCountsOrderByLatest());
-    }
-
-    @Transactional(readOnly = true)
-    public List<QuestionListDTO> findAllByOrderByReplyCountDesc() {
-        return mapToDTO(questionRepository.findAllWithCountsOrderByReply());
     }
 
     @Transactional(readOnly = true)
@@ -69,28 +70,14 @@ public class QuestionService {
         return mapToDTO(questionRepository.findMyFavoritesWithCounts(userId));
     }
 
-    @Transactional(readOnly = true)
-    public List<QuestionListDTO> getList(String keyword, String sort, String userId) {
-        if (keyword != null && !keyword.isEmpty()) {
-            return search(keyword);
-        }
-        return switch (sort) {
-            case "replies" -> findAllByOrderByReplyCountDesc();
-            case "likes" -> findAllByOrderByLikesDesc();
-            case "favorite" -> findMyFavorites(userId);
-            default -> findAllByOrderByCreatedAtDesc();
-        };
-    }
-
     // ============================
-    // 찜(Favorite) 관련
+    // 찜 기능
     // ============================
     @Transactional(readOnly = true)
     public boolean isFavorite(Long id, String userId) {
         return questionRepository.countFavorite(id, userId) > 0;
     }
 
-    @Transactional
     public String toggleFavorite(Long id, String userId) {
         if (isFavorite(id, userId)) {
             questionRepository.deleteFavorite(id, userId);
@@ -103,32 +90,39 @@ public class QuestionService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public int getFavoriteCount(Long id) {
+        Question question = questionRepository.findById(id).orElse(null);
+        if (question == null) return 0;
+        return question.getFavoriteCount() == null ? 0 : question.getFavoriteCount();
+    }
+
     // ============================
-    // 신고 처리
+    // 신고
     // ============================
-    @Transactional
     public void report(Long qnaId, String reason, String userId) {
+
         Question q = questionRepository.findById(qnaId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        int currentCount = q.getReportCount() == null ? 0 : q.getReportCount();
-        q.setReportCount(currentCount + 1);
+        int current = q.getReportCount() == null ? 0 : q.getReportCount();
+        q.setReportCount(current + 1);
         questionRepository.save(q);
 
-        QuestionReport report = QuestionReport.builder()
-                .qnaId(qnaId)
-                .userId(userId)
-                .reason(reason)
-                .createdAt(LocalDateTime.now())
-                .build();
+        QuestionReport report = new QuestionReport();
+        report.setQnaId(qnaId);
+        report.setUserId(userId);
+        report.setReason(reason);
+        report.setCreatedAt(LocalDateTime.now());
+
         reportRepository.save(report);
     }
 
     // ============================
-    // 답변 관련
+    // 답변
     // ============================
-    @Transactional
     public void registerReply(Long id, String content, String userId) {
+
         questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
@@ -140,38 +134,38 @@ public class QuestionService {
 
         replyRepository.save(entity);
 
-        // 답변 등록 시 answered 컬럼 업데이트
         Question q = questionRepository.findById(id).get();
         q.setAnswered(1);
         questionRepository.save(q);
     }
 
+    @Transactional(readOnly = true)
+    public List<ReplyEntity> getReplies(Long questionId) {
+        return replyRepository.findByQuestionIdOrderByCreatedAtAsc(questionId);
+    }
+
+    @Transactional(readOnly = true)
+    public int getReplyCount(Long questionId) {
+        return replyRepository.countByQuestionId(questionId);
+    }
+
     // ============================
-    // 관리자 기능
+    // 관리자
     // ============================
     @Transactional(readOnly = true)
     public List<QuestionListDTO> getAdminQuestionList(String filter, String sort) {
+
         List<Object[]> rows;
+
         if ("deleted".equals(filter)) {
             rows = questionRepository.findAllDeletedWithCounts();
         } else if ("report".equals(sort)) {
             rows = questionRepository.findAllReportedWithCounts();
-        } else if ("unanswered".equals(filter)) {
-            rows = questionRepository.findAllUnansweredWithCounts();
         } else {
             rows = questionRepository.findAllWithCountsOrderByLatest();
         }
+
         return mapToDTO(rows);
-    }
-
-    @Transactional(readOnly = true)
-    public int getUnansweredCount() {
-        return questionRepository.countUnanswered();
-    }
-
-    @Transactional(readOnly = true)
-    public int getReportedCount() {
-        return questionRepository.countReported();
     }
 
     public void softDelete(Long id) {
@@ -190,6 +184,7 @@ public class QuestionService {
     }
 
     private QuestionListDTO basicMapping(Object[] row) {
+
         Long id = row[0] == null ? 0L : ((Number) row[0]).longValue();
         String userId = row[1] == null ? "" : row[1].toString();
         String title = row[2] == null ? "" : row[2].toString();
@@ -206,38 +201,56 @@ public class QuestionService {
             createdAt = LocalDateTime.now();
         }
 
-        int replyCount = row[7] == null ? 0 : ((Number) row[7]).intValue();
-        int favoriteCount = row[8] == null ? 0 : ((Number) row[8]).intValue();
+        Integer favoriteCount = row[8] == null ? 0 : ((Number) row[8]).intValue();
+        Integer deleted = row.length > 9 && row[9] != null
+                ? ((Number) row[9]).intValue()
+                : 0;
 
         return new QuestionListDTO(
-                id, userId, title, content, answered, reportCount,
-                createdAt, replyCount, favoriteCount
+                id,
+                title,
+                content,
+                userId,          // writer
+                answered,
+                reportCount,
+                favoriteCount,
+                createdAt,
+                deleted,
+                null             // reportReason
         );
     }
 
     // ============================
-    // FAVORITE COUNT 조회
+    // 관리자 통계용
     // ============================
     @Transactional(readOnly = true)
-    public int getFavoriteCount(Long id) {
-        Question question = questionRepository.findById(id).orElse(null);
-        if (question == null) return 0;
-        return question.getFavoriteCount() == null ? 0 : question.getFavoriteCount();
+    public int getUnansweredCount() {
+        return questionRepository.countUnanswered();
+    }
+
+    @Transactional(readOnly = true)
+    public int getReportedCount() {
+        return questionRepository.countReported();
     }
 
     // ============================
-    // 댓글 목록 조회
-    // ============================
+    // 통합 리스트 처리 (정렬 + 검색 + 내 찜)
     @Transactional(readOnly = true)
-    public List<ReplyEntity> getReplies(Long questionId) {
-        return replyRepository.findByQuestionIdOrderByCreatedAtAsc(questionId);
-    }
+    public List<QuestionListDTO> getList(String keyword, String sort, String userId) {
 
-    // ============================
-    // 댓글 개수 조회
-    // ============================
-    @Transactional(readOnly = true)
-    public int getReplyCount(Long questionId) {
-        return replyRepository.countByQuestionId(questionId);
+        if (keyword != null && !keyword.isEmpty()) {
+            return search(keyword);
+        }
+
+        if ("likes".equals(sort)) {
+            return findAllByOrderByLikesDesc();
+        }
+
+        if ("favorite".equals(sort)) {
+            return findMyFavorites(userId);
+        }
+
+        // 기본값
+        return findAllByOrderByCreatedAtDesc();
     }
 }
