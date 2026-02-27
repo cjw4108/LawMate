@@ -1,44 +1,84 @@
 package com.lawmate.controller;
 
-import com.lawmate.dto.AdminDTO;
-import com.lawmate.dto.Question;
-import com.lawmate.service.AdminService;
+import com.lawmate.dto.QuestionListDTO;
 import com.lawmate.service.QuestionService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import com.lawmate.dto.QuestionListDTO;
 
 @Controller
 @RequestMapping("/admin")
-@RequiredArgsConstructor // 서비스 주입을 위해 추가
+@RequiredArgsConstructor
 public class AdminController {
 
-    private final QuestionService questionService; // 서비스 연결
-    private final AdminService adminService;
+    private final QuestionService questionService;
 
-
+    // ============================
+    // 관리자 메인 대시보드
+    // ============================
     @GetMapping("/main")
-    public String adminMain() {
+    public String adminMain(Model model) {
+
+        int unansweredCount = questionService.getUnansweredCount();
+        int reportedCount = questionService.getReportedCount();
+
+        model.addAttribute("unansweredCount", unansweredCount);
+        model.addAttribute("reportedCount", reportedCount);
+
         return "admin/adminMain";
     }
 
-    // 게시판 운영 관리 (신고 리스트 출력)
+    // ============================
+    // QnA 통합 관리 페이지
+    // ============================
     @GetMapping("/qna")
-    public String adminQna(Model model) {
-        // 실제 신고된 데이터를 가져와서 모델에 담습니다.
-        List<Question> reportedList = questionService.findReportedQuestions();
-        model.addAttribute("reportedList", reportedList);
+    public String adminQna(
+            @RequestParam(value = "filter", defaultValue = "all") String filter,
+            @RequestParam(value = "sort", defaultValue = "latest") String sort,
+            Model model) {
 
-        // 기존 return 경로가 admin/adminQna라면 그대로 유지
+        List<QuestionListDTO> list =
+                questionService.getAdminQuestionList(filter, sort);
+
+        model.addAttribute("qnaList", list);
+        model.addAttribute("currentFilter", filter);
+        model.addAttribute("currentSort", sort);
+
         return "admin/adminQna";
     }
 
+    // ============================
+    // 🔥 소프트 삭제
+    // ============================
+    @PostMapping("/qna/delete/{id}")
+    public String deleteQuestion(@PathVariable("id") Long id,
+                                 @RequestParam(value = "filter", defaultValue = "all") String filter,
+                                 @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+
+        questionService.softDelete(id);
+
+        return "redirect:/admin/qna?filter=" + filter + "&sort=" + sort;
+    }
+
+    // ============================
+    // 🔥 복구
+    // ============================
+    @PostMapping("/qna/restore/{id}")
+    public String restoreQuestion(@PathVariable("id") Long id,
+                                  @RequestParam(value = "filter", defaultValue = "all") String filter,
+                                  @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+
+        questionService.restore(id);
+
+        return "redirect:/admin/qna?filter=" + filter + "&sort=" + sort;
+    }
+
+    // ============================
+    // 사용자 관리 페이지
+    // ============================
     @GetMapping("/users")
     public String adminUsers() {
         return "admin/adminUsers";
