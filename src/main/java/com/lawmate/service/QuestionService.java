@@ -33,83 +33,6 @@ public class QuestionService {
     }
 
     // ============================
-    // 최신순
-    // ============================
-    @Transactional(readOnly = true)
-    public List<QuestionListDTO> findAllByOrderByCreatedAtDesc() {
-        return mapToDTO(
-                questionRepository.findAllWithCountsOrderByLatest()
-        );
-    }
-
-    // ============================
-    // 답변 많은 순
-    // ============================
-    @Transactional(readOnly = true)
-    public List<QuestionListDTO> findAllByOrderByReplyCountDesc() {
-        return mapToDTO(
-                questionRepository.findAllWithCountsOrderByReply()
-        );
-    }
-
-    // ============================
-    // 좋아요 많은 순
-    // ============================
-    @Transactional(readOnly = true)
-    public List<QuestionListDTO> findAllByOrderByLikesDesc() {
-        return mapToDTO(
-                questionRepository.findAllWithCountsOrderByLikes()
-        );
-    }
-
-    // ============================
-    // 제목 검색
-    // ============================
-    @Transactional(readOnly = true)
-    public List<QuestionListDTO> search(String keyword) {
-
-        List<Question> questions =
-                questionRepository.findByTitleContainingOrderByCreatedAtDesc(keyword);
-
-        return questions.stream()
-                .map(q -> new QuestionListDTO(
-                        q.getId(),
-                        q.getUserId(),
-                        q.getTitle(),
-                        q.getContent(),
-                        q.getAnswered() == null ? 0 : q.getAnswered(),
-                        q.getReportCount() == null ? 0 : q.getReportCount(),
-                        q.getCreatedAt(),
-                        replyRepository.countByQuestionId(q.getId()),
-                        questionRepository.countFavoriteByQuestion(q.getId())
-                ))
-                .toList();
-    }
-
-    // ============================
-    // 내가 찜한 글
-    // ============================
-    @Transactional(readOnly = true)
-    public List<QuestionListDTO> findMyFavorites(String userId) {
-
-        List<Question> questions = questionRepository.findMyFavorites(userId);
-
-        return questions.stream()
-                .map(q -> new QuestionListDTO(
-                        q.getId(),
-                        q.getUserId(),
-                        q.getTitle(),
-                        q.getContent(),
-                        q.getAnswered() == null ? 0 : q.getAnswered(),
-                        q.getReportCount() == null ? 0 : q.getReportCount(),
-                        q.getCreatedAt(),
-                        replyRepository.countByQuestionId(q.getId()),
-                        questionRepository.countFavoriteByQuestion(q.getId())
-                ))
-                .toList();
-    }
-
-    // ============================
     // 단건 조회
     // ============================
     @Transactional(readOnly = true)
@@ -118,83 +41,94 @@ public class QuestionService {
     }
 
     // ============================
-    // 🔥 통합 리스트
+    // 일반 게시판 기능
     // ============================
     @Transactional(readOnly = true)
-    public List<QuestionListDTO> getList(String keyword, String sort, String userId) {
+    public List<QuestionListDTO> findAllByOrderByCreatedAtDesc() {
+        return mapToDTO(questionRepository.findAllWithCountsOrderByLatest());
+    }
 
+    @Transactional(readOnly = true)
+    public List<QuestionListDTO> findAllByOrderByReplyCountDesc() {
+        return mapToDTO(questionRepository.findAllWithCountsOrderByReply());
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionListDTO> findAllByOrderByLikesDesc() {
+        return mapToDTO(questionRepository.findAllWithCountsOrderByLikes());
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionListDTO> search(String keyword) {
+        return mapToDTO(questionRepository.searchWithCounts(keyword));
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionListDTO> findMyFavorites(String userId) {
+        if (userId == null) return Collections.emptyList();
+        return mapToDTO(questionRepository.findMyFavoritesWithCounts(userId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionListDTO> getList(String keyword, String sort, String userId) {
         if (keyword != null && !keyword.isEmpty()) {
             return search(keyword);
         }
-
-        switch (sort) {
-            case "replies":
-                return findAllByOrderByReplyCountDesc();
-            case "likes":
-                return findAllByOrderByLikesDesc();
-            case "favorite":
-                if (userId == null) return Collections.emptyList();
-                return findMyFavorites(userId);
-            case "latest":
-            default:
-                return findAllByOrderByCreatedAtDesc();
-        }
+        return switch (sort) {
+            case "replies" -> findAllByOrderByReplyCountDesc();
+            case "likes" -> findAllByOrderByLikesDesc();
+            case "favorite" -> findMyFavorites(userId);
+            default -> findAllByOrderByCreatedAtDesc();
+        };
     }
 
     // ============================
-    // 찜 관련
+    // 찜(Favorite) 관련
     // ============================
     @Transactional(readOnly = true)
     public boolean isFavorite(Long id, String userId) {
         return questionRepository.countFavorite(id, userId) > 0;
     }
 
-    @Transactional(readOnly = true)
-    public int getFavoriteCount(Long id) {
-        return questionRepository.countFavoriteByQuestion(id);
-    }
-
     @Transactional
     public String toggleFavorite(Long id, String userId) {
-
         if (isFavorite(id, userId)) {
             questionRepository.deleteFavorite(id, userId);
+            questionRepository.decrementFavoriteCount(id);
             return "removed";
         } else {
             questionRepository.insertFavorite(id, userId);
+            questionRepository.incrementFavoriteCount(id);
             return "added";
         }
     }
 
     // ============================
-    // 신고
+    // 신고 처리
     // ============================
     @Transactional
     public void report(Long qnaId, String reason, String userId) {
-
         Question q = questionRepository.findById(qnaId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        int currentCount = (q.getReportCount() == null) ? 0 : q.getReportCount();
+        int currentCount = q.getReportCount() == null ? 0 : q.getReportCount();
         q.setReportCount(currentCount + 1);
-
-        questionRepository.saveAndFlush(q);
+        questionRepository.save(q);
 
         QuestionReport report = QuestionReport.builder()
                 .qnaId(qnaId)
                 .userId(userId)
                 .reason(reason)
+                .createdAt(LocalDateTime.now())
                 .build();
-
         reportRepository.save(report);
     }
 
     // ============================
-    // 답변 등록
+    // 답변 관련
     // ============================
     @Transactional
     public void registerReply(Long id, String content, String userId) {
-
         questionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
@@ -205,65 +139,105 @@ public class QuestionService {
         entity.setCreatedAt(LocalDateTime.now());
 
         replyRepository.save(entity);
+
+        // 답변 등록 시 answered 컬럼 업데이트
+        Question q = questionRepository.findById(id).get();
+        q.setAnswered(1);
+        questionRepository.save(q);
     }
 
+    // ============================
+    // 관리자 기능
+    // ============================
+    @Transactional(readOnly = true)
+    public List<QuestionListDTO> getAdminQuestionList(String filter, String sort) {
+        List<Object[]> rows;
+        if ("deleted".equals(filter)) {
+            rows = questionRepository.findAllDeletedWithCounts();
+        } else if ("report".equals(sort)) {
+            rows = questionRepository.findAllReportedWithCounts();
+        } else if ("unanswered".equals(filter)) {
+            rows = questionRepository.findAllUnansweredWithCounts();
+        } else {
+            rows = questionRepository.findAllWithCountsOrderByLatest();
+        }
+        return mapToDTO(rows);
+    }
+
+    @Transactional(readOnly = true)
+    public int getUnansweredCount() {
+        return questionRepository.countUnanswered();
+    }
+
+    @Transactional(readOnly = true)
+    public int getReportedCount() {
+        return questionRepository.countReported();
+    }
+
+    public void softDelete(Long id) {
+        questionRepository.softDelete(id);
+    }
+
+    public void restore(Long id) {
+        questionRepository.restore(id);
+    }
+
+    // ============================
+    // DTO 매핑
+    // ============================
+    private List<QuestionListDTO> mapToDTO(List<Object[]> rows) {
+        return rows.stream().map(this::basicMapping).toList();
+    }
+
+    private QuestionListDTO basicMapping(Object[] row) {
+        Long id = row[0] == null ? 0L : ((Number) row[0]).longValue();
+        String userId = row[1] == null ? "" : row[1].toString();
+        String title = row[2] == null ? "" : row[2].toString();
+        String content = row[3] == null ? "" : row[3].toString();
+        Integer answered = row[4] == null ? 0 : ((Number) row[4]).intValue();
+        Integer reportCount = row[5] == null ? 0 : ((Number) row[5]).intValue();
+
+        LocalDateTime createdAt;
+        if (row[6] instanceof Timestamp ts) {
+            createdAt = ts.toLocalDateTime();
+        } else if (row[6] instanceof LocalDateTime ldt) {
+            createdAt = ldt;
+        } else {
+            createdAt = LocalDateTime.now();
+        }
+
+        int replyCount = row[7] == null ? 0 : ((Number) row[7]).intValue();
+        int favoriteCount = row[8] == null ? 0 : ((Number) row[8]).intValue();
+
+        return new QuestionListDTO(
+                id, userId, title, content, answered, reportCount,
+                createdAt, replyCount, favoriteCount
+        );
+    }
+
+    // ============================
+    // FAVORITE COUNT 조회
+    // ============================
+    @Transactional(readOnly = true)
+    public int getFavoriteCount(Long id) {
+        Question question = questionRepository.findById(id).orElse(null);
+        if (question == null) return 0;
+        return question.getFavoriteCount() == null ? 0 : question.getFavoriteCount();
+    }
+
+    // ============================
+    // 댓글 목록 조회
+    // ============================
     @Transactional(readOnly = true)
     public List<ReplyEntity> getReplies(Long questionId) {
         return replyRepository.findByQuestionIdOrderByCreatedAtAsc(questionId);
     }
 
+    // ============================
+    // 댓글 개수 조회
+    // ============================
     @Transactional(readOnly = true)
     public int getReplyCount(Long questionId) {
         return replyRepository.countByQuestionId(questionId);
-    }
-
-    // ============================
-    // 신고된 글 목록 (관리자)
-    // ============================
-    @Transactional(readOnly = true)
-    public List<Question> findReportedQuestions() {
-        return questionRepository
-                .findByReportCountGreaterThanOrderByReportCountDesc(0);
-    }
-
-    // ============================
-    // 🔥 Object[] → DTO 안전 매핑
-    // ============================
-    private List<QuestionListDTO> mapToDTO(List<Object[]> rows) {
-
-        return rows.stream().map(row -> {
-
-            Long id = row[0] == null ? 0L : ((Number) row[0]).longValue();
-            String userId = row[1] == null ? "" : row[1].toString();
-            String title = row[2] == null ? "" : row[2].toString();
-            String content = row[3] == null ? "" : row[3].toString();
-
-            Integer answered = row[4] == null ? 0 : ((Number) row[4]).intValue();
-            Integer reportCount = row[5] == null ? 0 : ((Number) row[5]).intValue();
-
-            LocalDateTime createdAt;
-            if (row[6] instanceof Timestamp ts) {
-                createdAt = ts.toLocalDateTime();
-            } else if (row[6] instanceof LocalDateTime ldt) {
-                createdAt = ldt;
-            } else {
-                createdAt = LocalDateTime.now();
-            }
-
-            int replyCount = row[7] == null ? 0 : ((Number) row[7]).intValue();
-            int favoriteCount = row[8] == null ? 0 : ((Number) row[8]).intValue();
-
-            return new QuestionListDTO(
-                    id,
-                    userId,
-                    title,
-                    content,
-                    answered,
-                    reportCount,
-                    createdAt,
-                    replyCount,
-                    favoriteCount
-            );
-        }).toList();
     }
 }

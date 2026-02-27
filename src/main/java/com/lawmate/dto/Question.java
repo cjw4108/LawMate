@@ -6,50 +6,46 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "QUESTIONS")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 @Builder
 public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // ID
 
     @Column(name = "USER_ID")
-    private String userId;
+    private String userId; // USER_ID
 
-    private String title;
+    private String title; // TITLE
 
     @Lob
-    private String content;
+    private String content; // CONTENT
 
-    private Integer answered = 0;
+    private Integer answered = 0; // ANSWERED
 
     @Column(name = "ADOPTED_ANSWER")
-    private Long adoptedAnswer;
+    private Long adoptedAnswer; // ADOPTED_ANSWER
 
-    // 신고 횟수
-    @Column(name = "REPORT_COUNT", nullable = false)
-    private Integer reportCount = 0;
+    @Column(name = "REPORT_COUNT")
+    private Integer reportCount = 0; // REPORT_COUNT
+
+    @Column(name = "FAVORITE_COUNT")
+    private Integer favoriteCount = 0; // FAVORITE_COUNT
 
     @Column(name = "CREATED_AT")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // CREATED_AT
 
-    // DB에는 없고 화면 표시용
-    @Transient
-    private Integer replyCount;
-
-    // DB에는 없고 화면 표시용 (좋아요 수)
-    @Transient
-    private Integer favoriteCount;
+    @Column(name = "DELETED")
+    private Integer deleted = 0; // DELETED
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-
         if (this.answered == null) this.answered = 0;
         if (this.reportCount == null) this.reportCount = 0;
+        if (this.favoriteCount == null) this.favoriteCount = 0;
+        if (this.deleted == null) this.deleted = 0;
     }
 }
