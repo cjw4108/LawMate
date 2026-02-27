@@ -36,24 +36,20 @@ public class UserController {
             return "login";
         }
 
-        // 세션 키 "loginUser"로 통일 (UserPageController, LawyerMypageController 와 일치)
         session.setAttribute("loginUser", user);
-
         String role = user.getRole();
 
-        // 권한별 리다이렉트 처리
         if ("ROLE_ADMIN".equals(role)) {
             return "redirect:/admin/main";
         } else if ("ROLE_LAWYER".equals(role)) {
-            // 변호사인데 아직 승인 대기중인 경우
             if ("PENDING".equals(user.getLawyerStatus())) {
                 model.addAttribute("error", "현재 자격 승인 심사 중입니다.");
                 session.invalidate();
                 return "login";
             }
-            return "redirect:/home"; // 변호사 마이페이지로 이동
+            return "redirect:/home";
         } else {
-            return "redirect:/home"; // 일반회원 마이페이지로 이동
+            return "redirect:/home";
         }
     }
 
@@ -66,10 +62,10 @@ public class UserController {
     // 4. 변호사 회원가입 페이지 이동
     @GetMapping("/signup/lawyer")
     public String signupLawyerPage() {
-        return "lawyer"; // lawyer.jsp 호출
+        return "lawyer";
     }
 
-    // 5. 일반 사용자 회원가입 처리
+    // 5. 일반 사용자 회원가입 처리 (수정됨)
     @PostMapping("/signup")
     public String signup(UserDTO user, @RequestParam String passwordConfirm, Model model) {
         if (!user.getPassword().equals(passwordConfirm)) {
@@ -81,13 +77,18 @@ public class UserController {
         user.setRole("ROLE_USER");
         user.setLawyerStatus("NONE");
 
+        // ★ 추가: 가입 시 상태를 "정상"으로 설정
+        user.setStatus("정상");
+
+        // UserDTO에 userName, userPhone 필드가 있다면
+        // Spring이 JSP의 input name과 매칭하여 자동으로 담아줍니다.
         if (userService.signup(user)) return "redirect:/login?msg=success";
 
         model.addAttribute("error", "아이디 중복 또는 가입 실패");
         return "signup";
     }
 
-    // 6. 변호사 회원가입 처리
+    // 6. 변호사 회원가입 처리 (수정됨)
     @PostMapping("/signup/lawyer")
     public String signupLawyer(UserDTO user,
                                @RequestParam String passwordConfirm,
@@ -102,6 +103,9 @@ public class UserController {
         user.setJoinDate(LocalDate.now());
         user.setRole("ROLE_LAWYER");
         user.setLawyerStatus("PENDING");
+
+        // ★ 추가: 변호사 가입 시에도 상태를 "정상"으로 설정
+        user.setStatus("정상");
 
         if (userService.signupLawyer(user, uploadFile)) {
             return "redirect:/login?msg=pending";

@@ -57,6 +57,16 @@
                 <input type="text" name="userId" class="form-control" placeholder="아이디 입력" required>
             </div>
 
+                <div class="mb-3">
+                    <label class="form-label">이름 <span class="text-danger">*</span></label>
+                    <input type="text" name="userId" class="form-control" placeholder="성명을 입력해주세요" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">전화번호 <span class="text-danger">*</span></label>
+                    <input type="text" name="userId" class="form-control" placeholder="전화번호를 입력해주세여" required>
+                </div>
+
             <div class="mb-3">
                 <label class="form-label">비밀번호 <span class="text-danger">*</span></label>
                 <input type="password" name="password" id="password" class="form-control" placeholder="비밀번호 입력" required>
