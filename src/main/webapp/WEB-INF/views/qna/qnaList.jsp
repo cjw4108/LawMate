@@ -86,7 +86,7 @@
                                         <h5 class="fw-bold">${question.title}</h5>
 
                                         <p class="text-muted small mb-0">
-                                            작성자: ${question.userId} |
+                                            작성자: ${question.writer} |
 
                                             <fmt:parseDate value="${question.createdAt}"
                                                            pattern="yyyy-MM-dd'T'HH:mm"

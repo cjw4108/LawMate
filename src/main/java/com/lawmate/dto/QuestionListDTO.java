@@ -14,6 +14,7 @@ public class QuestionListDTO {
     private LocalDateTime createdAt;
     private Integer deleted;
     private String reportReason;    // 모달용
+    private Integer replyCount;
 
     // 기본 생성자
     public QuestionListDTO() {}
@@ -21,7 +22,7 @@ public class QuestionListDTO {
     // 전체 생성자
     public QuestionListDTO(Long id, String title, String content, String writer,
                            Integer answered, Integer reportCount, Integer favoriteCount,
-                           LocalDateTime createdAt, Integer deleted, String reportReason) {
+                           LocalDateTime createdAt, Integer deleted, Integer replyCount, String reportReason) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -31,6 +32,7 @@ public class QuestionListDTO {
         this.favoriteCount = favoriteCount;
         this.createdAt = createdAt;
         this.deleted = deleted;
+        this.replyCount = replyCount;
         this.reportReason = reportReason;
     }
 
@@ -65,4 +67,8 @@ public class QuestionListDTO {
 
     public String getReportReason() { return reportReason; }
     public void setReportReason(String reportReason) { this.reportReason = reportReason; }
+
+    public Integer getReplyCount() { return replyCount; }
+    public void setReplyCount(Integer replyCount) { this.replyCount = replyCount; }
+
 }

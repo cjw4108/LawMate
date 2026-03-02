@@ -20,19 +20,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findByReportCountGreaterThanOrderByReportCountDesc(int reportCount);
 
     // ==============================
-    // 최신순 조회
+    // 최신순 조회 (q.DELETED 추가)
     // ==============================
     @Query(value = """
         SELECT 
-            q.ID,
-            q.USER_ID,
-            q.TITLE,
-            q.CONTENT,
-            q.ANSWERED,
-            q.REPORT_COUNT,
-            q.CREATED_AT,
-            NVL(r.reply_cnt, 0),
-            NVL(q.FAVORITE_COUNT, 0)
+            q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+            q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt, 0), 
+            NVL(q.FAVORITE_COUNT, 0), q.DELETED
         FROM QUESTIONS q
         LEFT JOIN (
             SELECT QNA_ID, COUNT(*) AS reply_cnt
@@ -47,15 +41,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 댓글 많은 순
     @Query(value = """
         SELECT 
-            q.ID,
-            q.USER_ID,
-            q.TITLE,
-            q.CONTENT,
-            q.ANSWERED,
-            q.REPORT_COUNT,
-            q.CREATED_AT,
-            NVL(r.reply_cnt, 0),
-            NVL(q.FAVORITE_COUNT, 0)
+            q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+            q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt, 0), 
+            NVL(q.FAVORITE_COUNT, 0), q.DELETED
         FROM QUESTIONS q
         LEFT JOIN (
             SELECT QNA_ID, COUNT(*) AS reply_cnt
@@ -70,15 +58,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 좋아요 많은 순
     @Query(value = """
         SELECT 
-            q.ID,
-            q.USER_ID,
-            q.TITLE,
-            q.CONTENT,
-            q.ANSWERED,
-            q.REPORT_COUNT,
-            q.CREATED_AT,
-            NVL(r.reply_cnt, 0),
-            NVL(q.FAVORITE_COUNT, 0)
+            q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+            q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt, 0), 
+            NVL(q.FAVORITE_COUNT, 0), q.DELETED
         FROM QUESTIONS q
         LEFT JOIN (
             SELECT QNA_ID, COUNT(*) AS reply_cnt
@@ -93,15 +75,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 검색
     @Query(value = """
         SELECT 
-            q.ID,
-            q.USER_ID,
-            q.TITLE,
-            q.CONTENT,
-            q.ANSWERED,
-            q.REPORT_COUNT,
-            q.CREATED_AT,
-            NVL(r.reply_cnt, 0),
-            NVL(q.FAVORITE_COUNT, 0)
+            q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+            q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt, 0), 
+            NVL(q.FAVORITE_COUNT, 0), q.DELETED
         FROM QUESTIONS q
         LEFT JOIN (
             SELECT QNA_ID, COUNT(*) AS reply_cnt
@@ -118,7 +94,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 찜(Favorite) 관련
     // ==============================
     @Query(value = """
-        SELECT q.*
+        SELECT q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+               q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt, 0), 
+               NVL(q.FAVORITE_COUNT, 0), q.DELETED
         FROM QUESTIONS q
         JOIN QUESTION_LIKES l ON q.ID = l.QNA_ID
         LEFT JOIN (
@@ -176,19 +154,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     void decrementFavoriteCount(@Param("qnaId") Long qnaId);
 
     // ==============================
-    // 삭제/신고/미답변
+    // 관리자 전용: 삭제/신고/미답변 (q.DELETED 추가)
     // ==============================
     @Query(value = """
         SELECT 
-            q.ID,
-            q.USER_ID,
-            q.TITLE,
-            q.CONTENT,
-            q.ANSWERED,
-            q.REPORT_COUNT,
-            q.CREATED_AT,
-            NVL(r.reply_cnt,0),
-            NVL(q.FAVORITE_COUNT,0)
+            q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+            q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt,0), 
+            NVL(q.FAVORITE_COUNT,0), q.DELETED
         FROM QUESTIONS q
         LEFT JOIN (
             SELECT QNA_ID, COUNT(*) AS reply_cnt
@@ -202,15 +174,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(value = """
         SELECT 
-            q.ID,
-            q.USER_ID,
-            q.TITLE,
-            q.CONTENT,
-            q.ANSWERED,
-            q.REPORT_COUNT,
-            q.CREATED_AT,
-            NVL(r.reply_cnt,0),
-            NVL(q.FAVORITE_COUNT,0)
+            q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+            q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt,0), 
+            NVL(q.FAVORITE_COUNT,0), q.DELETED
         FROM QUESTIONS q
         LEFT JOIN (
             SELECT QNA_ID, COUNT(*) AS reply_cnt
@@ -225,15 +191,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(value = """
         SELECT 
-            q.ID,
-            q.USER_ID,
-            q.TITLE,
-            q.CONTENT,
-            q.ANSWERED,
-            q.REPORT_COUNT,
-            q.CREATED_AT,
-            NVL(r.reply_cnt,0),
-            NVL(q.FAVORITE_COUNT,0)
+            q.ID, q.USER_ID, q.TITLE, q.CONTENT, q.ANSWERED, 
+            q.REPORT_COUNT, q.CREATED_AT, NVL(r.reply_cnt,0), 
+            NVL(q.FAVORITE_COUNT,0), q.DELETED
         FROM QUESTIONS q
         LEFT JOIN (
             SELECT QNA_ID, COUNT(*) AS reply_cnt

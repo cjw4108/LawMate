@@ -1,178 +1,148 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="cp" value="${pageContext.request.contextPath}" />
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 <main class="main" style="padding-top: 100px; min-height: 80vh;">
     <div class="container">
+        <h3 class="fw-bold mb-4">
+            <i class="bi bi-shield-lock-fill text-danger me-2"></i> QnA 관리자 관리
+        </h3>
 
-        <!-- ================= 상단 타이틀 ================= -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold">
-                <i class="bi bi-shield-lock-fill text-danger me-2"></i>
-                QnA 관리자 관리 페이지
-            </h3>
-        </div>
-
-        <!-- ================= 필터 영역 ================= -->
-        <form method="get" action="/admin/qna" class="row g-3 mb-3">
-
+        <form method="get" action="${cp}/admin/qna" class="row g-3 mb-4">
             <div class="col-md-3">
-                <select name="filter" class="form-select">
-                    <option value="all" ${param.filter == 'all' ? 'selected' : ''}>전체 게시글</option>
-                    <option value="deleted" ${param.filter == 'deleted' ? 'selected' : ''}>삭제된 글만</option>
+                <select name="filter" class="form-select border-2">
+                    <option value="all" ${currentFilter == 'all' ? 'selected' : ''}>전체 게시글</option>
+                    <option value="deleted" ${currentFilter == 'deleted' ? 'selected' : ''}>삭제된 글만</option>
                 </select>
             </div>
-
             <div class="col-md-3">
-                <select name="sort" class="form-select">
-                    <option value="latest" ${param.sort == 'latest' ? 'selected' : ''}>최신순</option>
-                    <option value="report" ${param.sort == 'report' ? 'selected' : ''}>신고 많은 순</option>
+                <select name="sort" class="form-select border-2">
+                    <option value="latest" ${currentSort == 'latest' ? 'selected' : ''}>최신순</option>
+                    <option value="report" ${currentSort == 'report' ? 'selected' : ''}>신고 많은 순</option>
                 </select>
             </div>
-
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    필터 적용
-                </button>
+                <button type="submit" class="btn btn-dark w-100">적용</button>
             </div>
-
         </form>
 
-        <!-- ================= 게시글 테이블 ================= -->
         <div class="table-responsive bg-white shadow-sm rounded border">
             <table class="table table-hover align-middle mb-0 text-center">
                 <thead class="table-light">
                 <tr>
                     <th style="width:5%">ID</th>
-                    <th style="width:20%">제목</th>
-                    <th style="width:10%">작성자</th>
+                    <th style="width:30%">제목</th>
                     <th style="width:10%">상태</th>
-                    <th style="width:10%">신고횟수</th>
-                    <th style="width:25%">신고사유</th>
+                    <th style="width:10%">신고</th>
                     <th style="width:20%">관리</th>
                 </tr>
                 </thead>
                 <tbody>
-
                 <c:forEach var="q" items="${qnaList}">
-                    <tr>
+                    <tr class="${q.deleted != 0 ? 'table-secondary' : ''}">
                         <td>${q.id}</td>
-
-                        <!-- 제목 -->
                         <td class="text-start">
-                            <c:choose>
-                                <c:when test="${q.deleted == 1}">
-                                    <span class="text-decoration-line-through text-muted">
-                                            ${q.title}
-                                    </span>
-                                </c:when>
-                                <c:otherwise>
+                            <span class="${q.deleted != 0 ? 'text-decoration-line-through text-muted' : ''}">
                                     ${q.title}
-                                </c:otherwise>
-                            </c:choose>
+                            </span>
                         </td>
-
-                        <!-- 작성자 -->
-                        <td>${q.writer}</td>
-
-                        <!-- 상태 -->
                         <td>
-                            <c:choose>
-                                <c:when test="${q.deleted == 1}">
-                                    <span class="badge bg-danger">삭제됨</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="badge bg-success">정상</span>
-                                </c:otherwise>
-                            </c:choose>
+                            <span class="badge ${q.deleted == 0 ? 'bg-success' : 'bg-danger'}">
+                                    ${q.deleted == 0 ? '정상' : '삭제됨'}
+                            </span>
                         </td>
-
-                        <!-- 신고 횟수 -->
                         <td>
-                            <span class="fw-bold text-danger">${q.reportCount}</span>
-                        </td>
-
-                        <!-- 신고 사유 -->
-                        <td>
-                            <button class="btn btn-sm btn-outline-secondary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#reportModal${q.id}">
-                                보기
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="loadReportReasons(${q.id})">
+                                    ${q.reportCount}건
                             </button>
-
-                            <!-- 모달 -->
-                            <div class="modal fade" id="reportModal${q.id}" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">신고 사유</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body text-start">
-                                            <c:choose>
-                                                <c:when test="${not empty q.reportReason}">
-                                                    ${q.reportReason}
-                                                </c:when>
-                                                <c:otherwise>
-                                                    신고 내역 없음
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
-                                    </div>
-                                </div>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <c:choose>
+                                    <c:when test="${q.deleted == 0}">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="deletePost(${q.id})">삭제</button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="button" class="btn btn-sm btn-success" onclick="restorePost(${q.id})">복구</button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </td>
-
-                        <!-- 관리 버튼 -->
-                        <td>
-                            <c:choose>
-                                <c:when test="${q.deleted == 0}">
-                                    <button class="btn btn-sm btn-outline-danger"
-                                            onclick="deletePost(${q.id})">
-                                        삭제
-                                    </button>
-                                </c:when>
-                                <c:otherwise>
-                                    <button class="btn btn-sm btn-outline-success"
-                                            onclick="restorePost(${q.id})">
-                                        복구
-                                    </button>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-
                     </tr>
                 </c:forEach>
-
-                <c:if test="${empty qnaList}">
-                    <tr>
-                        <td colspan="7" class="py-5 text-center text-muted">
-                            게시글이 없습니다.
-                        </td>
-                    </tr>
-                </c:if>
-
                 </tbody>
             </table>
         </div>
-
     </div>
 </main>
 
+<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold">신고 상세 내역</h5>
+            </div>
+            <div class="modal-body p-0" id="reportModalBody">
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    function deletePost(id) {
-        if(confirm("정말 삭제하시겠습니까?")) {
-            fetch("/admin/qna/delete/" + id, { method: "POST" })
-                .then(() => location.reload());
+    function loadReportReasons(qnaId) {
+        const modalBody = document.getElementById('reportModalBody');
+        const modalEl = document.getElementById('reportModal');
+
+        modalBody.innerHTML = '<div class="p-5 text-center"><div class="spinner-border text-primary"></div></div>';
+        try {
+            const modalInst = new bootstrap.Modal(modalEl);
+            modalInst.show();
+        } catch (e) {
+            // 만약 위에서도 에러가 나면 구버전(v4) 방식 시도
+            $(modalEl).modal('show');
         }
+
+        fetch('${cp}/admin/qna/reports/' + qnaId)
+            .then(res => res.json())
+            .then(data => {
+                if(!data || data.length === 0) {
+                    modalBody.innerHTML = '<div class="p-4 text-center text-muted">신고 내역이 없습니다.</div>';
+                    return;
+                }
+                let html = '<ul class="list-group list-group-flush">';
+                data.forEach(report => {
+                    // report[0]: 사유, report[1]: 아이디, report[2]: 날짜
+                    html += '<li class="list-group-item p-3">' +
+                        '  <div class="fw-bold mb-1">' + (report[0] || '내용 없음') + '</div>' +
+                        '  <div class="small text-muted">신고자: ' + (report[1] || '익명') + ' | ' + new Date(report[2]).toLocaleString() + '</div>' +
+                        '</li>';
+                });
+                html += '</ul>';
+                modalBody.innerHTML = html;
+            })
+            .catch(err => {
+                modalBody.innerHTML = '<div class="p-4 text-center text-danger">데이터를 불러올 수 없습니다.</div>';
+            });
+    }
+
+    function deletePost(id) {
+        if(confirm("이 글을 삭제하시겠습니까?")) sendPost('${cp}/admin/qna/delete/' + id);
     }
 
     function restorePost(id) {
-        if(confirm("복구하시겠습니까?")) {
-            fetch("/admin/qna/restore/" + id, { method: "POST" })
-                .then(() => location.reload());
-        }
+        if(confirm("이 글을 복구하시겠습니까?")) sendPost('${cp}/admin/qna/restore/' + id);
+    }
+
+    function sendPost(url) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url + "?filter=${currentFilter}&sort=${currentSort}";
+        document.body.appendChild(form);
+        form.submit();
     }
 </script>
-
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
