@@ -17,4 +17,6 @@ public interface UserDAO {
     int updateLawyerStatus(@Param("userId") String userId,
                            @Param("lawyerStatus") String lawyerStatus,
                            @Param("rejectReason") String rejectReason);
+
+    void updateStatus(String userId, String status);
 }

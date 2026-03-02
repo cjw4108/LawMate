@@ -65,8 +65,4 @@ public class AdminController {
         return "redirect:/admin/qna?filter=" + filter + "&sort=" + sort;
     }
 
-    @GetMapping("/users")
-    public String adminUsers() {
-        return "admin/adminUsers";
-    }
 }

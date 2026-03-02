@@ -23,11 +23,8 @@ public class UserService {
             return false;
         }
 
-        // 권한 설정
         user.setRole("ROLE_USER");
-
-        // 🔴 [수정] lawyerStatus -> status로 변경 (DTO와 일치)
-        user.setStatus("ACTIVE");
+        user.setStatus("정상"); // 초기 상태 설정
 
         userDAO.signup(user);
         return true;
@@ -43,27 +40,29 @@ public class UserService {
         if (licenseFile != null && !licenseFile.isEmpty()) {
             try {
                 String savedName = saveFile(licenseFile);
-
-                // 🔴 [수정] 이제 DB에 컬럼을 추가했으므로 DTO에 세팅해도 됩니다.
                 user.setLicenseFile(savedName);
-
-                System.out.println("변호사 증빙파일 저장 완료: " + savedName);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
         }
 
-        // 변호사는 기본 권한 ROLE_LAWYER와 대기 상태 PENDING 설정
         user.setRole("ROLE_LAWYER");
-        user.setStatus("PENDING");
+        user.setStatus("승인대기"); // 변호사는 관리자 승인 전까지 대기
 
         return userDAO.saveLawyer(user) > 0;
     }
 
-    // 3. 로그인 및 기타 기능
+    // 3. 로그인 (정지 계정 차단 로직 추가)
     public UserDTO login(String userId, String password) {
         return userDAO.login(userId, password);
+    }
+
+    // 4. 관리자용: 유저 상태 변경 (정상 <-> 정지)
+    @Transactional
+    public void changeStatus(String userId, String status) {
+        // 이 기능을 위해 UserDAO에 updateStatus(userId, status) 메서드가 필요합니다.
+        userDAO.updateStatus(userId, status);
     }
 
     public UserDTO getUserById(String userId) {
@@ -75,7 +74,7 @@ public class UserService {
         userDAO.updateProfile(userDTO);
     }
 
-    // 파일 저장 유틸리티 메서드
+    // 파일 저장 유틸리티
     private String saveFile(MultipartFile file) throws Exception {
         File dir = new File(uploadPath);
         if (!dir.exists()) dir.mkdirs();
