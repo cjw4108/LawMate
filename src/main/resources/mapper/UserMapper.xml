@@ -24,20 +24,20 @@
 
     <insert id="saveLawyer" parameterType="com.lawmate.dto.UserDTO">
         INSERT INTO USERS (
-            USER_ID, PASSWORD, NAME, PHONE, EMAIL, ROLE, STATUS,
-            LAWYER_STATUS, LICENSE_FILE, JOIN_DATE
+        USER_ID, PASSWORD, NAME, PHONE, EMAIL, ROLE, STATUS,
+        LAWYER_STATUS, LICENSE_FILE, JOIN_DATE
         ) VALUES (
-                     #{userId, jdbcType=VARCHAR},
-                     #{password, jdbcType=VARCHAR},
-                     #{name, jdbcType=VARCHAR},
-                     #{phone, jdbcType=VARCHAR},
-                     #{email, jdbcType=VARCHAR},
-                     'ROLE_LAWYER',
-                     '정상',
-                     'PENDING',
-                     #{licenseFile, jdbcType=VARCHAR},
-                     SYSDATE
-                 )
+            #{userId},
+            #{password},
+            #{name},
+            #{phone},
+            #{email},
+            #{role},          <!-- Service에서 ROLE_LAWYER 세팅 -->
+            #{status},        <!-- Service에서 승인대기 세팅 -->
+            #{lawyerStatus},  <!-- Service에서 PENDING 세팅 -->
+            #{licenseFile},
+            SYSDATE
+        )
     </insert>
 
     <select id="login" resultType="com.lawmate.dto.UserDTO">

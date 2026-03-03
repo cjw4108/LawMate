@@ -39,7 +39,7 @@
                 </a>
             </div>
             <div class="col-md-4">
-                <a href="/admin/lawyer/approve" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
+                <a href="/admin/approve" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
                     <i class="bi bi-shield-check me-2"></i> 변호사 권한 승인
                 </a>
             </div>

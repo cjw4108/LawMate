@@ -1,6 +1,6 @@
 package com.lawmate.controller;
 
-import com.lawmate.dto.UserDTO;
+import com.lawmate.dto.AdminDTO;
 import com.lawmate.dto.LawyerApprovalDTO;
 import com.lawmate.service.AdminLawyerService;
 import jakarta.servlet.http.HttpSession;
@@ -21,10 +21,10 @@ public class AdminLawyerController {
     // 1. 변호사 승인 관리 페이지 (목록 조회)
     @GetMapping("/approve")
     public String approvalPage(HttpSession session, Model model) {
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin"); // ✅ 수정
 
-        if (loginUser == null || !"ROLE_ADMIN".equals(loginUser.getRole())) {
-            return "redirect:/login";
+        if (loginAdmin == null) {
+            return "redirect:/admin/login"; // ✅ 수정
         }
 
         List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers();
@@ -40,13 +40,13 @@ public class AdminLawyerController {
                           @RequestParam(required = false) String rejectReason,
                           HttpSession session) {
 
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-        if (loginUser == null || !"ROLE_ADMIN".equals(loginUser.getRole())) {
-            return "redirect:/login";
+        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin"); // ✅ 수정
+        if (loginAdmin == null) {
+            return "redirect:/admin/login"; // ✅ 수정
         }
 
         adminLawyerService.updateLawyerStatus(userId, targetStatus, rejectReason);
 
-        return "redirect:/admin/approve";
+        return "redirect:/admin/lawyer/approve"; // ✅ 수정
     }
 }

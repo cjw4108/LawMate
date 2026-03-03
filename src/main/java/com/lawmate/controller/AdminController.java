@@ -65,4 +65,13 @@ public class AdminController {
         return "redirect:/admin/qna?filter=" + filter + "&sort=" + sort;
     }
 
+    @GetMapping("approve") // JSP의 버튼 주소와 일치시킴
+    public String approvePage(Model model) {
+        // 1. 여기서 승인 대기 중인 변호사 목록을 가져와야 합니다.
+        // List<UserDTO> lawyerList = userService.getPendingLawyers();
+        // model.addAttribute("lawyerList", lawyerList);
+
+        // 2. 리턴값은 반드시 '폴더명/파일명'이어야 합니다.
+        return "admin/approve"; // src/main/webapp/WEB-INF/views/admin/approve.jsp
+    }
 }
