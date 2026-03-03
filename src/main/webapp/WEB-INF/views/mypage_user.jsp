@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>LawMate - 마이페이지</title>
+    <title>LawMate - 일반회원</title>
 
     <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
@@ -33,13 +33,15 @@
             <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
         </a>
 
-        <hr class="sidebar-divider my-0">
+        <hr class="sidebar-divider my-0 mt-3">
+        <div class="sidebar-card d-none d-lg-flex flex-column align-items-center p-3">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                 alt="avatar"
+                 class="rounded-circle img-fluid mb-2"
+                 style="width: 80px;">
+            <h6 class="text-white my-2">홍길동 님</h6>
+        </div>
 
-        <li class="nav-item active">
-            <a class="nav-link" href="mypage.jsp">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span></a>
-        </li>
 
         <hr class="sidebar-divider">
 
@@ -144,6 +146,7 @@
                             class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
                 </div>
 
+
                 <div class="row">
 
                     <div class="col-xl-3 col-md-6 mb-4">
@@ -214,7 +217,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Pending Requests</div>
+                                            상담 요청 건</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
                                     </div>
                                     <div class="col-auto">
