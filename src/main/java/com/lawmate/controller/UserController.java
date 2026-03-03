@@ -8,7 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,6 +39,11 @@ public class UserController {
 
         if (user == null) {
             model.addAttribute("error", "아이디 또는 비밀번호가 틀립니다.");
+            return "login";
+        }
+
+        if ("정지".equals(user.getStatus())) {
+            model.addAttribute("error", "정지된 계정입니다. 관리자에게 문의하세요.");
             return "login";
         }
 
@@ -65,7 +76,7 @@ public class UserController {
         return "lawyer";
     }
 
-    // 5. 일반 사용자 회원가입 처리 (수정됨)
+    // 5. 일반 사용자 회원가입 처리
     @PostMapping("/signup")
     public String signup(UserDTO user, @RequestParam String passwordConfirm, Model model) {
         if (!user.getPassword().equals(passwordConfirm)) {
@@ -76,19 +87,17 @@ public class UserController {
         user.setJoinDate(LocalDate.now());
         user.setRole("ROLE_USER");
         user.setLawyerStatus("NONE");
-
-        // ★ 추가: 가입 시 상태를 "정상"으로 설정
         user.setStatus("정상");
 
-        // UserDTO에 userName, userPhone 필드가 있다면
-        // Spring이 JSP의 input name과 매칭하여 자동으로 담아줍니다.
-        if (userService.signup(user)) return "redirect:/login?msg=success";
+        if (userService.signup(user)) {
+            return "redirect:/login?msg=success";
+        }
 
         model.addAttribute("error", "아이디 중복 또는 가입 실패");
         return "signup";
     }
 
-    // 6. 변호사 회원가입 처리 (수정됨)
+    // 6. 변호사 회원가입 처리
     @PostMapping("/signup/lawyer")
     public String signupLawyer(UserDTO user,
                                @RequestParam String passwordConfirm,
@@ -100,18 +109,42 @@ public class UserController {
             return "lawyer";
         }
 
-        user.setJoinDate(LocalDate.now());
-        user.setRole("ROLE_LAWYER");
-        user.setLawyerStatus("PENDING");
+        try {
+            // 1. 파일을 getBytes()로 메모리에 먼저 읽은 후 저장
+            if (uploadFile != null && !uploadFile.isEmpty()) {
+                String uploadDir = "C:/lawmate/uploads/license/";
+                File dir = new File(uploadDir);
+                if (!dir.exists()) dir.mkdirs();
 
-        // ★ 추가: 변호사 가입 시에도 상태를 "정상"으로 설정
-        user.setStatus("정상");
+                String savedFileName = UUID.randomUUID().toString() + "_" + uploadFile.getOriginalFilename();
+                byte[] bytes = uploadFile.getBytes();
+                Files.write(Paths.get(uploadDir + savedFileName), bytes);
 
-        if (userService.signupLawyer(user, uploadFile)) {
-            return "redirect:/login?msg=pending";
+                user.setLicenseFile(savedFileName);
+            }
+
+            // 2. 변호사 기본 정보 세팅
+            user.setJoinDate(LocalDate.now());
+            user.setRole("ROLE_LAWYER");
+            user.setLawyerStatus("PENDING");
+            user.setStatus("정상");
+
+            // 3. DB 저장 (파일은 이미 저장했으므로 null 전달)
+            if (userService.signupLawyer(user, null)) {
+                return "redirect:/login?msg=pending";
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("error", "파일 저장 중 서버 오류가 발생했습니다.");
+            return "lawyer";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "가입 처리 중 알 수 없는 오류가 발생했습니다.");
+            return "lawyer";
         }
 
-        model.addAttribute("error", "회원가입 신청 중 오류가 발생했습니다.");
+        model.addAttribute("error", "회원가입 신청 실패");
         return "lawyer";
     }
 

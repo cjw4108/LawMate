@@ -51,20 +51,22 @@
             <%-- DTO 자동입력을 위한 히든 필드 --%>
             <input type="hidden" name="role" value="ROLE_USER">
             <input type="hidden" name="lawyerStatus" value="NONE">
+            <%-- 상태값 기본 설정 (컨트롤러에서도 세팅하지만 폼에서도 전달 가능) --%>
+            <input type="hidden" name="status" value="정상">
 
-            <div class="mb-3">
-                <label class="form-label">아이디 <span class="text-danger">*</span></label>
-                <input type="text" name="userId" class="form-control" placeholder="아이디 입력" required>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">아이디 <span class="text-danger">*</span></label>
+                    <input type="text" name="userId" class="form-control" placeholder="아이디 입력" required>
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label">이름 <span class="text-danger">*</span></label>
-                    <input type="text" name="userId" class="form-control" placeholder="성명을 입력해주세요" required>
+                    <input type="text" name="name" class="form-control" placeholder="성명을 입력해주세요" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">전화번호 <span class="text-danger">*</span></label>
-                    <input type="text" name="userId" class="form-control" placeholder="전화번호를 입력해주세여" required>
+                    <input type="text" name="phone" class="form-control" placeholder="010-0000-0000" required>
                 </div>
 
             <div class="mb-3">
@@ -110,15 +112,26 @@
     // 제출 전 검증
     document.getElementById('signupForm').addEventListener('submit', function(e) {
         var uid   = document.querySelector('[name=userId]').value.trim();
+        var uname = document.querySelector('[name=userName]').value.trim();
+        var uphone = document.querySelector('[name=userPhone]').value.trim();
         var pw    = document.getElementById('password').value;
         var pwc   = document.getElementById('passwordConfirm').value;
         var email = document.querySelector('[name=email]').value.trim();
 
-        if (!uid || !pw || !pwc || !email) {
+        if (!uid || !uname || !uphone || !pw || !pwc || !email) {
             e.preventDefault();
             alert('모든 항목을 입력해주세요.');
             return;
         }
+
+        // 전화번호 형식 체크 (숫자와 하이픈만 허용)
+        var phoneReg = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        if(!phoneReg.test(uphone)) {
+            e.preventDefault();
+            alert('전화번호 형식을 확인해주세요. (예: 010-1234-5678)');
+            return;
+        }
+
         if (pw !== pwc) {
             e.preventDefault();
             alert('비밀번호가 일치하지 않습니다.');

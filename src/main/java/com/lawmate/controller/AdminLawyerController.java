@@ -1,6 +1,6 @@
 package com.lawmate.controller;
 
-import com.lawmate.dto.AdminDTO;
+import com.lawmate.dto.UserDTO;
 import com.lawmate.dto.LawyerApprovalDTO;
 import com.lawmate.service.AdminLawyerService;
 import jakarta.servlet.http.HttpSession;
@@ -21,13 +21,12 @@ public class AdminLawyerController {
     // 1. 변호사 승인 관리 페이지 (목록 조회)
     @GetMapping("/approve")
     public String approvalPage(HttpSession session, Model model) {
-        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin");
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
 
-        if (loginAdmin == null) {
-            return "redirect:/admin/login";
+        if (loginUser == null || !"ROLE_ADMIN".equals(loginUser.getRole())) {
+            return "redirect:/login";
         }
 
-        // ✅ 수정: static 메서드 대신 인스턴스 메서드 호출
         List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers();
         model.addAttribute("pendingList", pendingList);
 
@@ -41,13 +40,13 @@ public class AdminLawyerController {
                           @RequestParam(required = false) String rejectReason,
                           HttpSession session) {
 
-        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin");
-        if (loginAdmin == null) {
-            return "redirect:/admin/login";
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null || !"ROLE_ADMIN".equals(loginUser.getRole())) {
+            return "redirect:/login";
         }
 
         adminLawyerService.updateLawyerStatus(userId, targetStatus, rejectReason);
 
-        return "redirect:/admin/lawyer/approve";
+        return "redirect:/admin/approve";
     }
 }

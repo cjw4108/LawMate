@@ -21,7 +21,6 @@ public class AdminController {
     // ============================
     @GetMapping("/main")
     public String adminMain(Model model) {
-
         int unansweredCount = questionService.getUnansweredCount();
         int reportedCount = questionService.getReportedCount();
 
@@ -40,8 +39,7 @@ public class AdminController {
             @RequestParam(value = "sort", defaultValue = "latest") String sort,
             Model model) {
 
-        List<QuestionListDTO> list =
-                questionService.getAdminQuestionList(filter, sort);
+        List<QuestionListDTO> list = questionService.getAdminQuestionList(filter, sort);
 
         model.addAttribute("qnaList", list);
         model.addAttribute("currentFilter", filter);
@@ -51,28 +49,21 @@ public class AdminController {
     }
 
     // ============================
-    // 🔥 소프트 삭제
+    // 🔥 QnA 삭제 및 복구
     // ============================
     @PostMapping("/qna/delete/{id}")
     public String deleteQuestion(@PathVariable("id") Long id,
                                  @RequestParam(value = "filter", defaultValue = "all") String filter,
                                  @RequestParam(value = "sort", defaultValue = "latest") String sort) {
-
         questionService.softDelete(id);
-
         return "redirect:/admin/qna?filter=" + filter + "&sort=" + sort;
     }
 
-    // ============================
-    // 🔥 복구
-    // ============================
     @PostMapping("/qna/restore/{id}")
     public String restoreQuestion(@PathVariable("id") Long id,
                                   @RequestParam(value = "filter", defaultValue = "all") String filter,
                                   @RequestParam(value = "sort", defaultValue = "latest") String sort) {
-
         questionService.restore(id);
-
         return "redirect:/admin/qna?filter=" + filter + "&sort=" + sort;
     }
 
@@ -83,4 +74,8 @@ public class AdminController {
     public String adminUsers() {
         return "admin/adminUsers";
     }
+
+    // 🔴 [수정 완료]
+    // 여기서 충돌나던 lawyer/approve 와 lawyer/process 메서드를 삭제했습니다.
+    // 해당 기능은 이미 'AdminLawyerController'가 담당하고 있으니 안심하세요!
 }
