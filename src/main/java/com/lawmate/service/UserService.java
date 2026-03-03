@@ -6,15 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,79 +14,55 @@ import java.util.UUID;
 public class UserService {
 
     private final UserDAO userDAO;
-    private final String uploadPath = "C:/lawmate/uploads/license/";
+    private final String uploadPath = "C:/lawmate/uploads/";
 
-    // =========================================================
-    // 1. 회원가입 기능
-    // =========================================================
-
-    /**
-     * 일반 회원가입
-     */
+    // 1. 일반 회원가입
     @Transactional
     public boolean signup(UserDTO user) {
         if (userDAO.existsByUserId(user.getUserId()) > 0) {
             return false;
         }
+
         user.setRole("ROLE_USER");
-        user.setStatus("정상");
-        user.setLawyerStatus("NONE");
+        user.setStatus("정상"); // 초기 상태 설정
+
         userDAO.signup(user);
         return true;
     }
 
-    /**
-     * 변호사 회원가입 (파일 업로드 포함)
-     */
+    // 2. 변호사 회원가입
     @Transactional
     public boolean signupLawyer(UserDTO user, MultipartFile licenseFile) {
         if (userDAO.existsByUserId(user.getUserId()) > 0) {
             return false;
         }
 
-        // 1. 파일 저장 처리
         if (licenseFile != null && !licenseFile.isEmpty()) {
             try {
                 String savedName = saveFile(licenseFile);
                 user.setLicenseFile(savedName);
             } catch (Exception e) {
-                throw new RuntimeException("파일 저장 중 오류 발생", e);
+                e.printStackTrace();
+                return false;
             }
         }
 
-        // 2. 변호사 정보 설정
         user.setRole("ROLE_LAWYER");
-        user.setStatus("정상");
-        user.setLawyerStatus("PENDING");
+        user.setStatus("승인대기"); // 변호사는 관리자 승인 전까지 대기
 
         return userDAO.saveLawyer(user) > 0;
     }
 
-    // =========================================================
-    // 2. 관리자 전용 기능 (변호사 승인 관리)
-    // =========================================================
-
-    /**
-     * 승인 대기 중인 변호사 목록 가져오기
-     */
-    public List<UserDTO> getPendingLawyers() {
-        return userDAO.findPendingLawyers();
-    }
-
-    /**
-     * 변호사 승인/반려 상태 업데이트
-     */
-    @Transactional
-    public void updateLawyerStatus(String userId, String status, String rejectReason) {
-        userDAO.updateLawyerStatus(userId, status, rejectReason);
-    }
-
-    // =========================================================
-    // 3. 공통 기능 (로그인, 프로필 관리)
-    // =========================================================
-
+    // 3. 로그인 (정지 계정 차단 로직 추가)
     public UserDTO login(String userId, String password) {
         return userDAO.login(userId, password);
+    }
+
+    // 4. 관리자용: 유저 상태 변경 (정상 <-> 정지)
+    @Transactional
+    public void changeStatus(String userId, String status) {
+        // 이 기능을 위해 UserDAO에 updateStatus(userId, status) 메서드가 필요합니다.
+        userDAO.updateStatus(userId, status);
     }
 
     public UserDTO getUserById(String userId) {
@@ -106,26 +74,12 @@ public class UserService {
         userDAO.updateProfile(userDTO);
     }
 
-    // =========================================================
-    // 4. 유틸리티 메서드
-    // =========================================================
-
-    /**
-     * 파일 로컬 저장소 저장
-     */
+    // 파일 저장 유틸리티
     private String saveFile(MultipartFile file) throws Exception {
         File dir = new File(uploadPath);
         if (!dir.exists()) dir.mkdirs();
-
         String savedName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-
-        // transferTo() 대신 Files.copy() 사용 (임시파일 삭제 문제 방지)
-        Files.copy(
-                file.getInputStream(),
-                Paths.get(uploadPath + savedName),
-                StandardCopyOption.REPLACE_EXISTING
-        );
-
+        file.transferTo(new File(uploadPath + savedName));
         return savedName;
     }
 }

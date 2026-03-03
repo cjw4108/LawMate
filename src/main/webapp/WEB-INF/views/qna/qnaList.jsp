@@ -18,7 +18,7 @@
                                placeholder="궁금한 법률 내용을 검색해보세요."
                                value="${param.keyword}">
                         <button type="submit" class="btn btn-primary rounded-pill px-4">
-                            <i class="bi bi-search me-1"></i> 검색
+                            <i class="bi bi-search me-1"></i>
                         </button>
                     </div>
 
@@ -86,7 +86,7 @@
                                         <h5 class="fw-bold">${question.title}</h5>
 
                                         <p class="text-muted small mb-0">
-                                            작성자: ${question.userId} |
+                                            작성자: ${question.writer} |
 
                                             <fmt:parseDate value="${question.createdAt}"
                                                            pattern="yyyy-MM-dd'T'HH:mm"
