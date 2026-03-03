@@ -5,20 +5,23 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-end mb-4">
             <h3 class="fw-bold mb-0">운영 현황 요약</h3>
-            <span class="text-muted small">최종 업데이트: 2024-11-20 14:00</span>
         </div>
 
         <div class="row g-4 mb-5 text-center">
             <div class="col-md-6">
                 <div class="stat-box p-5 bg-white shadow-sm rounded border">
                     <h5 class="text-muted">미답변 질문</h5>
-                    <p class="display-4 fw-bold text-primary mb-0">12</p>
+                    <p class="display-4 fw-bold text-primary mb-0">
+                        ${unansweredCount}
+                    </p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="stat-box danger p-5 bg-white shadow-sm rounded border">
-                    <h5 class="text-muted">신규 신고 건수</h5>
-                    <p class="display-4 fw-bold text-danger mb-0">3</p>
+                    <h5 class="text-muted">신고된 게시물 수</h5>
+                    <p class="display-4 fw-bold text-danger mb-0">
+                        ${reportedCount}
+                    </p>
                 </div>
             </div>
         </div>
@@ -36,7 +39,7 @@
                 </a>
             </div>
             <div class="col-md-4">
-                <a href="/admin/lawyer/approve" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
+                <a href="/admin/approve" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
                     <i class="bi bi-shield-check me-2"></i> 변호사 권한 승인
                 </a>
             </div>

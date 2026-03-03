@@ -21,13 +21,12 @@ public class AdminLawyerController {
     // 1. 변호사 승인 관리 페이지 (목록 조회)
     @GetMapping("/approve")
     public String approvalPage(HttpSession session, Model model) {
-        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin");
+        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin"); // ✅ 수정
 
         if (loginAdmin == null) {
-            return "redirect:/admin/login";
+            return "redirect:/admin/login"; // ✅ 수정
         }
 
-        // ✅ 수정: static 메서드 대신 인스턴스 메서드 호출
         List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers();
         model.addAttribute("pendingList", pendingList);
 
@@ -41,13 +40,13 @@ public class AdminLawyerController {
                           @RequestParam(required = false) String rejectReason,
                           HttpSession session) {
 
-        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin");
+        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin"); // ✅ 수정
         if (loginAdmin == null) {
-            return "redirect:/admin/login";
+            return "redirect:/admin/login"; // ✅ 수정
         }
 
         adminLawyerService.updateLawyerStatus(userId, targetStatus, rejectReason);
 
-        return "redirect:/admin/lawyer/approve";
+        return "redirect:/admin/lawyer/approve"; // ✅ 수정
     }
 }

@@ -21,8 +21,8 @@
 <main class="main admin-wrapper">
     <section class="section">
         <div class="container">
-            <h2 class="admin-title">관리자 변호사 승인</h2>
-            <p class="text-center text-muted mb-4">(회원 검색 및 변호사 승인)</p>
+            <h2 class="admin-title">관리자 회원 관리 및 승인</h2>
+            <p class="text-center text-muted mb-4">(이름 및 전화번호 확인)</p>
 
             <form action="/admin/lawyer/approve" method="get" class="filter-box">
                 <select name="role" class="form-select w-auto">
@@ -44,19 +44,20 @@
                     <h5 class="mb-3">사용자 목록</h5>
                     <div class="user-list">
                         <c:forEach var="user" items="${pendingList}">
-                            <div class="user-item" onclick="viewDetail('${user.userId}', '${user.userName}', '${user.licenseFile}', '${user.status}')">
+                            <%-- ★ 수정: userPhone 인자를 추가로 넘겨줍니다. --%>
+                            <div class="user-item" onclick="viewDetail('${user.userId}', '${user.userName}', '${user.userPhone}', '${user.licenseFile}', '${user.lawyerStatus}')">
                                 <span>${user.userName} | ${user.role}</span>
-                                <span class="status-badge">${user.status == 'PENDING' ? '대기' : '활성'}</span>
+                                <span class="status-badge">${user.lawyerStatus == 'PENDING' ? '대기' : '활성'}</span>
                             </div>
                         </c:forEach>
                         <c:if test="${empty pendingList}">
-                            <p class="text-center text-muted mt-5">대기 중인 회원이 없습니다.</p>
+                            <p class="text-center text-muted mt-5">해당 조건의 회원이 없습니다.</p>
                         </c:if>
                     </div>
                 </div>
 
                 <div class="col-md-8">
-                    <h5 class="mb-3">사용자 상세 / 승인</h5>
+                    <h5 class="mb-3">사용자 상세 정보</h5>
                     <div class="detail-box">
                         <form id="approveForm" action="/admin/lawyer/process" method="post">
                             <div class="mb-3">
@@ -67,8 +68,13 @@
                                 <label class="form-label">이름</label>
                                 <input type="text" id="detailName" class="form-control" readonly>
                             </div>
+                            <%-- ★ 추가: 전화번호 확인 필드 --%>
                             <div class="mb-3">
-                                <label class="form-label">업로드 한 서류</label>
+                                <label class="form-label">전화번호</label>
+                                <input type="text" id="detailPhone" class="form-control" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">업로드 한 서류 (변호사 전용)</label>
                                 <div class="input-group">
                                     <input type="text" id="detailFile" class="form-control" readonly placeholder="[ PDF / IMAGE ]">
                                     <button type="button" class="btn btn-outline-dark" onclick="openFile()">보기</button>
@@ -95,16 +101,20 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 <script>
-    // 목록 클릭 시 상세 정보 바인딩
-    function viewDetail(id, name, file, status) {
+    // ★ 수정: phone 매개변수를 추가하여 상세 창에 뿌려줍니다.
+    function viewDetail(id, name, phone, file, status) {
         document.getElementById('detailId').value = id;
         document.getElementById('detailName').value = name;
+        document.getElementById('detailPhone').value = phone || '정보 없음'; // 추가된 부분
         document.getElementById('detailFile').value = file || '첨부파일 없음';
-        document.getElementById('detailStatus').value = status === 'PENDING' ? '승인 대기' : status;
+        document.getElementById('detailStatus').value = status === 'PENDING' ? '승인 대기' : (status || '정보 없음');
 
-        // 클릭 효과
-        event.currentTarget.parentElement.querySelectorAll('.user-item').forEach(el => el.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+        // 클릭된 항목 강조 효과
+        if (event && event.currentTarget) {
+            const items = event.currentTarget.parentElement.querySelectorAll('.user-item');
+            items.forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
     }
 
     // 승인/반려 처리 전송
@@ -122,7 +132,7 @@
         }
     }
 
-    // 파일 보기 팝업 (가상)
+    // 파일 보기 팝업
     function openFile() {
         const fileName = document.getElementById('detailFile').value;
         if(fileName && fileName !== '첨부파일 없음') {
