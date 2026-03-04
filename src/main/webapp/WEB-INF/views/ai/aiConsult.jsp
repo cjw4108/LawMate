@@ -124,7 +124,8 @@
             roomId : roomId,
             senderType : userType,
             senderName : "사용자",
-            message : msg
+            message : msg,
+            chatWith : "AI"
         };
 
         wsocket.send(JSON.stringify(sendData));
@@ -134,6 +135,13 @@
     function receiveMsg(data){
         console.log("수신 데이터:", data);
         var msgObj = JSON.parse(data);
+
+        // [중복 방지] 내가 보낸 메시지가 서버를 타고 다시 돌아온 경우, 화면에 또 그리지 않음
+        if (msgObj.senderType === "USER") {
+            return;
+        }
+
+
 
         // 1. 사용자 구분 (보내주신 로그에 따라 msgObj.senderType이 "USER"인 경우)
         // 만약 내 메시지가 오른쪽으로 안 가면 콘솔의 senderType 대소문자를 확인해보세요.
