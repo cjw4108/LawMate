@@ -2,6 +2,7 @@ package com.lawmate.controller;
 
 import com.lawmate.dto.AdminDTO;
 import com.lawmate.dto.LawyerApprovalDTO;
+import com.lawmate.dto.UserDTO;
 import com.lawmate.service.AdminLawyerService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +41,13 @@ public class AdminLawyerController {
                           @RequestParam(required = false) String rejectReason,
                           HttpSession session) {
 
-        AdminDTO loginAdmin = (AdminDTO) session.getAttribute("loginAdmin"); // ✅ 수정
-        if (loginAdmin == null) {
-            return "redirect:/admin/login"; // ✅ 수정
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser"); // ✅ 수정
+        if (loginUser == null || !"ROLE_ADMIN".equals(loginUser.getRole())) {
+            return "redirect:/login"; // ✅ 수정
         }
 
         adminLawyerService.updateLawyerStatus(userId, targetStatus, rejectReason);
 
-        return "redirect:/admin/lawyer/approve"; // ✅ 수정
+        return "redirect:/admin/approve"; // ✅ 수정
     }
 }

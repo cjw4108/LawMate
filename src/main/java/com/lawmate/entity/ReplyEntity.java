@@ -1,10 +1,16 @@
 package com.lawmate.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "QUESTION_REPLIES")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReplyEntity {
 
     @Id
@@ -16,7 +22,7 @@ public class ReplyEntity {
     private Long questionId;
 
     @Column(name = "USER_ID")
-    private String userId;   // ✅ 수정 완료
+    private String userId;
 
     @Column(name = "CONTENT")
     private String content;

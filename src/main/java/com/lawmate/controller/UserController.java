@@ -42,9 +42,10 @@ public class UserController {
             return "login";
         }
 
-        // 3. 변호사인데 아직 승인 대기중인 경우
+        // 3. ⭐ 변호사인데 아직 승인 대기중인 경우 (핵심 차단 로직)
+        // ROLE_LAWYER이면서 상태가 '승인대기'이면 로그인을 허용하지 않습니다.
         if ("ROLE_LAWYER".equals(user.getRole()) && "승인대기".equals(user.getStatus())) {
-            model.addAttribute("error", "현재 자격 승인 심사 중입니다.");
+            model.addAttribute("error", "현재 자격 승인 심사 중입니다. 관리자 승인 후 이용 가능합니다.");
             return "login";
         }
 
@@ -69,6 +70,7 @@ public class UserController {
         return "lawyer";
     }
 
+    // --- 1. 일반 사용자 회원가입 (기존 유지: 가입 즉시 정상) ---
     @PostMapping("/signup")
     public String signup(UserDTO user, @RequestParam String passwordConfirm, HttpSession session, Model model) {
         if (!user.getPassword().equals(passwordConfirm)) {
@@ -76,13 +78,11 @@ public class UserController {
             return "signup";
         }
 
-        // DTO 필드 세팅
         user.setJoinDate(LocalDate.now());
-        user.setStatus("정상");
+        user.setStatus("정상"); // 일반 사용자는 바로 '정상'
         user.setRole("ROLE_USER");
 
         if (userService.signup(user)) {
-            // ✅ 가입 성공 시 세션 저장 (자동 로그인)
             session.setAttribute("loginUser", user);
             return "redirect:/home?msg=welcome";
         }
@@ -90,30 +90,28 @@ public class UserController {
         return "signup";
     }
 
-    // --- 2. 변호사 회원가입 (수정본: 가입 즉시 로그인 및 "정상" 상태) ---
+    // --- 2. 변호사 회원가입 (수정: 가입 시 '승인대기' 상태로 변경) ---
     @PostMapping("/signup/lawyer")
     public String signupLawyer(UserDTO user,
                                @RequestParam String passwordConfirm,
                                @RequestParam("uploadFile") MultipartFile uploadFile,
-                               HttpSession session, // ✅ 세션 주입
-                               Model model) {
+                               Model model) { // 자동 로그인을 방지하기 위해 session 제거
+
         if (!user.getPassword().equals(passwordConfirm)) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
             return "lawyer";
         }
 
-        // ✅ 요청사항 반영: 상태값 "정상", 이름/번호는 DTO에 담겨옴
+        // ⭐ 핵심 변경: 상태값을 "승인대기" 및 "PENDING"으로 설정
         user.setJoinDate(LocalDate.now());
-        user.setStatus("정상");
+        user.setStatus("승인대기");       // 로그인 차단 기준이 됨
         user.setRole("ROLE_LAWYER");
-        user.setLawyerStatus("APPROVED"); // 승인 절차 없이 바로 가려면 APPROVED
+        user.setLawyerStatus("PENDING"); // 관리자 페이지 목록에 노출될 기준
 
         if (userService.signupLawyer(user, uploadFile)) {
-            // ✅ 가입 성공 시 세션 저장 (자동 로그인)
-            session.setAttribute("loginUser", user);
-
-            // 승인대기 페이지가 아닌 홈으로 바로 이동
-            return "redirect:/home?msg=welcome";
+            // ✅ 변호사는 승인이 필요하므로 자동 로그인을 시키지 않고 로그인 페이지로 보냄
+            // msg=pending 파라미터를 넘겨서 알림을 띄울 수 있게 함
+            return "redirect:/login?msg=pending";
         }
 
         model.addAttribute("error", "회원가입 신청 중 오류가 발생했습니다.");
