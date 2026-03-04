@@ -27,23 +27,44 @@
 <body class="index-page">
 
 <main class="main" style="padding-top: 120px;">
-    <section class="py-5">
+    <section class="py-5 bg-light">
         <div class="container">
             <h2 class="fw-bold mb-4 text-center">AI 법률 상담</h2>
 
-            <div class="card shadow-sm">
-                <div class="card-body" id="chatArea">
-                    <div id="chatMessageArea">
-                    </div>
-                </div>
+            <c:choose>
+                <c:when test="${not empty sessionScope.loginUser}">
+                    <div class="card shadow-sm">
+                        <div class="card-body" id="chatArea">
+                            <div id="chatMessageArea">
+                                <div class="mb-3 text-start">
+                                    <div style="display:inline-block; max-width: 80%; text-align: left;">
+                                        <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">AI상담사</div>
+                                        <div class="p-2 rounded shadow-sm" style="background-color: #f1f0f0; color: #000000; border: 1px solid #dee2e6;">
+                                            <strong>${sessionScope.loginUser.name}</strong>님 반갑습니다! <br>
+                                            궁금하신 법률 사항이 있다면 무엇이든 물어보세요.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="card-footer bg-white">
-                    <div class="input-group">
-                        <input type="text" id="msg" class="form-control" placeholder="궁금한 법률 질문을 입력하세요">
-                        <button class="btn btn-primary" id="sndBtn">전송</button>
+                        <div class="card-footer bg-white">
+                            <div class="input-group">
+                                <input type="text" id="msg" class="form-control" placeholder="궁금한 법률 질문을 입력하세요">
+                                <button class="btn btn-primary" id="sndBtn">전송</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </c:when>
+
+                <c:otherwise>
+                    <div class="card shadow-sm p-5 text-center">
+                        <h4 class="mb-3">로그인이 필요한 서비스입니다.</h4>
+                        <p>AI 법률 상담을 이용하시려면 먼저 로그인을 해주세요.</p>
+                        <a href="/login" class="btn btn-primary w-25 mx-auto">로그인하러 가기</a>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </section>
 </main>
