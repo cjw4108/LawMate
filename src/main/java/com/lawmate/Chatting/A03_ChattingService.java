@@ -1,5 +1,7 @@
 package com.lawmate.Chatting;
 
+import com.lawmate.dto.ChatMessage;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -10,45 +12,148 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.web.client.HttpClientErrorException;
 @Service
 public class A03_ChattingService {
+
+    private final ChatMapper chatMapper;
 
     @Value("${gemini.api.key}")
     private String API_KEY;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String askGemini(String userMessage) {
+    public A03_ChattingService(ChatMapper chatMapper) {
+        this.chatMapper = chatMapper;
+    }
 
-        String url =
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key="
-                        + API_KEY;
+    /**
+     * 1. 방 생성 또는 기존 방 조회 (자동 생성 로직 추가)
+     */
+    @Transactional
+    public String getOrCreateRoom(String userId, String lawyerId, String chatWith) {
+        // 1. 대상 아이디 결정
+        String targetId = "AI".equals(chatWith) ? "GEMINI_AI" : lawyerId;
+
+        // 2. 기존 방이 있는지 확인
+        String existingRoomId = chatMapper.findRoomIdByParticipants(userId, targetId);
+
+        if (existingRoomId != null) {
+            return existingRoomId; // 기존 방 리턴
+        }
+
+        // 3. 없으면 새로 생성
+        String newRoomId = java.util.UUID.randomUUID().toString();
+        chatMapper.insertChatRoom(newRoomId, userId, targetId);
+        return newRoomId;
+    }
+
+    /**
+     * 2. 대화 기록 가져오기
+     */
+    public List<ChatMessage> getChatHistory(String roomId) {
+        System.out.println(roomId + " 방의 대화 내역을 조회합니다.");
+        List<ChatMessage> history = chatMapper.selectChatHistory(roomId);
+        System.out.println("🔍 [디버깅] 방ID: " + roomId + " | 조회된 메시지 수: " + (history != null ? history.size() : 0));
+        return chatMapper.selectChatHistory(roomId);
+    }
+
+    /**
+     * 3. 메시지 DB 저장 (방 존재 여부 체크 로직 추가)
+     */
+    @Transactional
+    public void saveMessage(String roomId, String senderId, String senderType, String content) {
+        try {
+            // 🔍 진입 로그 (이게 안 찍히면 호출 자체가 안 된 것)
+            System.out.println("======= [DB 저장 시도] =======");
+            System.out.println("방ID: " + roomId);
+            System.out.println("발신ID: " + senderId);
+            System.out.println("타입: " + senderType);
+            System.out.println("내용: " + content);
+
+            if (roomId == null || senderId == null) {
+                System.err.println("⚠️ 필수 데이터(roomId 또는 senderId)가 null입니다!");
+                return;
+            }
+
+            ChatMessage dto = new ChatMessage();
+            dto.setRoomId(roomId);
+            dto.setSenderId(senderId);
+            dto.setSenderType(senderType);
+            dto.setMessage(content);
+
+            chatMapper.insertMessage(dto);
+            System.out.println("✅ [DB 저장 성공]");
+            System.out.println("==============================");
+
+        } catch (Exception e) {
+            System.err.println("❌ [DB 저장 중 예외 발생]");
+            e.printStackTrace(); // 에러 원인을 콘솔에 상세히 출력
+        }
+    }
+
+    /**
+     * 4. Gemini AI 상담 호출
+     */
+    public String askGemini(String userMessage) {
+        // 엔드포인트는 잘 작성되었습니다.
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=" + API_KEY;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // 🔥 Gemini 요청 바디 구조
         Map<String, Object> textPart = Map.of("text", userMessage);
         Map<String, Object> parts = Map.of("parts", List.of(textPart));
         Map<String, Object> body = Map.of("contents", List.of(parts));
 
-        HttpEntity<Map<String, Object>> request =
-                new HttpEntity<>(body, headers);
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
-        ResponseEntity<Map> response =
-                restTemplate.postForEntity(url, request, Map.class);
+        try {
+            System.out.println("🚀 Gemini API 호출 시도: gemini-3.1-flash-lite");
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
 
-        // 🔥 Gemini 응답 파싱
-        List candidates = (List) response.getBody().get("candidates");
-        Map first = (Map) candidates.get(0);
-        Map content = (Map) first.get("content");
-        List partList = (List) content.get("parts");
-        Map textMap = (Map) partList.get(0);
+            // 응답 파싱 로직 (생략)
+            List candidates = (List) response.getBody().get("candidates");
+            Map first = (Map) candidates.get(0);
+            Map content = (Map) first.get("content");
+            List partList = (List) content.get("parts");
+            Map textMap = (Map) partList.get(0);
 
+            return textMap.get("text").toString();
 
-
-        return textMap.get("text").toString();
+        } catch (HttpClientErrorException e) { // NotFound 대신 상위 클래스인 HttpClientErrorException 권장
+            // 💡 여기서 로그를 찍어보면 실제 구글이 보내는 정확한 에러 메시지를 볼 수 있습니다.
+            System.err.println("❌ API 에러 발생: " + e.getResponseBodyAsString());
+            return "AI 상담 연결에 실패했습니다 (모델 확인 필요).";
+        } catch (Exception e) {
+            System.err.println("❌ 일반 에러: " + e.getMessage());
+            return "상담사와 연결할 수 없습니다.";
+        }
     }
 
+    /**
+     * 5. 방 상태 변경
+     */
+    @Transactional
+    public void switchToLawyerMode(String roomId) {
+        // chatMapper에 updateRoomStatus 같은 메서드를 만들어 연동하세요.
+        System.out.println(roomId + " 방이 변호사 상담 모드로 전환되었습니다.");
+    }
+    public void saveMessageAsync(String roomId, String senderId, String senderType, String content) {
+        // DB 저장을 별도 쓰레드에서 수행하여 사용자 대기 시간 감소
+        CompletableFuture.runAsync(() -> {
+            saveMessage(roomId, senderId, senderType, content);
+        });
+    }
+    // A03_ChattingService.java의 153라인 근처 수정
+    public List<ChatMessage> selectChatHistory(String roomId) {
+        if (roomId == null || roomId.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        // 매퍼에 @Param("roomId")로 등록했으므로 roomId만 보냅니다.
+        return chatMapper.selectChatHistory(roomId);
+    }
 }

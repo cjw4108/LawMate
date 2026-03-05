@@ -8,7 +8,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+public class A00_WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired
     private A01_ChattingHandler chatHandler;

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -36,15 +37,27 @@
                     <div class="card shadow-sm">
                         <div class="card-body" id="chatArea">
                             <div id="chatMessageArea">
-                                <div class="mb-3 text-start">
-                                    <div style="display:inline-block; max-width: 80%; text-align: left;">
-                                        <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">AI상담사</div>
-                                        <div class="p-2 rounded shadow-sm" style="background-color: #f1f0f0; color: #000000; border: 1px solid #dee2e6;">
-                                            <strong>${sessionScope.loginUser.name}</strong>님 반갑습니다! <br>
-                                            궁금하신 법률 사항이 있다면 무엇이든 물어보세요.
-                                        </div>
+                                <c:if test="${empty chatHistory}">
+                                    <div style="text-align:center; color:gray; font-size:0.8rem;">기존 대화 내역이 없습니다. (방ID: ${roomId})</div>
+                                </c:if>
+
+                                <c:forEach var="h" items="${chatHistory}">
+                                    <c:set var="isUser" value="${h.senderType == 'USER'}" />
+                                    <div class="mb-3 ${isUser ? 'text-end' : 'text-start'}">
+                                        <div style="display:inline-block; max-width: 80%; text-align: left;">
+                                            <c:if test="${!isUser}">
+                                                <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">
+                                                        ${h.senderType == 'AI' ? 'AI상담사' : '변호사'}
+                                                </div>
+                                            </c:if>
+                                            <div class="p-2 rounded shadow-sm"
+                                                 style="background-color: ${isUser ? '#007bff' : '#f1f0f0'};
+                                                         color: ${isUser ? '#ffffff' : '#000000'};
+                                                         border: ${isUser ? 'none' : '1px solid #dee2e6'};
+                                                         word-break: break-all;
+                                                         white-space: pre-wrap;">${h.message}</div> </div>
                                     </div>
-                                </div>
+                                </c:forEach>
                             </div>
                         </div>
 
@@ -74,11 +87,20 @@
 <script>
     let socketServer = "${socketServer}";
     let roomId = "${roomId}";
+    let userId = "${userId}"; // 🔥 추가: 서버에서 넘겨준 세션 유저 ID
     let userType = "${userType}";
     let wsocket = null;
 
     $(document).ready(function(){
         connect();
+
+        setTimeout(function() {
+            var chatArea = document.getElementById("chatArea");
+            if(chatArea) {
+                chatArea.scrollTop = chatArea.scrollHeight;
+                console.log("스크롤 하단 이동 완료");
+            }
+        }, 100);
 
         $("#sndBtn").click(function(){
             sendMsg();
@@ -122,9 +144,11 @@
         // 2. 서버로 전송
         var sendData = {
             roomId : roomId,
+            userId : "${sessionScope.loginUser.userId}",
             senderType : userType,
             senderName : "사용자",
-            message : msg
+            message : msg,
+            chatWith : "AI"
         };
 
         wsocket.send(JSON.stringify(sendData));
@@ -134,6 +158,13 @@
     function receiveMsg(data){
         console.log("수신 데이터:", data);
         var msgObj = JSON.parse(data);
+
+        // [중복 방지] 내가 보낸 메시지가 서버를 타고 다시 돌아온 경우, 화면에 또 그리지 않음
+        if (msgObj.senderType === "USER") {
+            return;
+        }
+
+
 
         // 1. 사용자 구분 (보내주신 로그에 따라 msgObj.senderType이 "USER"인 경우)
         // 만약 내 메시지가 오른쪽으로 안 가면 콘솔의 senderType 대소문자를 확인해보세요.
