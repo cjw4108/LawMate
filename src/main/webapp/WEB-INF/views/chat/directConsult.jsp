@@ -37,15 +37,20 @@
                 </div>
                 <div class="card-body" id="chatArea">
                     <div id="chatMessageArea">
-                        <c:forEach var="chat" items="${chatHistory}">
-                            <c:set var="isMe" value="${chat.senderId eq sessionScope.loginUser.userId}" />
+                        <%-- 기존 대화 내역 출력 시작 --%>
+                        <c:forEach var="h" items="${chatHistory}">
+                            <c:set var="isMe" value="${h.senderId eq userId}" />
                             <div class="mb-3 ${isMe ? 'text-end' : 'text-start'}">
-                                <div style="display:inline-block; max-width: 80%;">
+                                <div style="display:inline-block; max-width: 80%; text-align: left;">
                                     <c:if test="${!isMe}">
-                                        <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold;">${chat.senderName}</div>
+                                        <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">
+                                                ${h.senderName}
+                                        </div>
                                     </c:if>
-                                    <div class="p-2 rounded shadow-sm" style="background-color:${isMe ? '#007bff' : '#f1f0f0'}; color:${isMe ? '#ffffff' : '#000000'}; border:1px solid #dee2e6;">
-                                            ${chat.content}
+                                    <div class="p-2 rounded shadow-sm"
+                                         style="background-color: ${isMe ? '#007bff' : '#f1f0f0'};
+                                                 color: ${isMe ? '#ffffff' : '#000000'};">
+                                            ${h.message}
                                     </div>
                                 </div>
                             </div>
@@ -72,6 +77,9 @@
     let socketServer = "${socketServer}";
     let roomId = "${roomId}";
     let userId = "${userId}";
+    if(!userId) {
+        userId = "${sessionScope.loginUser.userId}";
+    }
     let chatWith = "${chatWith}"; // "LAWYER"가 넘어옴
     let wsocket = null;
 

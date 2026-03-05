@@ -3,12 +3,13 @@ package com.lawmate.Chatting;
 import java.util.List;
 import com.lawmate.dto.ChatMessage;
 import com.lawmate.dto.UserDTO;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class A02_ChattingController {
@@ -21,28 +22,31 @@ public class A02_ChattingController {
      */
     @GetMapping("/ai/consult")
     public String aiConsult(HttpSession session, Model model) {
-        // 1. 세션에서 로그인한 사용자 정보 가져오기
-        // (프로젝트에서 사용하는 세션 키값 "loginUser" 등을 확인하세요)
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-        String userId;
 
-        if (loginUser != null) {
-            userId = loginUser.getUserId(); // 로그인한 아이디 (예: testuser123)
-        } else {
-            // 로그인을 안 했다면 임시 ID 부여 (세션 ID 활용 등)
-            userId = "GUEST_" + session.getId().substring(0, 8);
+        // 1. [핵심] 세션에서 로그인 유저 정보 확인
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+
+        // 2. 로그인되지 않은 경우 (방 개설 안 함)
+        if (loginUser == null) {
+            System.out.println("⚠️ 비로그인 사용자의 접근 - 로그인 페이지로 이동");
+            // 로그인 페이지 경로가 /login 이 맞는지 확인하세요.
+            return "redirect:/login";
         }
 
-        // 2. 해당 사용자 ID 전용 AI 상담방 조회 또는 생성
-        // (Service에서 userId와 "GEMINI_AI" 조합으로 방을 찾아줍니다)
-        String roomId = chattingService.getOrCreateRoom(userId, "GEMINI_AI");
+        // 3. 로그인된 경우에만 아래 로직 실행 (방 조회 및 생성)
+        String currentUserId = loginUser.getUserId();
+        String aiTargetId = "GEMINI_AI";
+        String chatWith = "AI";
 
-        // 3. 해당 방의 대화 내역 불러오기
-        List<ChatMessage> history = chattingService.getChatHistory(roomId);
+        // 기존 방이 있으면 가져오고, 없으면 이때만 생성됨
+        String roomId = chattingService.getOrCreateRoom(currentUserId, aiTargetId, chatWith);
 
-        model.addAttribute("chatHistory", history);
+        // 기존 대화 내역 조회
+        List<ChatMessage> chatHistory = chattingService.selectChatHistory(roomId);
+
         model.addAttribute("roomId", roomId);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", currentUserId);
+        model.addAttribute("chatHistory", chatHistory);
         model.addAttribute("userType", "USER");
         model.addAttribute("chatWith", "AI");
         model.addAttribute("socketServer", "ws://localhost:8080/chatSocket");
@@ -53,34 +57,38 @@ public class A02_ChattingController {
     /**
      * 변호사 1:1 상담 진입
      */
-    @GetMapping("/direct/consult")
-    public String directConsult(@RequestParam String lawyerId,
-                                @RequestParam String userId,
-                                HttpSession session, // 세션 추가
-                                Model model) {
+    // http://localhost:8080/direct/consult?lawyerId=lawtest123&userId=testuser123
+    @RequestMapping("/direct/consult")
+    public String directConsult(
+            @RequestParam("lawyerId") String lawyerId,
+            @RequestParam(value = "userId", required = false) String userId,
+            HttpSession session,
+            Model model) {
 
-        // 1. 로그인 체크 (세션에 로그인 정보가 없으면 리다이렉트)
-        // 예: "loginMember"는 프로젝트에서 사용하는 세션 키값으로 변경하세요.
-        if (session.getAttribute("loginMember") == null) {
-            return "redirect:/login"; // 로그인 페이지로 이동
+        // 1. 세션 체크 (로그인 안 되어 있으면 로그인 페이지로)
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return "redirect:/login";
         }
 
-        if (lawyerId == null || userId == null) {
-            return "redirect:/lawyer/list";
-        }
+        String currentUserId = loginUser.getUserId();
+        String chatWith = "LAWYER"; // 변호사 상담 모드
 
-        // 2. 기존 방을 찾거나 새로 생성 (고도화된 서비스 호출)
-        String roomId = chattingService.getOrCreateRoom(userId, lawyerId);
+        // 2. [변경] 고정된 ROOM_ID 대신 DB에서 방을 찾거나 생성합니다.
+        // getOrCreateRoom 내부에서 USER_ID와 LAWYER_ID 조합으로 기존 방을 조회합니다.
+        String roomId = chattingService.getOrCreateRoom(currentUserId, lawyerId, chatWith);
 
-        // 3. 대화 내역 불러오기 (기존 방일 경우 과거 내역이 나옴)
-        List<ChatMessage> history = chattingService.getChatHistory(roomId);
+        // 3. 기존 대화 내역 조회 (이게 있어야 이전 대화가 보입니다)
+        List<ChatMessage> chatHistory = chattingService.selectChatHistory(roomId);
 
-        model.addAttribute("chatHistory", history);
+        // 4. JSP로 데이터 전달
         model.addAttribute("roomId", roomId);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", currentUserId);
         model.addAttribute("lawyerId", lawyerId);
-        model.addAttribute("chatWith", "LAWYER");
-        model.addAttribute("socketServer", "ws://localhost:8080/chatSocket");
+        model.addAttribute("chatHistory", chatHistory); // 대화 내역 추가
+        model.addAttribute("chatWith", chatWith);
+        model.addAttribute("userType", "USER");
+        model.addAttribute("socketServer", "ws://localhost:8080/chatHandler");
 
         return "chat/directConsult";
     }

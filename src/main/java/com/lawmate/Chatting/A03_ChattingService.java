@@ -34,18 +34,20 @@ public class A03_ChattingService {
      * 1. 방 생성 또는 기존 방 조회 (자동 생성 로직 추가)
      */
     @Transactional
-    public String getOrCreateRoom(String userId, String lawyerId) {
-        // DB에서 이 사용자(userId)와 AI(lawyerId)의 조합으로 된 방이 있는지 확인
-        String existingRoomId = chatMapper.findRoomIdByParticipants(userId, lawyerId);
+    public String getOrCreateRoom(String userId, String lawyerId, String chatWith) {
+        // 1. 대상 아이디 결정
+        String targetId = "AI".equals(chatWith) ? "GEMINI_AI" : lawyerId;
+
+        // 2. 기존 방이 있는지 확인
+        String existingRoomId = chatMapper.findRoomIdByParticipants(userId, targetId);
 
         if (existingRoomId != null) {
-            // 이미 있으면 그 방 ID 반환 (내역 유지)
-            return existingRoomId;
+            return existingRoomId; // 기존 방 리턴
         }
 
-        // 없으면 해당 사용자만을 위한 새 방 생성
-        String newRoomId = UUID.randomUUID().toString();
-        chatMapper.insertChatRoom(newRoomId, userId, lawyerId);
+        // 3. 없으면 새로 생성
+        String newRoomId = java.util.UUID.randomUUID().toString();
+        chatMapper.insertChatRoom(newRoomId, userId, targetId);
         return newRoomId;
     }
 
@@ -145,5 +147,13 @@ public class A03_ChattingService {
         CompletableFuture.runAsync(() -> {
             saveMessage(roomId, senderId, senderType, content);
         });
+    }
+    // A03_ChattingService.java의 153라인 근처 수정
+    public List<ChatMessage> selectChatHistory(String roomId) {
+        if (roomId == null || roomId.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        // 매퍼에 @Param("roomId")로 등록했으므로 roomId만 보냅니다.
+        return chatMapper.selectChatHistory(roomId);
     }
 }
