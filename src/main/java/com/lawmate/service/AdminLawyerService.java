@@ -1,8 +1,10 @@
 package com.lawmate.service;
 
 import com.lawmate.dao.AdminLawyerDAO;
+import com.lawmate.dao.UserDAO;
 import com.lawmate.dto.LawyerApprovalDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -10,40 +12,40 @@ import java.util.List;
 public class AdminLawyerService {
 
     private final AdminLawyerDAO adminLawyerDAO;
+    private final UserDAO userDAO;
 
-    public AdminLawyerService(AdminLawyerDAO adminLawyerDAO) {
+    public AdminLawyerService(AdminLawyerDAO adminLawyerDAO, UserDAO userDAO) {
         this.adminLawyerDAO = adminLawyerDAO;
+        this.userDAO = userDAO;
     }
 
-    // 승인 대기 목록 조회
-    public List<LawyerApprovalDTO> getPendingLawyers() {
-        return adminLawyerDAO.findPendingLawyers();
+    public List<LawyerApprovalDTO> getPendingLawyers(String keyword) {
+        return adminLawyerDAO.findPendingLawyers(keyword);
     }
 
-    // 전체 변호사 목록 조회
     public List<LawyerApprovalDTO> getAllLawyers() {
         return adminLawyerDAO.findAllLawyers();
     }
 
-    // 변호사 상세 조회
     public LawyerApprovalDTO getLawyerDetail(String lawyerId) {
         return adminLawyerDAO.findByLawyerId(lawyerId);
     }
 
-    // 승인 처리
     public void approveLawyer(String lawyerId) {
         adminLawyerDAO.approve(lawyerId);
     }
 
-    // 반려 처리
     public void rejectLawyer(String lawyerId, String rejectReason) {
         adminLawyerDAO.reject(lawyerId, rejectReason);
     }
 
-    // 상태 업데이트 (승인/반려 통합)
-    public void updateLawyerStatus(String lawyerId, String status, String rejectReason) {
-        adminLawyerDAO.updateStatus(lawyerId, status, rejectReason);
-    }
+    @Transactional
+    public void updateLawyerStatus(String userId, String status, String rejectReason) {
+        // ✅ 이 메서드 하나면 충분합니다!
+        // AdminLawyerMapper.xml의 updateStatus 쿼리 안에
+        // LAWYER_STATUS, ROLE, STATUS('정상') 업데이트 로직이 모두 들어있습니다.
+        adminLawyerDAO.updateStatus(userId, status, rejectReason);
 
-    // ✅ 수정: static 메서드 삭제
+        // ❌ 기존에 에러를 유발하던 userDAO.updateStatus(userId, "정상"); 부분은 삭제했습니다.
+    }
 }

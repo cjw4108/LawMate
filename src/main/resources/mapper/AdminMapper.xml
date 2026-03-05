@@ -2,42 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lawmate.dao.AdminDAO">
 
-    <select id="login" resultType="com.lawmate.dto.AdminDTO">
+    <select id="findByAdminId" resultType="com.lawmate.dto.AdminDTO">
         SELECT
-            USER_ID   AS adminId,
-            PASSWORD  AS adminPw,
-            NAME      AS adminName
-        FROM PRJ01.USERS
-        WHERE USER_ID = #{adminId}
-          AND PASSWORD = #{adminPw}
-          AND ROLE = 'ADMIN'
+            ADMIN_ID AS adminId,
+            PASSWORD,
+            NAME,
+            ROLE
+        FROM PRJ01.ADMIN
+        WHERE ADMIN_ID = #{adminId}
     </select>
-
-    <select id="findPendingLawyers" resultType="com.lawmate.dto.UserDTO">
-        SELECT
-        USER_ID       AS userId,
-        NAME          AS userName,
-        ROLE          AS role,
-        LAWYER_STATUS AS status,
-        CREATED_AT    AS joinDate
-        FROM PRJ01.USERS
-        WHERE ROLE = 'LAWYER'
-        AND LAWYER_STATUS = 'PENDING'
-        <if test="keyword != null and keyword != ''">
-            AND (NAME LIKE '%' || #{keyword} || '%' OR USER_ID LIKE '%' || #{keyword} || '%')
-        </if>
-        ORDER BY CREATED_AT DESC
-    </select>
-
-    <update id="updateLawyerStatus">
-        UPDATE PRJ01.USERS
-        SET
-        LAWYER_STATUS = #{status},
-        <if test="rejectReason != null">
-            REJECT_REASON = #{rejectReason},
-        </if>
-        UPDATED_AT = SYSDATE
-        WHERE USER_ID = #{userId}
-    </update>
 
 </mapper>

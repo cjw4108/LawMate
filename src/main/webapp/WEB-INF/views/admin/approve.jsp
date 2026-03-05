@@ -27,15 +27,16 @@
             <form action="/admin/lawyer/approve" method="get" class="filter-box">
                 <select name="role" class="form-select w-auto">
                     <option value="">회원유형</option>
-                    <option value="USER">일반</option>
-                    <option value="LAWYER">변호사</option>
+                    <option value="ROLE_USER" ${param.role == 'ROLE_USER' ? 'selected' : ''}>일반</option>
+                    <option value="ROLE_LAWYER" ${param.role == 'ROLE_LAWYER' ? 'selected' : ''}>변호사</option>
                 </select>
                 <select name="status" class="form-select w-auto">
                     <option value="">승인상태</option>
-                    <option value="PENDING">승인 대기</option>
-                    <option value="APPROVED">승인 완료</option>
+                    <option value="PENDING" ${param.status == 'PENDING' ? 'selected' : ''}>승인 대기</option>
+                    <option value="APPROVED" ${param.status == 'APPROVED' ? 'selected' : ''}>승인 완료</option>
+                    <option value="REJECTED" ${param.status == 'REJECTED' ? 'selected' : ''}>반려됨</option>
                 </select>
-                <input type="text" name="keyword" class="form-control" placeholder="검색어를 입력해주세요.">
+                <input type="text" name="keyword" class="form-control" placeholder="이름 또는 아이디 검색" value="${param.keyword}">
                 <button type="submit" class="btn btn-secondary">검색</button>
             </form>
 
@@ -44,10 +45,16 @@
                     <h5 class="mb-3">사용자 목록</h5>
                     <div class="user-list">
                         <c:forEach var="user" items="${pendingList}">
-                            <%-- ★ 수정: userPhone 인자를 추가로 넘겨줍니다. --%>
                             <div class="user-item" onclick="viewDetail('${user.userId}', '${user.userName}', '${user.userPhone}', '${user.licenseFile}', '${user.lawyerStatus}')">
                                 <span>${user.userName} | ${user.role}</span>
-                                <span class="status-badge">${user.lawyerStatus == 'PENDING' ? '대기' : '활성'}</span>
+                                <span class="status-badge">
+                                    <c:choose>
+                                        <c:when test="${user.lawyerStatus == 'PENDING'}">대기</c:when>
+                                        <c:when test="${user.lawyerStatus == 'APPROVED'}">승인</c:when>
+                                        <c:when test="${user.lawyerStatus == 'REJECTED'}">반려</c:when>
+                                        <c:otherwise>${user.lawyerStatus}</c:otherwise>
+                                    </c:choose>
+                                </span>
                             </div>
                         </c:forEach>
                         <c:if test="${empty pendingList}">
@@ -68,7 +75,6 @@
                                 <label class="form-label">이름</label>
                                 <input type="text" id="detailName" class="form-control" readonly>
                             </div>
-                            <%-- ★ 추가: 전화번호 확인 필드 --%>
                             <div class="mb-3">
                                 <label class="form-label">전화번호</label>
                                 <input type="text" id="detailPhone" class="form-control" readonly>
@@ -101,23 +107,27 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 <script>
-    // ★ 수정: phone 매개변수를 추가하여 상세 창에 뿌려줍니다.
     function viewDetail(id, name, phone, file, status) {
         document.getElementById('detailId').value = id;
         document.getElementById('detailName').value = name;
-        document.getElementById('detailPhone').value = phone || '정보 없음'; // 추가된 부분
+        document.getElementById('detailPhone').value = phone || '정보 없음';
         document.getElementById('detailFile').value = file || '첨부파일 없음';
-        document.getElementById('detailStatus').value = status === 'PENDING' ? '승인 대기' : (status || '정보 없음');
 
-        // 클릭된 항목 강조 효과
+        let statusText = '';
+        if(status === 'PENDING') statusText = '승인 대기';
+        else if(status === 'APPROVED') statusText = '승인 완료';
+        else if(status === 'REJECTED') statusText = '반려됨';
+        else statusText = status || '정보 없음';
+
+        document.getElementById('detailStatus').value = statusText;
+
+        const items = document.querySelectorAll('.user-item');
+        items.forEach(el => el.classList.remove('active'));
         if (event && event.currentTarget) {
-            const items = event.currentTarget.parentElement.querySelectorAll('.user-item');
-            items.forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
         }
     }
 
-    // 승인/반려 처리 전송
     function processStatus(status) {
         const id = document.getElementById('detailId').value;
         if(!id) {
@@ -132,11 +142,12 @@
         }
     }
 
-    // 파일 보기 팝업
+    // ★ 자동 사진 연결을 위해 수정된 경로 (/uploads/)
     function openFile() {
         const fileName = document.getElementById('detailFile').value;
         if(fileName && fileName !== '첨부파일 없음') {
-            window.open('/upload/license/' + fileName, '_blank');
+            // ✅ 주소를 반드시 /uploads/ 로 시작하게 고쳐주세요!
+            window.open('/uploads/' + fileName, '_blank');
         } else {
             alert('확인할 파일이 없습니다.');
         }

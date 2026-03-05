@@ -4,14 +4,20 @@
 
     <select id="findPendingLawyers" resultType="com.lawmate.dto.LawyerApprovalDTO">
         SELECT
-            USER_ID       AS userId,
-            NAME          AS userName,
-            PHONE         AS userPhone,
-            ROLE          AS role,
-            LAWYER_STATUS AS lawyerStatus
+        USER_ID       AS userId,
+        NAME          AS userName,
+        PHONE         AS userPhone,
+        ROLE          AS role,
+        LAWYER_STATUS AS lawyerStatus,
+        LICENSE_FILE  AS licenseFile,
+        JOIN_DATE     AS requestDate
         FROM PRJ01.USERS
         WHERE LAWYER_STATUS = 'PENDING'
-        ORDER BY USER_ID DESC
+        AND ROLE = 'ROLE_LAWYER'
+        <if test="keyword != null and keyword != ''">
+            AND (USER_ID LIKE '%' || #{keyword} || '%' OR NAME LIKE '%' || #{keyword} || '%')
+        </if>
+        ORDER BY JOIN_DATE DESC
     </select>
 
     <select id="findAllLawyers" resultType="com.lawmate.dto.LawyerApprovalDTO">
@@ -22,7 +28,7 @@
             ROLE          AS role,
             LAWYER_STATUS AS lawyerStatus
         FROM PRJ01.USERS
-        WHERE ROLE = 'LAWYER' OR LAWYER_STATUS = 'PENDING'
+        WHERE ROLE = 'ROLE_LAWYER' OR LAWYER_STATUS = 'PENDING'
         ORDER BY USER_ID DESC
     </select>
 
@@ -32,36 +38,28 @@
             NAME          AS userName,
             PHONE         AS userPhone,
             LAWYER_STATUS AS lawyerStatus,
-            REJECT_REASON AS rejectReason
+            REJECT_REASON AS rejectReason,
+            LICENSE_FILE  AS licenseFile
         FROM PRJ01.USERS
         WHERE USER_ID = #{lawyerId}
     </select>
-
-    <update id="approve">
-        UPDATE PRJ01.USERS
-        SET
-            LAWYER_STATUS = 'APPROVED',
-            STATUS = '정상',
-            ROLE = 'ROLE_LAWYER'
-        WHERE USER_ID = #{lawyerId}
-    </update>
-
-    <update id="reject">
-        UPDATE PRJ01.USERS
-        SET
-            LAWYER_STATUS = 'REJECTED',
-            REJECT_REASON = #{rejectReason}
-        WHERE USER_ID = #{lawyerId}
-    </update>
 
     <update id="updateStatus">
         UPDATE PRJ01.USERS
         SET
         LAWYER_STATUS = #{status},
-        <if test="status == 'APPROVED'">
-            STATUS = '정상',
-        </if>
-        REJECT_REASON = #{rejectReason}
+        <choose>
+            <when test="status == 'APPROVED'">
+                ROLE = 'ROLE_LAWYER',
+                STATUS = '정상',
+                REJECT_REASON = NULL
+            </when>
+            <when test="status == 'REJECTED'">
+                ROLE = 'ROLE_USER',
+                STATUS = '정상',
+                REJECT_REASON = #{rejectReason}
+            </when>
+        </choose>
         WHERE USER_ID = #{lawyerId}
     </update>
 

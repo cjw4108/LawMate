@@ -17,7 +17,7 @@ import java.util.List;
 public class AdminController {
 
     private final QuestionService questionService;
-    private final AdminLawyerService adminLawyerService; // ✅ 추가
+    private final AdminLawyerService adminLawyerService;
 
     @GetMapping("/main")
     public String adminMain(Model model) {
@@ -62,10 +62,16 @@ public class AdminController {
     }
 
     // ✅ pendingList 조회 추가
-    @GetMapping("approve")
-    public String approvePage(Model model) {
-        List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers();
+    @GetMapping("/approve")
+    public String approvePage(@RequestParam(value = "keyword", required = false) String keyword,
+                              Model model) {
+
+        // 서비스의 메서드 구조(String keyword 필요)에 맞춰서 호출!
+        List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers(keyword);
+
         model.addAttribute("pendingList", pendingList);
+        model.addAttribute("keyword", keyword); // 검색창에 검색어 유지용
+
         return "admin/approve";
     }
 }
