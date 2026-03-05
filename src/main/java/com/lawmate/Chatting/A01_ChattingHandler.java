@@ -1,6 +1,7 @@
 package com.lawmate.Chatting;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,29 +42,35 @@ public class A01_ChattingHandler extends TextWebSocketHandler {
         String roomId = (String) data.get("roomId");
         String userId = (String) data.get("userId");
         String userMessage = (String) data.get("message");
-        String chatWith = (String) data.get("chatWith"); // "AI" 또는 "LAWYER"
-
-        // 🔥 프론트에서 보낸 senderType을 가져오되, 없을 경우 기본값 "USER" 설정
+        String chatWith = (String) data.get("chatWith");
         String senderType = (data.get("senderType") != null) ? (String) data.get("senderType") : "USER";
 
         if ("AI".equals(chatWith)) {
-            // 🤖 AI 상담 모드
-            // 유저 질문 저장 (선택 사항, 필요 시 추가)
-            chattingService.saveMessage(roomId, userId, "USER", userMessage);
+            // 🤖 AI 상담 모드 (속도 최적화)
 
+            // 1. 유저 질문 DB 저장을 비동기로 처리 (기다리지 않음)
+            CompletableFuture.runAsync(() -> {
+                chattingService.saveMessage(roomId, userId, "USER", userMessage);
+            });
+
+            // 2. 즉시 Gemini API 호출 (DB 저장 완료를 기다리지 않고 바로 실행)
             String aiAnswer = chattingService.askGemini(userMessage);
 
-            // AI 답변 저장 및 전송
-            chattingService.saveMessage(roomId, "GEMINI_AI", "AI", aiAnswer);
+            // 3. AI 답변을 클라이언트에 전송 (화면에 먼저 띄워줌)
             sendResponse(session, roomId, "AI", "AI상담사", aiAnswer);
+
+            // 4. AI 답변 DB 저장은 전송 후에 비동기로 처리
+            CompletableFuture.runAsync(() -> {
+                chattingService.saveMessage(roomId, "GEMINI_AI", "AI", aiAnswer);
+            });
 
         } else {
             // ⚖️ 변호사 상담 모드
-            // 1. DB 저장 (한 번만 호출)
-            // senderType은 JSP에서 "USER" 또는 "LAWYER"로 보내주어야 합니다.
-            chattingService.saveMessage(roomId, userId, senderType, userMessage);
+            // 변호사 모드 역시 DB 저장을 비동기로 처리하면 화면 전환/전송 속도가 빨라집니다.
+            CompletableFuture.runAsync(() -> {
+                chattingService.saveMessage(roomId, userId, senderType, userMessage);
+            });
 
-            // 2. 상대방에게 실시간 브로드캐스트
             broadcast(roomId, new TextMessage(payload), session);
         }
     }

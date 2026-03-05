@@ -11,8 +11,17 @@ import java.util.List;
 @Mapper
 public interface ChatMapper {
     // 1. 방 존재 여부 확인
+    // 1. 방이 존재하는지 확인 (이 부분이 없어서 에러가 난 것입니다)
     @Select("SELECT COUNT(*) FROM CHAT_ROOM WHERE ROOM_ID = #{roomId}")
-    int checkRoomExists(String roomId);
+    int checkRoomExists(@Param("roomId") String roomId);
+
+    @Select("""
+        SELECT ROOM_ID 
+        FROM CHAT_ROOM 
+        WHERE USER_ID = #{userId} AND LAWYER_ID = #{lawyerId}
+        AND ROWNUM = 1
+    """)
+    String findRoomIdByParticipants(@Param("userId") String userId, @Param("lawyerId") String lawyerId);
 
     // 2. 방 자동 생성
     @Insert("""
@@ -44,12 +53,16 @@ public interface ChatMapper {
 
     // 조회
     @Select("""
-        SELECT ROOM_ID as roomId, SENDER_TYPE as senderType, CONTENT as message, CREATED_AT as createdAt
-        FROM CHAT_MESSAGE 
-        WHERE ROOM_ID = #{roomId} 
-        ORDER BY CREATED_AT ASC
-    """)
-    List<ChatMessage> selectChatHistory(String roomId);
+    SELECT 
+        ROOM_ID as "roomId", 
+        SENDER_TYPE as "senderType", 
+        CONTENT as "message", 
+        CREATED_AT as "createdAt"
+    FROM CHAT_MESSAGE 
+    WHERE ROOM_ID = #{roomId} 
+    ORDER BY CREATED_AT ASC
+""")
+    List<ChatMessage> selectChatHistory(@Param("roomId") String roomId);
 
 
 }

@@ -13,7 +13,9 @@ import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.web.client.HttpClientErrorException;
 @Service
 public class A03_ChattingService {
 
@@ -33,20 +35,17 @@ public class A03_ChattingService {
      */
     @Transactional
     public String getOrCreateRoom(String userId, String lawyerId) {
-        // 실제 운영 환경에서는 userId와 lawyerId로 기존 방이 있는지 먼저 조회하는 것이 좋습니다.
-        // 현재는 새로운 방을 생성하고 DB에 저장하는 로직을 추가합니다.
+        // DB에서 이 사용자(userId)와 AI(lawyerId)의 조합으로 된 방이 있는지 확인
+        String existingRoomId = chatMapper.findRoomIdByParticipants(userId, lawyerId);
 
-        String newRoomId = UUID.randomUUID().toString();
-
-        try {
-            // 🔥 중요: 부모 테이블(CHAT_ROOM)에 먼저 데이터를 넣어야 ORA-02291 에러가 안 납니다.
-            chatMapper.insertChatRoom(newRoomId, userId, lawyerId);
-            System.out.println("✅ 새 상담방 DB 생성 완료: " + newRoomId);
-        } catch (Exception e) {
-            System.err.println("❌ 상담방 생성 중 오류 발생: " + e.getMessage());
-            // 이미 방이 있는 경우 등에 대한 예외 처리가 필요할 수 있습니다.
+        if (existingRoomId != null) {
+            // 이미 있으면 그 방 ID 반환 (내역 유지)
+            return existingRoomId;
         }
 
+        // 없으면 해당 사용자만을 위한 새 방 생성
+        String newRoomId = UUID.randomUUID().toString();
+        chatMapper.insertChatRoom(newRoomId, userId, lawyerId);
         return newRoomId;
     }
 
@@ -55,6 +54,8 @@ public class A03_ChattingService {
      */
     public List<ChatMessage> getChatHistory(String roomId) {
         System.out.println(roomId + " 방의 대화 내역을 조회합니다.");
+        List<ChatMessage> history = chatMapper.selectChatHistory(roomId);
+        System.out.println("🔍 [디버깅] 방ID: " + roomId + " | 조회된 메시지 수: " + (history != null ? history.size() : 0));
         return chatMapper.selectChatHistory(roomId);
     }
 
@@ -82,7 +83,8 @@ public class A03_ChattingService {
      * 4. Gemini AI 상담 호출
      */
     public String askGemini(String userMessage) {
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+        // 엔드포인트는 잘 작성되었습니다.
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=" + API_KEY;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -92,17 +94,27 @@ public class A03_ChattingService {
         Map<String, Object> body = Map.of("contents", List.of(parts));
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
 
         try {
+            System.out.println("🚀 Gemini API 호출 시도: gemini-3.1-flash-lite");
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+
+            // 응답 파싱 로직 (생략)
             List candidates = (List) response.getBody().get("candidates");
             Map first = (Map) candidates.get(0);
             Map content = (Map) first.get("content");
             List partList = (List) content.get("parts");
             Map textMap = (Map) partList.get(0);
+
             return textMap.get("text").toString();
+
+        } catch (HttpClientErrorException e) { // NotFound 대신 상위 클래스인 HttpClientErrorException 권장
+            // 💡 여기서 로그를 찍어보면 실제 구글이 보내는 정확한 에러 메시지를 볼 수 있습니다.
+            System.err.println("❌ API 에러 발생: " + e.getResponseBodyAsString());
+            return "AI 상담 연결에 실패했습니다 (모델 확인 필요).";
         } catch (Exception e) {
-            return "AI 응답을 가져오는 중 오류가 발생했습니다.";
+            System.err.println("❌ 일반 에러: " + e.getMessage());
+            return "상담사와 연결할 수 없습니다.";
         }
     }
 
@@ -113,5 +125,11 @@ public class A03_ChattingService {
     public void switchToLawyerMode(String roomId) {
         // chatMapper에 updateRoomStatus 같은 메서드를 만들어 연동하세요.
         System.out.println(roomId + " 방이 변호사 상담 모드로 전환되었습니다.");
+    }
+    public void saveMessageAsync(String roomId, String senderId, String senderType, String content) {
+        // DB 저장을 별도 쓰레드에서 수행하여 사용자 대기 시간 감소
+        CompletableFuture.runAsync(() -> {
+            saveMessage(roomId, senderId, senderType, content);
+        });
     }
 }

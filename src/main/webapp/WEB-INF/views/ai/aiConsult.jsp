@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -36,15 +37,27 @@
                     <div class="card shadow-sm">
                         <div class="card-body" id="chatArea">
                             <div id="chatMessageArea">
-                                <div class="mb-3 text-start">
-                                    <div style="display:inline-block; max-width: 80%; text-align: left;">
-                                        <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">AI상담사</div>
-                                        <div class="p-2 rounded shadow-sm" style="background-color: #f1f0f0; color: #000000; border: 1px solid #dee2e6;">
-                                            <strong>${sessionScope.loginUser.name}</strong>님 반갑습니다! <br>
-                                            궁금하신 법률 사항이 있다면 무엇이든 물어보세요.
-                                        </div>
+                                <c:if test="${empty chatHistory}">
+                                    <div style="text-align:center; color:gray; font-size:0.8rem;">기존 대화 내역이 없습니다. (방ID: ${roomId})</div>
+                                </c:if>
+
+                                <c:forEach var="h" items="${chatHistory}">
+                                    <c:set var="isUser" value="${h.senderType == 'USER'}" />
+                                    <div class="mb-3 ${isUser ? 'text-end' : 'text-start'}">
+                                        <div style="display:inline-block; max-width: 80%; text-align: left;">
+                                            <c:if test="${!isUser}">
+                                                <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">
+                                                        ${h.senderType == 'AI' ? 'AI상담사' : '변호사'}
+                                                </div>
+                                            </c:if>
+                                            <div class="p-2 rounded shadow-sm"
+                                                 style="background-color: ${isUser ? '#007bff' : '#f1f0f0'};
+                                                         color: ${isUser ? '#ffffff' : '#000000'};
+                                                         border: ${isUser ? 'none' : '1px solid #dee2e6'};
+                                                         word-break: break-all;
+                                                         white-space: pre-wrap;">${h.message}</div> </div>
                                     </div>
-                                </div>
+                                </c:forEach>
                             </div>
                         </div>
 
@@ -79,6 +92,14 @@
 
     $(document).ready(function(){
         connect();
+
+        setTimeout(function() {
+            var chatArea = document.getElementById("chatArea");
+            if(chatArea) {
+                chatArea.scrollTop = chatArea.scrollHeight;
+                console.log("스크롤 하단 이동 완료");
+            }
+        }, 100);
 
         $("#sndBtn").click(function(){
             sendMsg();
