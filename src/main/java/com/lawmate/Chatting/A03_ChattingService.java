@@ -64,19 +64,33 @@ public class A03_ChattingService {
      */
     @Transactional
     public void saveMessage(String roomId, String senderId, String senderType, String content) {
-        // 🛡️ 방어 코드: 만약 방이 DB에 없다면 생성해줍니다.
-        if (chatMapper.checkRoomExists(roomId) == 0) {
-            System.out.println("⚠️ 방이 없어 자동 생성 시도: " + roomId);
-            chatMapper.insertChatRoom(roomId, senderId, "SYSTEM_AUTO");
+        try {
+            // 🔍 진입 로그 (이게 안 찍히면 호출 자체가 안 된 것)
+            System.out.println("======= [DB 저장 시도] =======");
+            System.out.println("방ID: " + roomId);
+            System.out.println("발신ID: " + senderId);
+            System.out.println("타입: " + senderType);
+            System.out.println("내용: " + content);
+
+            if (roomId == null || senderId == null) {
+                System.err.println("⚠️ 필수 데이터(roomId 또는 senderId)가 null입니다!");
+                return;
+            }
+
+            ChatMessage dto = new ChatMessage();
+            dto.setRoomId(roomId);
+            dto.setSenderId(senderId);
+            dto.setSenderType(senderType);
+            dto.setMessage(content);
+
+            chatMapper.insertMessage(dto);
+            System.out.println("✅ [DB 저장 성공]");
+            System.out.println("==============================");
+
+        } catch (Exception e) {
+            System.err.println("❌ [DB 저장 중 예외 발생]");
+            e.printStackTrace(); // 에러 원인을 콘솔에 상세히 출력
         }
-
-        ChatMessage dto = new ChatMessage();
-        dto.setRoomId(roomId);
-        dto.setSenderType(senderType != null ? senderType : "USER");
-        dto.setMessage(content);
-
-        chatMapper.insertMessage(dto);
-        System.out.println("💾 DB 저장 완료: [방:" + roomId + "] " + content);
     }
 
     /**

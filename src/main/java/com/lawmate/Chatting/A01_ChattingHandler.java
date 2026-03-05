@@ -32,46 +32,62 @@ public class A01_ChattingHandler extends TextWebSocketHandler {
         System.out.println("[접속] roomId=" + roomId);
     }
 
-    // 2️⃣ 메시지 처리 (수정됨)
+    // 2️⃣ 메시지 처리 (수정 완료)
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        String payload = message.getPayload();
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> data = mapper.readValue(payload, Map.class);
+        try {
+            String payload = message.getPayload();
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> data = mapper.readValue(payload, Map.class);
 
-        String roomId = (String) data.get("roomId");
-        String userId = (String) data.get("userId");
-        String userMessage = (String) data.get("message");
-        String chatWith = (String) data.get("chatWith");
-        String senderType = (data.get("senderType") != null) ? (String) data.get("senderType") : "USER";
+            String roomId = (String) data.get("roomId");
+            String userId = (String) data.get("userId");
+            String userMessage = (String) data.get("message");
+            String chatWith = (String) data.get("chatWith");
+            String senderType = (data.get("senderType") != null) ? (String) data.get("senderType") : "USER";
 
-        if ("AI".equals(chatWith)) {
-            // 🤖 AI 상담 모드 (속도 최적화)
+            System.out.println("📩 메시지 수신 - 방ID: " + roomId + ", 유저ID: " + userId);
 
-            // 1. 유저 질문 DB 저장을 비동기로 처리 (기다리지 않음)
-            CompletableFuture.runAsync(() -> {
-                chattingService.saveMessage(roomId, userId, "USER", userMessage);
-            });
+            if ("AI".equals(chatWith)) {
+                // 1. 유저 질문 저장 (예외 처리 추가)
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        chattingService.saveMessage(roomId, userId, "USER", userMessage);
+                    } catch (Exception e) {
+                        System.err.println("❌ 유저 메시지 저장 실패: " + e.getMessage());
+                    }
+                });
 
-            // 2. 즉시 Gemini API 호출 (DB 저장 완료를 기다리지 않고 바로 실행)
-            String aiAnswer = chattingService.askGemini(userMessage);
+                // 2. Gemini API 호출
+                String aiAnswer = chattingService.askGemini(userMessage);
 
-            // 3. AI 답변을 클라이언트에 전송 (화면에 먼저 띄워줌)
-            sendResponse(session, roomId, "AI", "AI상담사", aiAnswer);
+                // 3. AI 답변 전송
+                sendResponse(session, roomId, "AI", "AI상담사", aiAnswer);
 
-            // 4. AI 답변 DB 저장은 전송 후에 비동기로 처리
-            CompletableFuture.runAsync(() -> {
-                chattingService.saveMessage(roomId, "GEMINI_AI", "AI", aiAnswer);
-            });
+                // 4. AI 답변 저장 (final 변수 처리)
+                final String finalAiAnswer = aiAnswer;
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        chattingService.saveMessage(roomId, "GEMINI_AI", "AI", finalAiAnswer);
+                    } catch (Exception e) {
+                        System.err.println("❌ AI 메시지 저장 실패: " + e.getMessage());
+                    }
+                });
 
-        } else {
-            // ⚖️ 변호사 상담 모드
-            // 변호사 모드 역시 DB 저장을 비동기로 처리하면 화면 전환/전송 속도가 빨라집니다.
-            CompletableFuture.runAsync(() -> {
-                chattingService.saveMessage(roomId, userId, senderType, userMessage);
-            });
-
-            broadcast(roomId, new TextMessage(payload), session);
+            } else {
+                // ⚖️ 변호사 모드 저장
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        chattingService.saveMessage(roomId, userId, senderType, userMessage);
+                    } catch (Exception e) {
+                        System.err.println("❌ 변호사 모드 메시지 저장 실패: " + e.getMessage());
+                    }
+                });
+                broadcast(roomId, new TextMessage(payload), session);
+            }
+        } catch (Exception e) {
+            System.err.println("🚨 핸들러 전체 오류: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -33,13 +33,23 @@ public interface ChatMapper {
                         @Param("lawyerId") String lawyerId);
     @Insert("""
     INSERT INTO CHAT_MESSAGE
-    (MSG_ID, ROOM_ID, SENDER_TYPE, CONTENT, CREATED_AT)
+    (
+        MSG_ID, 
+        ROOM_ID, 
+        SENDER_ID,   -- 👈 이 부분이 빠져있어서 "값의 수가 너무 많다"고 에러가 난 겁니다!
+        SENDER_TYPE, 
+        CONTENT, 
+        CREATED_AT
+    )
     VALUES
-    (CHAT_MSG_SEQ.NEXTVAL, 
-     #{roomId, jdbcType=VARCHAR}, 
-     #{senderType, jdbcType=VARCHAR}, 
-     #{message, jdbcType=VARCHAR}, 
-     SYSDATE)
+    (
+        CHAT_MSG_SEQ.NEXTVAL,
+        #{roomId},
+        #{senderId}, -- 값은 이미 6개를 보내고 계셨으므로, 위 컬럼명만 추가하면 짝이 맞습니다.
+        #{senderType},
+        #{message},
+        SYSDATE
+    )
 """)
     void insertMessage(ChatMessage dto);
 
@@ -54,13 +64,15 @@ public interface ChatMapper {
     // 조회
     @Select("""
     SELECT 
-        ROOM_ID as "roomId", 
-        SENDER_TYPE as "senderType", 
-        CONTENT as "message", 
-        CREATED_AT as "createdAt"
-    FROM CHAT_MESSAGE 
-    WHERE ROOM_ID = #{roomId} 
-    ORDER BY CREATED_AT ASC
+        u.NAME as "senderName",
+        msg.SENDER_TYPE as "senderType", 
+        msg.CONTENT as "message", 
+        msg.CREATED_AT as "createdAt",
+        msg.SENDER_ID as "senderId"
+    FROM CHAT_MESSAGE msg
+    LEFT JOIN USERS u ON msg.SENDER_ID = u.USER_ID
+    WHERE msg.ROOM_ID = #{roomId} 
+    ORDER BY msg.CREATED_AT ASC
 """)
     List<ChatMessage> selectChatHistory(@Param("roomId") String roomId);
 

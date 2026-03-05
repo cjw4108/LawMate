@@ -87,6 +87,7 @@
 <script>
     let socketServer = "${socketServer}";
     let roomId = "${roomId}";
+    let userId = "${userId}"; // 🔥 추가: 서버에서 넘겨준 세션 유저 ID
     let userType = "${userType}";
     let wsocket = null;
 
@@ -143,6 +144,7 @@
         // 2. 서버로 전송
         var sendData = {
             roomId : roomId,
+            userId : "${sessionScope.loginUser.userId}",
             senderType : userType,
             senderName : "사용자",
             message : msg,
