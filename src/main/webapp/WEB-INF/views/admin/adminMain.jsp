@@ -28,19 +28,24 @@
 
         <h3 class="fw-bold mb-4">시스템 관리</h3>
         <div class="row g-3">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/admin/qna" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
                     <i class="bi bi-layout-text-window me-2"></i> 게시판 운영
                 </a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/admin/users" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
                     <i class="bi bi-people me-2"></i> 사용자 관리
                 </a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <a href="/admin/approve" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
                     <i class="bi bi-shield-check me-2"></i> 변호사 권한 승인
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="/lawyer/list" class="btn btn-outline-dark w-100 py-4 fs-5 fw-bold shadow-sm">
+                    <i class="bi bi-shield-check me-2"></i> 변호사 리스트
                 </a>
             </div>
         </div>
