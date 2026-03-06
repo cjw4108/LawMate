@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lawmate.dao.LawyerDAO">
+
+    <!-- ResultMap -->
+    <resultMap id="LawyerResultMap" type="com.lawmate.dto.LawyerDTO">
+        <id     property="lawyerId"      column="LAWYER_ID"/>
+        <result property="name"          column="NAME"/>
+        <result property="nameEn"        column="NAME_EN"/>
+        <result property="barNumber"     column="BAR_NUMBER"/>
+        <result property="email"         column="EMAIL"/>
+        <result property="phone"         column="PHONE"/>
+        <result property="specialty"     column="SPECIALTY"/>
+        <result property="education"     column="EDUCATION"/>
+        <result property="career"        column="CAREER"/>
+        <result property="profileImage"  column="PROFILE_IMAGE"/>
+        <result property="introduction"  column="INTRODUCTION"/>
+        <result property="status"        column="STATUS"/>
+        <result property="admissionDate" column="ADMISSION_DATE"/>
+        <result property="createdAt"     column="CREATED_AT"/>
+        <result property="updatedAt"     column="UPDATED_AT"/>
+    </resultMap>
+
+    <!-- 변호사 목록 조회 (페이징 포함) -->
+    <select id="selectLawyerList" parameterType="com.lawmate.dto.LawyerDTO"
+            resultMap="LawyerResultMap">
+        SELECT *
+        FROM (
+            SELECT A.*, ROWNUM AS RNUM
+            FROM (
+                SELECT
+                    LAWYER_ID,
+                    NAME,
+                    NAME_EN,
+                    BAR_NUMBER,
+                    EMAIL,
+                    PHONE,
+                    SPECIALTY,
+                    EDUCATION,
+                    CAREER,
+                    PROFILE_IMAGE,
+                    INTRODUCTION,
+                    STATUS,
+                    ADMISSION_DATE,
+                    CREATED_AT,
+                    UPDATED_AT
+                FROM TB_LAWYER
+                WHERE 1=1
+                <if test="searchKeyword != null and searchKeyword != ''">
+                    AND (
+                        NAME        LIKE '%' || #{searchKeyword} || '%'
+                        OR SPECIALTY LIKE '%' || #{searchKeyword} || '%'
+                        OR CAREER    LIKE '%' || #{searchKeyword} || '%'
+                    )
+                </if>
+                <if test="status != null and status != ''">
+                    AND STATUS = #{status}
+                </if>
+                ORDER BY LAWYER_ID DESC
+            ) A
+            WHERE ROWNUM &lt;= #{pageNo} * #{pageSize}
+        )
+        WHERE RNUM > (#{pageNo} - 1) * #{pageSize}
+    </select>
+
+    <!-- 전체 건수 조회 -->
+    <select id="selectLawyerCount" parameterType="com.lawmate.dto.LawyerDTO"
+            resultType="int">
+        SELECT COUNT(*)
+        FROM TB_LAWYER
+        WHERE 1=1
+        <if test="searchKeyword != null and searchKeyword != ''">
+            AND (
+                NAME        LIKE '%' || #{searchKeyword} || '%'
+                OR SPECIALTY LIKE '%' || #{searchKeyword} || '%'
+                OR CAREER    LIKE '%' || #{searchKeyword} || '%'
+            )
+        </if>
+        <if test="status != null and status != ''">
+            AND STATUS = #{status}
+        </if>
+    </select>
+
+    <!-- 변호사 단건 조회 -->
+    <select id="selectLawyerDetail" parameterType="long"
+            resultMap="LawyerResultMap">
+        SELECT
+            LAWYER_ID, NAME, NAME_EN, BAR_NUMBER,
+            EMAIL, PHONE, SPECIALTY, EDUCATION,
+            CAREER, PROFILE_IMAGE, INTRODUCTION,
+            STATUS, ADMISSION_DATE, CREATED_AT, UPDATED_AT
+        FROM TB_LAWYER
+        WHERE LAWYER_ID = #{lawyerId}
+    </select>
+
+    <!-- 변호사 등록 -->
+    <insert id="insertLawyer" parameterType="com.lawmate.dto.LawyerDTO">
+        <selectKey keyProperty="lawyerId" resultType="long" order="BEFORE">
+            SELECT SEQ_LAWYER.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO TB_LAWYER (
+            LAWYER_ID, NAME, NAME_EN, BAR_NUMBER,
+            EMAIL, PHONE, SPECIALTY, EDUCATION,
+            CAREER, PROFILE_IMAGE, INTRODUCTION,
+            STATUS, ADMISSION_DATE, CREATED_AT, UPDATED_AT
+        ) VALUES (
+            #{lawyerId}, #{name}, #{nameEn}, #{barNumber},
+            #{email}, #{phone}, #{specialty}, #{education},
+            #{career}, #{profileImage}, #{introduction},
+            #{status}, #{admissionDate}, SYSDATE, SYSDATE
+        )
+    </insert>
+
+    <!-- 변호사 수정 -->
+    <update id="updateLawyer" parameterType="com.lawmate.dto.LawyerDTO">
+        UPDATE TB_LAWYER
+        SET
+            NAME           = #{name},
+            NAME_EN        = #{nameEn},
+            EMAIL          = #{email},
+            PHONE          = #{phone},
+            SPECIALTY      = #{specialty},
+            EDUCATION      = #{education},
+            CAREER         = #{career},
+            PROFILE_IMAGE  = #{profileImage},
+            INTRODUCTION   = #{introduction},
+            STATUS         = #{status},
+            ADMISSION_DATE = #{admissionDate},
+            UPDATED_AT     = SYSDATE
+        WHERE LAWYER_ID = #{lawyerId}
+    </update>
+
+    <!-- 변호사 삭제 (논리삭제) -->
+    <update id="deleteLawyer" parameterType="long">
+        UPDATE TB_LAWYER
+        SET STATUS     = 'INACTIVE',
+            UPDATED_AT = SYSDATE
+        WHERE LAWYER_ID = #{lawyerId}
+    </update>
+
+</mapper>
