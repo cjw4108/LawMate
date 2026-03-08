@@ -95,7 +95,21 @@
 </div>
 
 <script>
-    // 비밀번호 확인 실시간 체크
+    // 1. 전화번호 자동 하이픈 기능 (수진님의 '번호 형식 통일' 봇)
+    const phoneInput = document.querySelector('[name=phone]');
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+
+        if (value.length < 4) {
+            e.target.value = value;
+        } else if (value.length < 8) {
+            e.target.value = value.slice(0, 3) + '-' + value.slice(3);
+        } else {
+            e.target.value = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+        }
+    });
+
+    // 2. 비밀번호 확인 실시간 체크
     document.getElementById('passwordConfirm').addEventListener('input', function() {
         var pw   = document.getElementById('password').value;
         var hint = document.getElementById('pwHint');
@@ -109,32 +123,24 @@
         }
     });
 
-    // 제출 전 검증
+    // 3. 제출 전 최종 검증
     document.getElementById('signupForm').addEventListener('submit', function(e) {
-        var uid   = document.querySelector('[name=userId]').value.trim();
-        var uname = document.querySelector('[name=userName]').value.trim();
-        var uphone = document.querySelector('[name=userPhone]').value.trim();
-        var pw    = document.getElementById('password').value;
-        var pwc   = document.getElementById('passwordConfirm').value;
-        var email = document.querySelector('[name=email]').value.trim();
+        const pw = document.getElementById('password').value;
+        const pwc = document.getElementById('passwordConfirm').value;
+        const phone = phoneInput.value;
 
-        if (!uid || !uname || !uphone || !pw || !pwc || !email) {
-            e.preventDefault();
-            alert('모든 항목을 입력해주세요.');
-            return;
-        }
-
-        // 전화번호 형식 체크 (숫자와 하이픈만 허용)
-        var phoneReg = /^\d{2,3}-\d{3,4}-\d{4}$/;
-        if(!phoneReg.test(uphone)) {
-            e.preventDefault();
-            alert('전화번호 형식을 확인해주세요. (예: 010-1234-5678)');
-            return;
-        }
-
+        // 비밀번호 일치 확인
         if (pw !== pwc) {
             e.preventDefault();
             alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        // 전화번호 글자수 확인 (하이픈 포함 12~13자)
+        if (phone.length < 12) {
+            e.preventDefault();
+            alert('전화번호를 정확히 입력해주세요.');
+            return;
         }
     });
 </script>

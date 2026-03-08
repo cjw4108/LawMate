@@ -97,11 +97,12 @@
 </div>
 
 <script>
-    // 1. 전화번호 자동 하이픈 생성 로직
+    // 1. 전화번호 자동 하이픈 생성 (수진님의 010-0000-0000 봇)
     const phoneInput = document.querySelector('input[name="phone"]');
 
     phoneInput.addEventListener('input', function(e) {
-        let val = e.target.value.replace(/[^0-9]/g, ''); // 숫자 이외 제거
+        // 숫자만 남기기 (최대 11자까지만 취급)
+        let val = e.target.value.replace(/[^0-9]/g, '').substring(0, 11);
         let result = '';
 
         if (val.length < 4) {
@@ -119,38 +120,51 @@
     const pwConfirmInput = document.getElementById('passwordConfirm');
     const pwHint = document.getElementById('pwHint');
 
-    pwConfirmInput.addEventListener('input', function() {
-        if (!this.value) {
+    function checkPassword() {
+        if (!pwConfirmInput.value) {
             pwHint.textContent = '';
             return;
         }
-        if (pwInput.value === this.value) {
+        if (pwInput.value === pwConfirmInput.value) {
             pwHint.textContent = '비밀번호가 일치합니다.';
             pwHint.style.color = '#198754';
+            pwHint.style.fontSize = '12px';
         } else {
             pwHint.textContent = '비밀번호가 일치하지 않습니다.';
             pwHint.style.color = '#dc3545';
+            pwHint.style.fontSize = '12px';
         }
-    });
+    }
+
+    pwConfirmInput.addEventListener('input', checkPassword);
+    pwInput.addEventListener('input', checkPassword); // 비밀번호를 중간에 수정할 경우도 대비
 
     // 3. 폼 제출 전 최종 유효성 검사
     document.getElementById('lawyerForm').addEventListener('submit', function(e) {
         const phone = phoneInput.value;
-        const phoneReg = /^\d{2,3}-\d{3,4}-\d{4}$/;
+        const phoneReg = /^010-\d{3,4}-\d{4}$/; // 010으로 시작하는 형식 강제
 
         // 비밀번호 최종 체크
         if (pwInput.value !== pwConfirmInput.value) {
             e.preventDefault();
-            alert('비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+            alert('비밀번호가 일치하지 않습니다.');
             pwConfirmInput.focus();
             return;
         }
 
-        // 전화번호 형식 최종 체크
+        // 전화번호 형식 최종 체크 (글자수 부족 방지)
         if (!phoneReg.test(phone)) {
             e.preventDefault();
-            alert('올바른 전화번호 형식을 입력해주세요. (예: 010-1234-5678)');
+            alert('전화번호 11자리를 모두 입력해주세요. (예: 010-1234-5678)');
             phoneInput.focus();
+            return;
+        }
+
+        // 파일 업로드 여부 재확인
+        const fileInput = document.querySelector('input[name="uploadFile"]');
+        if (!fileInput.files.length) {
+            e.preventDefault();
+            alert('자격 증빙 파일을 업로드해주세요.');
             return;
         }
     });
