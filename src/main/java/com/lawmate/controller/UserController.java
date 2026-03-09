@@ -36,23 +36,24 @@ public class UserController {
             return "login";
         }
 
-        // 2. 계정 상태가 '정지'인 경우 (차단 로직)
+        // 2. 계정 상태가 '정지'인 경우
         if ("정지".equals(user.getStatus())) {
             model.addAttribute("error", "관리자에 의해 이용이 제한된 계정입니다.");
             return "login";
         }
 
-        // 3. ⭐ 변호사인데 아직 승인 대기중인 경우 (핵심 차단 로직)
-        // ROLE_LAWYER이면서 상태가 '승인대기'이면 로그인을 허용하지 않습니다.
+        // 3. 변호사 승인 대기중인 경우
         if ("ROLE_LAWYER".equals(user.getRole()) && "승인대기".equals(user.getStatus())) {
             model.addAttribute("error", "현재 자격 승인 심사 중입니다. 관리자 승인 후 이용 가능합니다.");
             return "login";
         }
 
-        // 로그인 성공 시 세션 저장
+        // --- [수정 구간] 로그인 성공 시 세션 저장 ---
         session.setAttribute("loginUser", user);
+        // ⭐ 중요: AdminInterceptor가 권한을 확인할 수 있도록 userRole을 세션에 개별 저장합니다.
+        session.setAttribute("userRole", user.getRole());
 
-        // 권한별 리다이렉트
+        // 권한별 리다이렉트 (기현 님 요청 사항: 관리자는 바로 관리자 페이지로)
         if ("ROLE_ADMIN".equals(user.getRole())) {
             return "redirect:/admin/main";
         } else {
@@ -79,38 +80,36 @@ public class UserController {
         }
 
         user.setJoinDate(LocalDate.now());
-        user.setStatus("정상"); // 일반 사용자는 바로 '정상'
+        user.setStatus("정상");
         user.setRole("ROLE_USER");
 
         if (userService.signup(user)) {
             session.setAttribute("loginUser", user);
+            // 일반 사용자 가입 시에도 인터셉터 통과를 위해 Role을 담아주는 것이 좋습니다.
+            session.setAttribute("userRole", user.getRole());
             return "redirect:/home?msg=welcome";
         }
         model.addAttribute("error", "아이디 중복 또는 가입 실패");
         return "signup";
     }
 
-    // --- 2. 변호사 회원가입 (수정: 가입 시 '승인대기' 상태로 변경) ---
     @PostMapping("/signup/lawyer")
     public String signupLawyer(UserDTO user,
                                @RequestParam String passwordConfirm,
                                @RequestParam("uploadFile") MultipartFile uploadFile,
-                               Model model) { // 자동 로그인을 방지하기 위해 session 제거
+                               Model model) {
 
         if (!user.getPassword().equals(passwordConfirm)) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
             return "lawyer";
         }
 
-        // ⭐ 핵심 변경: 상태값을 "승인대기" 및 "PENDING"으로 설정
         user.setJoinDate(LocalDate.now());
-        user.setStatus("승인대기");       // 로그인 차단 기준이 됨
+        user.setStatus("승인대기");
         user.setRole("ROLE_LAWYER");
-        user.setLawyerStatus("PENDING"); // 관리자 페이지 목록에 노출될 기준
+        user.setLawyerStatus("PENDING");
 
         if (userService.signupLawyer(user, uploadFile)) {
-            // ✅ 변호사는 승인이 필요하므로 자동 로그인을 시키지 않고 로그인 페이지로 보냄
-            // msg=pending 파라미터를 넘겨서 알림을 띄울 수 있게 함
             return "redirect:/login?msg=pending";
         }
 
