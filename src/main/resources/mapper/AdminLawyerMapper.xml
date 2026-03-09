@@ -12,12 +12,19 @@
         LICENSE_FILE  AS licenseFile,
         JOIN_DATE     AS requestDate
         FROM PRJ01.USERS
-        WHERE LAWYER_STATUS = 'PENDING'
-        AND ROLE = 'ROLE_LAWYER'
-        <if test="keyword != null and keyword != ''">
-            AND (USER_ID LIKE '%' || #{keyword} || '%' OR NAME LIKE '%' || #{keyword} || '%')
+        WHERE 1=1
+
+        AND LAWYER_STATUS IS NOT NULL
+
+        <if test="role != null and role != ''">
+            AND ROLE = #{role}
         </if>
-        ORDER BY JOIN_DATE DESC
+
+        <if test="status != null and status != ''">
+            AND LAWYER_STATUS = #{status}
+        </if>
+
+        ORDER BY CASE WHEN LAWYER_STATUS = 'PENDING' THEN 1 ELSE 2 END, JOIN_DATE DESC
     </select>
 
     <select id="findAllLawyers" resultType="com.lawmate.dto.LawyerApprovalDTO">

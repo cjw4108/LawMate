@@ -63,14 +63,18 @@ public class AdminController {
 
     // ✅ pendingList 조회 추가
     @GetMapping("/approve")
-    public String approvePage(@RequestParam(value = "keyword", required = false) String keyword,
+    public String approvePage(@RequestParam(value = "role", required = false) String role,
+                              @RequestParam(value = "status", required = false) String status,
+                              @RequestParam(value = "keyword", required = false) String keyword,
                               Model model) {
 
-        // 서비스의 메서드 구조(String keyword 필요)에 맞춰서 호출!
-        List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers(keyword);
+        // 서비스가 이제 3개의 인자를 요구하므로 모두 전달해줍니다.
+        List<LawyerApprovalDTO> pendingList = adminLawyerService.getPendingLawyers(role, status, keyword);
 
         model.addAttribute("pendingList", pendingList);
-        model.addAttribute("keyword", keyword); // 검색창에 검색어 유지용
+        model.addAttribute("role", role);
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
 
         return "admin/approve";
     }

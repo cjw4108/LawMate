@@ -19,8 +19,9 @@ public class AdminLawyerService {
         this.userDAO = userDAO;
     }
 
-    public List<LawyerApprovalDTO> getPendingLawyers(String keyword) {
-        return adminLawyerDAO.findPendingLawyers(keyword);
+    // ✅ 파라미터 3개를 받도록 수정
+    public List<LawyerApprovalDTO> getPendingLawyers(String role, String status, String keyword) {
+        return adminLawyerDAO.findPendingLawyers(role, status, keyword);
     }
 
     public List<LawyerApprovalDTO> getAllLawyers() {
@@ -31,21 +32,9 @@ public class AdminLawyerService {
         return adminLawyerDAO.findByLawyerId(lawyerId);
     }
 
-    public void approveLawyer(String lawyerId) {
-        adminLawyerDAO.approve(lawyerId);
-    }
-
-    public void rejectLawyer(String lawyerId, String rejectReason) {
-        adminLawyerDAO.reject(lawyerId, rejectReason);
-    }
-
     @Transactional
     public void updateLawyerStatus(String userId, String status, String rejectReason) {
-        // ✅ 이 메서드 하나면 충분합니다!
-        // AdminLawyerMapper.xml의 updateStatus 쿼리 안에
-        // LAWYER_STATUS, ROLE, STATUS('정상') 업데이트 로직이 모두 들어있습니다.
+        // 단일 쿼리로 처리하는 최신 로직 유지
         adminLawyerDAO.updateStatus(userId, status, rejectReason);
-
-        // ❌ 기존에 에러를 유발하던 userDAO.updateStatus(userId, "정상"); 부분은 삭제했습니다.
     }
 }

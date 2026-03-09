@@ -9,8 +9,11 @@ import java.util.List;
 @Mapper
 public interface AdminLawyerDAO {
 
-    // ✅ 검색 기능 추가: keyword 파라미터를 받도록 수정
-    List<LawyerApprovalDTO> findPendingLawyers(@Param("keyword") String keyword);
+    // ✅ [핵심 수정] role, status 파라미터를 추가하여 필터링이 가능하게 합니다.
+    // @Param 어노테이션의 이름이 XML의 #{name}과 일치해야 합니다.
+    List<LawyerApprovalDTO> findPendingLawyers(@Param("role") String role,
+                                               @Param("status") String status,
+                                               @Param("keyword") String keyword);
 
     // 전체 변호사 목록 조회
     List<LawyerApprovalDTO> findAllLawyers();
@@ -29,4 +32,6 @@ public interface AdminLawyerDAO {
     int updateStatus(@Param("lawyerId") String lawyerId,
                      @Param("status") String status,
                      @Param("rejectReason") String rejectReason);
+
+    List<LawyerApprovalDTO> findPendingLawyers(String keyword);
 }
