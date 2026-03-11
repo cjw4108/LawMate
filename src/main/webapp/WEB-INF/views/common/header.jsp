@@ -87,6 +87,9 @@
                                 <c:if test="${loginUser.role eq 'ROLE_LAWYER'}">
                                     <li><a class="dropdown-item" href="/mypage">변호사 마이페이지</a></li>
                                 </c:if>
+                                <c:if test="${loginUser.role eq 'ROLE_ADMIN'}">
+                                    <li><a class="dropdown-item" href="/admin/main">관리자페이지</a></li>
+                                </c:if>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="/logout">로그아웃</a></li>
                             </ul>
