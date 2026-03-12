@@ -3,19 +3,23 @@ package com.lawmate.Chatting;
 import com.lawmate.dto.ChatMessage;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class A03_ChattingService {
 
@@ -64,11 +68,22 @@ public class A03_ChattingService {
     /**
      * 3. 메시지 DB 저장 (방 존재 여부 체크 로직 추가)
      */
+    /**
+     * 3. 메시지 DB 저장 (방 존재 여부 체크 로직 추가)
+     */
     @Transactional
     public void saveMessage(String roomId, String senderId, String senderType, String content) {
+
         try {
-            // 🔍 진입 로그 (이게 안 찍히면 호출 자체가 안 된 것)
+            // 🔍 진입 로그
             System.out.println("======= [DB 저장 시도] =======");
+
+            // [방어 로직 추가] 사용자가 텍스트 없이 파일만 보낸 경우 content가 null이거나 비어있을 수 있음
+            // DB의 CONTENT 컬럼이 NOT NULL이므로 기본 문구를 설정해줍니다.
+            if (content == null || content.trim().isEmpty()) {
+                content = "(첨부파일 전송)";
+            }
+
             System.out.println("방ID: " + roomId);
             System.out.println("발신ID: " + senderId);
             System.out.println("타입: " + senderType);
@@ -83,7 +98,7 @@ public class A03_ChattingService {
             dto.setRoomId(roomId);
             dto.setSenderId(senderId);
             dto.setSenderType(senderType);
-            dto.setMessage(content);
+            dto.setMessage(content); // content가 (첨부파일 전송)으로 치환되어 들어감
 
             chatMapper.insertMessage(dto);
             System.out.println("✅ [DB 저장 성공]");
@@ -91,7 +106,7 @@ public class A03_ChattingService {
 
         } catch (Exception e) {
             System.err.println("❌ [DB 저장 중 예외 발생]");
-            e.printStackTrace(); // 에러 원인을 콘솔에 상세히 출력
+            e.printStackTrace();
         }
     }
 
@@ -155,5 +170,86 @@ public class A03_ChattingService {
         }
         // 매퍼에 @Param("roomId")로 등록했으므로 roomId만 보냅니다.
         return chatMapper.selectChatHistory(roomId);
+    }
+
+    // A03_ChattingService.java 에 추가할 로직 예시
+
+    public String requestAiAnalysis(MultipartFile file) {
+        String pythonUrl = "http://localhost:8000/analyze";
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+
+            // [핵심] 파이썬 서버가 '파일'임을 인식하게 하는 리소스 생성
+            ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            };
+
+            // 'file'이라는 키값은 파이썬의 analyze_file(file: UploadFile = File(...))과 일치해야 합니다.
+            body.add("file", resource);
+
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+            // Python 서버 호출
+            ResponseEntity<Map> response = restTemplate.postForEntity(pythonUrl, requestEntity, Map.class);
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                Map<String, Object> result = response.getBody();
+                // 파이썬에서 return {"status": "success", "analysis": "..."} 라고 보낸 경우
+                return result.get("analysis").toString();
+            }
+        } catch (Exception e) {
+            // [디버깅용] 콘솔에 에러 내용을 상세히 찍어줍니다.
+            System.err.println("❌ 파이썬 서버 통신 중 예외 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "파일 분석에 실패했습니다.";
+    }
+
+    public String requestAiAnalysisByPath(String filePath) {
+        String pythonUrl = "http://localhost:8000/analyze";
+
+        try {
+            // 1. 가상 경로(/temp_uploads/...)를 실제 물리 경로로 변환
+            String projectRoot = System.getProperty("user.dir");
+            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+            String fullPath = projectRoot + File.separator + "storage" + File.separator + "uploads" + File.separator + fileName;
+
+            File file = new File(fullPath);
+            if (!file.exists()) {
+                return "[시스템] 분석할 파일을 찾을 수 없습니다.";
+            }
+
+            // 2. 파이썬 서버로 보낼 요청 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            // 저장된 파일을 다시 읽어서 리소스로 만듭니다.
+            body.add("file", new FileSystemResource(file));
+
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+            // 3. 파이썬 서버 호출 및 응답 처리
+            ResponseEntity<Map> response = restTemplate.postForEntity(pythonUrl, requestEntity, Map.class);
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                // 성공적으로 분석 결과를 받은 경우
+                return response.getBody().get("analysis").toString();
+            } else {
+                return "[시스템] AI 분석 서버 응답 오류";
+            }
+
+        } catch (Exception e) {
+            System.err.println("❌ 파일 경로 기반 분석 중 오류: " + e.getMessage());
+            return "[시스템] 파일 분석 중 기술적 오류가 발생했습니다.";
+        }
+        // catch 블록 밖에도 리턴이 없으면 에러가 날 수 있으므로 최종 리턴을 보장합니다.
     }
 }
