@@ -234,6 +234,9 @@
                 $("#modgo").hide();
                 $("#delgo").hide();
             }
+        } else if ("${loginUser.role}" != "ROLE_ADMIN") {
+            $("#modgo").hide();
+            $("#delgo").hide();
         }
     });
 </script>
