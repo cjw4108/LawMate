@@ -47,7 +47,7 @@
                     CREATED_AT,
                     UPDATED_AT
                 FROM TB_LAWYER
-                WHERE 1=1
+                WHERE 2=2
                 <if test="searchKeyword != null and searchKeyword != ''">
                     AND (
                         NAME        LIKE '%' || #{searchKeyword} || '%'

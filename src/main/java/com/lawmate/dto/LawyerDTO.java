@@ -31,6 +31,7 @@ public class LawyerDTO {
     private int blockSize; // 페이지블럭의 크기 [설정]
 
     public LawyerDTO() {}
+    public LawyerDTO(int blockSize) {}
 
     // ===================== Getter / Setter =====================
 

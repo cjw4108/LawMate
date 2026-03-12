@@ -149,7 +149,7 @@
         </div>
 
         <!-- 소개 -->
-        <div class="section-title-2">📝 소개</div>
+        <div class="section-title-2">📝 소 개</div>
 
         <div class="form-row">
             <div class="form-group full">

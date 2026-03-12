@@ -26,6 +26,7 @@ public class LawyerController {
      */
     @GetMapping("/list")
     public String lawyerList(LawyerDTO dto, Model model) {
+        int i = 1;
         if (dto.getPageNo() <= 0) dto.setPageNo(1);
         if (dto.getPageSize() <= 0) dto.setPageSize(10);
         if (dto.getBlockSize() <= 0) dto.setBlockSize(5);

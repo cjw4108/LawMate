@@ -150,7 +150,7 @@
                     </span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">등록/수정일시</span>
+                    <span class="info-label">등록/수정 일시</span>
                     <span class="info-value" style="font-size:13px;">
                         등록: <fmt:formatDate value="${lawyer.createdAt}" pattern="yyyy-MM-dd HH:mm"/><br/>
                         수정: <fmt:formatDate value="${lawyer.updatedAt}" pattern="yyyy-MM-dd HH:mm"/>
