@@ -213,14 +213,28 @@
         <!-- 버튼 -->
         <div class="btn-area">
             <a href="/lawyer/list" class="btn btn-secondary">← 목록</a>
-            <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary">✏ 수정</a>
+            <a id="modgo" href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary">✏ 수정</a>
             <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="margin:0;"
                   onsubmit="return confirm('${lawyer.name} 변호사를 삭제하시겠습니까?')">
-                <button type="submit" class="btn btn-danger">🗑 삭제</button>
+                <button id="delgo" type="submit" class="btn btn-danger">🗑 삭제</button>
             </form>
         </div>
 
     </div><!-- /body-card -->
 </div><!-- /container -->
 </body>
+<jsp:include page="/WEB-INF/views/common/footer.jsp" />
+<script type="text/javascript">
+    $(document).ready(function() {
+        if ("${loginUser.role}" == "ROLE_LAWYER") {
+            if ("${loginUser.email}" == "${lawyer.email}") {
+                $("#modgo").show();
+                $("#delgo").show();
+            } else {
+                $("#modgo").hide();
+                $("#delgo").hide();
+            }
+        }
+    });
+</script>
 </html>

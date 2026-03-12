@@ -115,6 +115,12 @@
 
     <!-- 변호사 수정 -->
     <update id="updateLawyer" parameterType="com.lawmate.dto.LawyerDTO">
+        <selectKey keyProperty="status" resultType="string" order="BEFORE">
+            SELECT CASE WHEN COUNT(*) = 0 THEN 'INACTIVE' ELSE 'ACTIVE' END
+            FROM USERS
+            WHERE EMAIL = #{email}
+            AND LAWYER_STATUS = 'APPROVED'
+        </selectKey>
         UPDATE TB_LAWYER
         SET
             NAME           = #{name},

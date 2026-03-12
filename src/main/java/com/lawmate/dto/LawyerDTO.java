@@ -28,6 +28,7 @@ public class LawyerDTO {
     private int pageNo;              // 페이지 번호
     private int pageSize;            // 페이지 크기
     private int totalCount;          // 전체 건수
+    private int blockSize; // 페이지블럭의 크기 [설정]
 
     public LawyerDTO() {}
 
@@ -89,6 +90,9 @@ public class LawyerDTO {
 
     public int getTotalCount() { return totalCount; }
     public void setTotalCount(int totalCount) { this.totalCount = totalCount; }
+
+    public int getBlockSize() { return blockSize; }
+    public void setBlockSize(int blockSize) { this.blockSize = blockSize; }
 
     @Override
     public String toString() {

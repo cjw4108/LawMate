@@ -58,10 +58,9 @@
         <input type="hidden" name="pageNo"   value="1"/>
         <input type="hidden" name="pageSize" value="${searchDTO.pageSize}"/>
         <button type="submit" class="btn btn-primary">🔍 검색</button>
-        <a href="/lawyer/register" class="btn btn-success" style="text-decoration:none">+ 변호사 등록</a>
+        <a id="reggo" href="/lawyer/register" class="btn btn-success" style="text-decoration:none">+ 변호사 등록</a>
     </div>
 </form>
-
 <div class="total-count">총 <strong>${totalCount}</strong> 건</div>
 
 <!-- 목록 테이블 -->
@@ -107,11 +106,34 @@
                             </c:choose>
                         </td>
                         <td>
-                            <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary" style="font-size:12px;">수정</a>
-                            <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="display:inline"
-                                  onsubmit="return confirm('삭제하시겠습니까?')">
-                                <button type="submit" class="btn btn-danger" style="font-size:12px;">삭제</button>
-                            </form>
+                            <c:choose>
+                                <c:when test="${loginUser.role eq 'ROLE_LAWYER'}">
+                                    <c:choose>
+                                        <c:when test="${loginUser.email eq lawyer.email}">
+                                            <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary" style="font-size:12px;">수정</a>
+                                            <c:if test="${lawyer.status == 'ACTIVE'}">
+                                            <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="display:inline"
+                                                  onsubmit="return confirm('삭제하시겠습니까?')">
+                                                <button type="submit" class="btn btn-danger" style="font-size:12px;">삭제</button>
+                                            </form>
+                                            </c:if>
+                                        </c:when>
+                                    </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:choose>
+                                    <c:when test="${loginUser.role eq 'ROLE_ADMIN'}">
+                                        <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary" style="font-size:12px;">수정</a>
+                                        <c:if test="${lawyer.status == 'ACTIVE'}">
+                                        <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="display:inline"
+                                              onsubmit="return confirm('삭제하시겠습니까?')">
+                                            <button type="submit" class="btn btn-danger" style="font-size:12px;">삭제</button>
+                                        </form>
+                                        </c:if>
+                                    </c:when>
+                                    </c:choose>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
                     </tr>
                 </c:forEach>
@@ -127,20 +149,28 @@
 
 <!-- 페이징 -->
 <div class="paging">
-    <c:if test="${searchDTO.pageNo > 1}">
+    <c:if test="${searchDTO.pageNo > searchDTO.blockSize}">
         <a href="/lawyer/list?pageNo=1&pageSize=${searchDTO.pageSize}&searchKeyword=${searchDTO.searchKeyword}&status=${searchDTO.status}">처음</a>
-        <a href="/lawyer/list?pageNo=${searchDTO.pageNo - 1}&pageSize=${searchDTO.pageSize}&searchKeyword=${searchDTO.searchKeyword}&status=${searchDTO.status}">이전</a>
+        <a href="/lawyer/list?pageNo=${startPage - 1}&pageSize=${searchDTO.pageSize}&searchKeyword=${searchDTO.searchKeyword}&status=${searchDTO.status}">이전</a>
     </c:if>
     <c:forEach begin="${startPage}" end="${endPage}" var="i">
         <a href="/lawyer/list?pageNo=${i}&pageSize=${searchDTO.pageSize}&searchKeyword=${searchDTO.searchKeyword}&status=${searchDTO.status}"
            class="${i == searchDTO.pageNo ? 'active' : ''}">${i}</a>
     </c:forEach>
-    <c:if test="${searchDTO.pageNo < totalPages}">
-        <a href="/lawyer/list?pageNo=${searchDTO.pageNo + 1}&pageSize=${searchDTO.pageSize}&searchKeyword=${searchDTO.searchKeyword}&status=${searchDTO.status}">다음</a>
+    <c:if test="${searchDTO.pageNo < last1Page}">
+        <a href="/lawyer/list?pageNo=${endPage + 1}&pageSize=${searchDTO.pageSize}&searchKeyword=${searchDTO.searchKeyword}&status=${searchDTO.status}">다음</a>
         <a href="/lawyer/list?pageNo=${totalPages}&pageSize=${searchDTO.pageSize}&searchKeyword=${searchDTO.searchKeyword}&status=${searchDTO.status}">마지막</a>
     </c:if>
 </div>
-
 </main>
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
+<script type="text/javascript">
+    $(document).ready(function() {
+        if ("${loginUser.role}" == "ROLE_LAWYER") {
+            $("#reggo").hide();
+        } else {
+            $("#reggo").show();
+        }
+    });
+</script>
 </html>

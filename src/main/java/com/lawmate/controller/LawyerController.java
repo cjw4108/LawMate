@@ -28,20 +28,23 @@ public class LawyerController {
     public String lawyerList(LawyerDTO dto, Model model) {
         if (dto.getPageNo() <= 0) dto.setPageNo(1);
         if (dto.getPageSize() <= 0) dto.setPageSize(10);
+        if (dto.getBlockSize() <= 0) dto.setBlockSize(5);
 //        System.out.println("# process 11 #");
         int totalCount = lawyerService.getLawyerCount(dto);
         List<LawyerDTO> lawyerList = lawyerService.getLawyerList(dto);
 
         // 페이징 계산
         int totalPages = (int) Math.ceil((double) totalCount / dto.getPageSize());
-        int startPage  = Math.max(1, dto.getPageNo() - 4);
-        int endPage    = Math.min(totalPages, startPage + 9);
+        int startPage  = Math.max(1, (dto.getPageNo() - 1) / dto.getBlockSize() * dto.getBlockSize() + 1);
+        int endPage    = Math.min(totalPages, startPage + dto.getBlockSize() - 1);
+        int last1Page  = (totalPages - 1) / dto.getBlockSize() * dto.getBlockSize() + 1;
 
         model.addAttribute("lawyerList",  lawyerList);
         model.addAttribute("totalCount",  totalCount);
         model.addAttribute("totalPages",  totalPages);
         model.addAttribute("startPage",   startPage);
         model.addAttribute("endPage",     endPage);
+        model.addAttribute("last1Page",   last1Page);
         model.addAttribute("searchDTO",   dto);
 
         return "lawyer/lawyerList";

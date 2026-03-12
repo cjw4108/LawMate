@@ -123,9 +123,9 @@
             </div>
             <div class="form-group" style="max-width:150px;">
                 <label>상태</label>
-                <select name="status">
-                    <option value="ACTIVE"   <c:if test="${lawyer.status == 'ACTIVE'   || empty lawyer.status}">selected</c:if>>활성</option>
-                    <option value="INACTIVE" <c:if test="${lawyer.status == 'INACTIVE'}">selected</c:if>>비활성</option>
+                <select name="status" readonly onChange='this.selectedIndex = this.initialSelect;'>
+                    <option value="ACTIVE"   <c:if test="${lawyer.status == 'ACTIVE'}">selected</c:if>>활성</option>
+                    <option value="INACTIVE" <c:if test="${lawyer.status == 'INACTIVE' || empty lawyer.status}">selected</c:if>>비활성</option>
                 </select>
             </div>
         </div>
@@ -170,7 +170,7 @@
 
         <!-- 버튼 -->
         <div class="btn-area">
-            <button type="submit" class="btn btn-primary">
+            <button id="reggo" type="submit" class="btn btn-primary">
                 <c:choose>
                     <c:when test="${not empty lawyer.lawyerId}">✔ 수정 완료</c:when>
                     <c:otherwise>✔ 등록</c:otherwise>
@@ -190,4 +190,15 @@
 </div>
 </main>
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
+<script type="text/javascript">
+    $(document).ready(function() {
+        if ("${loginUser.role}" == "ROLE_LAWYER") {
+            if ("${loginUser.email}" == "${lawyer.email}") {
+                $("#reggo").show();
+            } else {
+                $("#reggo").hide();
+            }
+        }
+    });
+</script>
 </html>
