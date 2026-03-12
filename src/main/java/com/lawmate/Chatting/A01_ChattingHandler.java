@@ -24,6 +24,8 @@ public class A01_ChattingHandler extends TextWebSocketHandler {
     private Map<String, Set<WebSocketSession>> rooms = new ConcurrentHashMap<>();
     private Map<String, String> sessionRoomMap = new ConcurrentHashMap<>();
 
+
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String roomId = getRoomId(session);
@@ -45,10 +47,13 @@ public class A01_ChattingHandler extends TextWebSocketHandler {
             String chatWith = (String) data.get("chatWith");
             String senderType = (data.get("senderType") != null) ? (String) data.get("senderType") : "USER";
 
-            // 1️⃣ [공통 로직] 일단 받은 메시지는 무조건 DB에 저장 (나중에 불러오기 위함)
+            // [추가] 파일 정보 가져오기
+            String fileName = (String) data.get("fileName");
+            String filePath = (String) data.get("filePath");
+
+            // 1️⃣ [공통 로직] DB 저장 (파일이 있다면 파일 경로도 같이 저장하는 로직이 Mapper에 있다면 수정 필요)
             CompletableFuture.runAsync(() -> {
                 try {
-                    // senderId는 보낸 사람의 ID(userId), senderType은 USER 또는 LAWYER
                     chattingService.saveMessage(roomId, userId, senderType, userMessage);
                     System.out.println("✅ DB 저장 완료 (" + senderType + "): " + userMessage);
                 } catch (Exception e) {
@@ -58,17 +63,32 @@ public class A01_ChattingHandler extends TextWebSocketHandler {
 
             // 2️⃣ [분기 로직] AI 상담 vs 변호사 상담
             if ("AI".equals(chatWith)) {
-                // Gemini API 호출 및 응답 전송 로직 (기존 유지)
-                String aiAnswer = chattingService.askGemini(userMessage);
+
+                // 🚀 [핵심 추가] AI가 파일을 인식하게 만드는 로직
+                String finalMessageForAI = userMessage;
+
+                if (filePath != null && !filePath.isEmpty()) {
+                    System.out.println("📂 파일 분석 요청 중... 경로: " + filePath);
+
+                    // 1. 파이썬 서버 호출하여 파일 분석 내용 가져오기
+                    String analysisResult = chattingService.requestAiAnalysisByPath(filePath);
+
+                    // 2. Gemini에게 보낼 메시지 재구성 (분석 내용 + 사용자 질문)
+                    finalMessageForAI = "[첨부파일 분석 내용]\n" + analysisResult +
+                            "\n\n[사용자 질문]\n" + userMessage;
+                }
+
+                // 재구성된 메시지로 Gemini 호출
+                String aiAnswer = chattingService.askGemini(finalMessageForAI);
                 sendResponse(session, roomId, "AI", "AI상담사", aiAnswer);
 
                 // AI 답변도 DB에 저장
                 CompletableFuture.runAsync(() -> {
                     chattingService.saveMessage(roomId, "GEMINI_AI", "AI", aiAnswer);
                 });
+
             } else {
-                // ⚖️ 변호사 모드: 내가 보낸 메시지를 상대방(변호사 또는 다른 유저)에게 실시간 전달
-                // 위에서 이미 saveMessage를 실행했으므로 여기서는 전달(broadcast)만 수행
+                // ⚖️ 변호사 모드: 상대방에게 파일 정보까지 포함된 payload 그대로 전달
                 broadcast(roomId, new TextMessage(payload), session);
             }
 

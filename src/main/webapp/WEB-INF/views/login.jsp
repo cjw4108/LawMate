@@ -47,14 +47,12 @@
 
                 <h2 class="login-title">로그인</h2>
 
-                <%-- 로그인 실패 메시지 --%>
-                <% if (request.getAttribute("error") != null) { %>
-                <div class="alert alert-danger text-center">
-                    <%= request.getAttribute("error") %>
-                </div>
-                <% } %>
+                <c:if test="${not empty requestScope.error}">
+                    <div class="alert alert-danger text-center">
+                            ${requestScope.error}
+                    </div>
+                </c:if>
 
-                <!-- 🔴 GET → POST 로 수정 -->
                 <form action="${pageContext.request.contextPath}/login" method="post">
                     <div class="mb-3">
                         <label class="form-label">아이디 *</label>
