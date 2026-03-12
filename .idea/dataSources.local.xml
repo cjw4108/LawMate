@@ -13,8 +13,8 @@
         <introspection-scope>
           <node kind="schema">
             <name qname="@" />
-            <name qname="PUBLIC" />
             <name qname="PRJ01" />
+            <name qname="PUBLIC" />
           </node>
         </introspection-scope>
       </schema-mapping>
