@@ -47,13 +47,11 @@
 
                 <h2 class="login-title">로그인</h2>
 
-
-                <% if (request.getAttribute("error") != null) { %>
-                <div class="alert alert-danger text-center">
-                    <%= request.getAttribute("error") %>
-                </div>
-                <% } %>
-
+                <c:if test="${not empty requestScope.error}">
+                    <div class="alert alert-danger text-center">
+                            ${requestScope.error}
+                    </div>
+                </c:if>
 
                 <form action="${pageContext.request.contextPath}/login" method="post">
                     <div class="mb-3">
