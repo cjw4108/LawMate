@@ -26,7 +26,6 @@ public class LawyerController {
      */
     @GetMapping("/list")
     public String lawyerList(LawyerDTO dto, Model model) {
-        int i = 1;
         if (dto.getPageNo() <= 0) dto.setPageNo(1);
         if (dto.getPageSize() <= 0) dto.setPageSize(10);
         if (dto.getBlockSize() <= 0) dto.setBlockSize(5);
@@ -84,7 +83,11 @@ public class LawyerController {
             lawyerService.registerLawyer(dto);
             redirectAttr.addFlashAttribute("successMsg", "변호사가 등록되었습니다.");
         } catch (Exception e) {
-            redirectAttr.addFlashAttribute("errorMsg", e.getMessage());
+            String msg = e.getMessage();
+            String errorMsg = msg.substring(msg.lastIndexOf(":") + 1);
+            if(errorMsg.contains("PRJ01.SYS_C008609")) {errorMsg=errorMsg.replace("PRJ01.SYS_C008609","변호사 등록번호");}
+            else if(errorMsg.contains("PRJ01.SYS_C008610")) {errorMsg=errorMsg.replace("PRJ01.SYS_C008610","이메일");}
+            redirectAttr.addFlashAttribute("errorMsg", errorMsg);
             return "redirect:/lawyer/register";
         }
         return "redirect:/lawyer/list";
