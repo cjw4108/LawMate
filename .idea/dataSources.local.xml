@@ -24,5 +24,11 @@
       <user-name>prj01</user-name>
       <schema-mapping />
     </data-source>
+    <data-source name="@localhost" uuid="08632ef7-3c98-412b-b3ba-0d6e9d4c59b9">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="ORACLE" />
+      <secret-storage>master_key</secret-storage>
+      <auth-provider>ora-kerberos</auth-provider>
+      <schema-mapping />
+    </data-source>
   </component>
 </project>

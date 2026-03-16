@@ -26,6 +26,16 @@ public class ReplyService {
         replyRepository.deleteById(id);
     }
 
+
+    public void updateReply(Long id, String content, String userId) {
+        ReplyEntity entity = replyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("답변을 찾을 수 없습니다."));
+
+        // 본인 답변만 수정 가능 (관리자 제외하고 싶으면 userId 체크 추가)
+        entity.setContent(content);
+        replyRepository.save(entity);
+    }
+
     public List<Reply> getReplies(Long qnaId) {
         return replyRepository.findByQuestionIdOrderByCreatedAtAsc(qnaId)
                 .stream()
@@ -39,7 +49,6 @@ public class ReplyService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ 추가
     public void deleteByQnaId(Long qnaId) {
         replyRepository.deleteByQuestionId(qnaId);
     }

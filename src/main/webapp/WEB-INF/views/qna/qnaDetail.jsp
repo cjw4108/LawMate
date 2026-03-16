@@ -1,4 +1,10 @@
-jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+보내주신 JSP 코드 내의 자바스크립트 함수 정의와 호출부의 인자 불일치 문제를 해결하여 전체 코드를 다시 구성해 드립니다.
+
+핵심 수정 사항은 editReply 함수가 호출될 때 **내용(content)**을 직접 인자로 받도록 하고, 자바스크립트 내에서 이를 정상적으로 처리하도록 변경한 것입니다.
+
+## qnaDetail.jsp (전체 코드)
+Java
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
@@ -28,16 +34,11 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
                     <button id="favBtn"
                             class="btn btn-sm btn-outline-danger me-1"
                             onclick="toggleFavorite(${question.id})">
-
                         <i id="heartIcon"
                            class="bi ${isFavorite == true ? 'bi-heart-fill text-danger' : 'bi-heart'}">
                         </i>
-
-                        <span id="favoriteCount">
-                            ${question.favoriteCount}
-                        </span>
+                        <span id="favoriteCount">${question.favoriteCount}</span>
                     </button>
-
                     <button class="btn btn-sm btn-outline-primary"
                             onclick="shareQuestion(${question.id})">
                         <i class="bi bi-share"></i> 공유
@@ -46,7 +47,6 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
             </div>
 
             <%-- 답변 영역 --%>
-            <%-- 답변 영역 --%>
             <h5 class="fw-bold mb-3">답변 (${replyCount})</h5>
             <div id="answerList">
                 <c:choose>
@@ -54,18 +54,22 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
                         <c:forEach var="reply" items="${replies}">
                             <div class="border rounded p-3 mb-3">
                                 <div class="d-flex justify-content-between mb-2">
-                                        <%-- ✅ 수정: 관리자/전문가 구분 --%>
                                     <span class="fw-bold text-primary">
-                            ${reply.userId}
-                            (${reply.userId == 'admin' ? '관리자' : '전문가'})
-                        </span>
+                                        ${reply.userId}
+                                        (${reply.userId == 'admin' ? '관리자' : '전문가'})
+                                    </span>
                                     <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted small">
-                                <fmt:parseDate value="${reply.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="rDate" type="both" />
-                                <fmt:formatDate value="${rDate}" pattern="yyyy.MM.dd HH:mm" />
-                            </span>
-                                            <%-- ✅ 관리자만 삭제 버튼 보임 --%>
-                                        <c:if test="${sessionScope.loginUser.role == 'ROLE_ADMIN'}">
+                                        <span class="text-muted small">
+                                            <fmt:parseDate value="${reply.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="rDate" type="both" />
+                                            <fmt:formatDate value="${rDate}" pattern="yyyy.MM.dd HH:mm" />
+                                        </span>
+                                            <%-- 관리자 또는 승인된 변호사만 수정/삭제 버튼 보임 --%>
+                                        <c:if test="${sessionScope.loginUser.role == 'ROLE_ADMIN' or
+                                            (sessionScope.loginUser.role == 'ROLE_LAWYER' and
+                                            sessionScope.loginUser.lawyerStatus == 'APPROVED')}">
+                                            <%-- 수정: 내용을 인자로 직접 전달하도록 수정 --%>
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                    onclick="editReply(${reply.id}, '${reply.content.replace("'", "\\'")}')">수정</button>
                                             <button class="btn btn-sm btn-outline-danger"
                                                     onclick="deleteReply(${reply.id})">삭제</button>
                                         </c:if>
@@ -83,17 +87,20 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
                 </c:choose>
             </div>
 
-            <%-- ✅ 수정: 관리자/승인된 변호사만 답변 작성 가능 --%>
+            <%-- 관리자/승인된 변호사만 답변 작성 가능 --%>
             <c:if test="${sessionScope.loginUser.role == 'ROLE_ADMIN' or
-            (sessionScope.loginUser.role == 'ROLE_LAWYER' and sessionScope.loginUser.lawyerStatus == 'APPROVED')}">
+                (sessionScope.loginUser.role == 'ROLE_LAWYER' and
+                sessionScope.loginUser.lawyerStatus == 'APPROVED')}">
                 <h5 class="fw-bold mb-3 mt-4">답변 작성</h5>
                 <form action="/qna/reply/${question.id}" method="post">
                     <div class="input-group mb-3 shadow-sm">
-                        <textarea name="content" class="form-control" rows="2" placeholder="답변 내용을 입력해 주세요." required></textarea>
+                        <textarea name="content" class="form-control" rows="2"
+                                  placeholder="답변 내용을 입력해 주세요." required></textarea>
                         <button class="btn btn-dark px-4" type="submit">등록</button>
                     </div>
                 </form>
             </c:if>
+
             <%-- 돌아가기 --%>
             <div class="text-center mt-4">
                 <a href="/qna/list?sort=${sort}&keyword=${keyword}"
@@ -101,13 +108,43 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
                     <i class="bi bi-arrow-left"></i> 목록으로 돌아가기
                 </a>
             </div>
-
         </div>
     </div>
 </main>
 
 <script>
-    // ✅ 답변 삭제 함수
+    // 수정된 editReply 함수: ID와 기존 내용을 직접 받습니다.
+    function editReply(replyId, currentContent) {
+        const newContent = prompt("답변을 수정해주세요:", currentContent);
+
+        if (newContent === null) return; // 취소 클릭 시
+        if (newContent.trim() === '') {
+            alert("내용을 입력해 주세요.");
+            return;
+        }
+
+        fetch('/reply/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + replyId + '&content=' + encodeURIComponent(newContent)
+        })
+            .then(res => res.text())
+            .then(result => {
+                if (result === 'success') {
+                    alert("답변이 수정되었습니다.");
+                    location.reload();
+                } else if (result === 'fail_auth') {
+                    alert("수정 권한이 없습니다.");
+                } else {
+                    alert("수정 실패");
+                }
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                alert("수정 중 오류가 발생했습니다.");
+            });
+    }
+
     function deleteReply(replyId) {
         if(confirm("이 답변을 삭제하시겠습니까?")) {
             fetch('/reply/delete?id=' + replyId, { method: 'POST' })
@@ -116,6 +153,8 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
                     if(result === 'success') {
                         alert("답변이 삭제되었습니다.");
                         location.reload();
+                    } else if (result === 'fail_auth') {
+                        alert("삭제 권한이 없습니다.");
                     } else {
                         alert("삭제 실패");
                     }
@@ -123,7 +162,6 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
         }
     }
 
-    // 1. 신고 기능 (AJAX)
     function reportQuestion(id) {
         const reason = prompt("신고 사유를 입력해주세요:");
         if (!reason) return;
@@ -140,19 +178,16 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
                 }
             },
             error: function(xhr) {
-                console.log("에러 상태코드: " + xhr.status);
-                alert("서버 주소를 찾을 수 없습니다. (404 Error)");
+                alert("서버 오류가 발생했습니다.");
             }
         });
     }
 
-    // 2. 찜하기 토글 기능 (AJAX)
     function toggleFavorite(id) {
         $.ajax({
             url: '/qna/favorite/' + id,
             type: 'POST',
             success: function(data) {
-
                 if (data.status === 'login_required') {
                     alert("로그인이 필요한 기능입니다.");
                     location.href = '/login';
@@ -169,27 +204,16 @@ jsp<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding=
                     icon.classList.remove('bi-heart-fill', 'text-danger');
                     icon.classList.add('bi-heart');
                 }
-
                 countSpan.innerText = data.count;
             }
         });
     }
 
-    function updateHeaderCount(diff) {
-        const countBadge = document.getElementById('cartCount');
-        if(countBadge) {
-            let current = parseInt(countBadge.innerText) || 0;
-            countBadge.innerText = Math.max(0, current + diff);
-        }
-    }
-
     function shareQuestion(questionId) {
         const url = window.location.origin + "/qna/detail/" + questionId;
-        const title = document.title;
-
         if (navigator.share) {
             navigator.share({
-                title: title,
+                title: document.title,
                 text: "이 질문을 확인해보세요!",
                 url: url
             }).catch(err => console.log(err));
