@@ -1,11 +1,6 @@
-보내주신 JSP 코드 내의 자바스크립트 함수 정의와 호출부의 인자 불일치 문제를 해결하여 전체 코드를 다시 구성해 드립니다.
-
-핵심 수정 사항은 editReply 함수가 호출될 때 **내용(content)**을 직접 인자로 받도록 하고, 자바스크립트 내에서 이를 정상적으로 처리하도록 변경한 것입니다.
-
-## qnaDetail.jsp (전체 코드)
-Java
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 
@@ -56,20 +51,23 @@ Java
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="fw-bold text-primary">
                                         ${reply.userId}
-                                        (${reply.userId == 'admin' ? '관리자' : '전문가'})
+                                        (${reply.userId eq 'admin' ? '관리자' : '전문가'})
                                     </span>
                                     <div class="d-flex align-items-center gap-2">
                                         <span class="text-muted small">
                                             <fmt:parseDate value="${reply.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="rDate" type="both" />
                                             <fmt:formatDate value="${rDate}" pattern="yyyy.MM.dd HH:mm" />
                                         </span>
-                                            <%-- 관리자 또는 승인된 변호사만 수정/삭제 버튼 보임 --%>
-                                        <c:if test="${sessionScope.loginUser.role == 'ROLE_ADMIN' or
-                                            (sessionScope.loginUser.role == 'ROLE_LAWYER' and
-                                            sessionScope.loginUser.lawyerStatus == 'APPROVED')}">
-                                            <%-- 수정: 내용을 인자로 직접 전달하도록 수정 --%>
+
+                                            <%-- [핵심 권한 로직] --%>
+                                            <%-- 관리자이거나 (역할이 변호사이고 승인 상태이며 '본인'이 작성한 답변인 경우) --%>
+                                        <c:if test="${sessionScope.loginUser.role eq 'ROLE_ADMIN' or
+                                                     (sessionScope.loginUser.role eq 'ROLE_LAWYER' and
+                                                      sessionScope.loginUser.lawyerStatus eq 'APPROVED' and
+                                                      fn:trim(sessionScope.loginUser.userId) eq fn:trim(reply.userId))}">
+
                                             <button class="btn btn-sm btn-outline-primary"
-                                                    onclick="editReply(${reply.id}, '${reply.content.replace("'", "\\'")}')">수정</button>
+                                                    onclick="editReply(${reply.id}, `${fn:escapeXml(reply.content)}`)">수정</button>
                                             <button class="btn btn-sm btn-outline-danger"
                                                     onclick="deleteReply(${reply.id})">삭제</button>
                                         </c:if>
@@ -87,10 +85,10 @@ Java
                 </c:choose>
             </div>
 
-            <%-- 관리자/승인된 변호사만 답변 작성 가능 --%>
-            <c:if test="${sessionScope.loginUser.role == 'ROLE_ADMIN' or
-                (sessionScope.loginUser.role == 'ROLE_LAWYER' and
-                sessionScope.loginUser.lawyerStatus == 'APPROVED')}">
+            <%-- 답변 작성 영역 --%>
+            <c:if test="${sessionScope.loginUser.role eq 'ROLE_ADMIN' or
+                (sessionScope.loginUser.role eq 'ROLE_LAWYER' and
+                sessionScope.loginUser.lawyerStatus eq 'APPROVED')}">
                 <h5 class="fw-bold mb-3 mt-4">답변 작성</h5>
                 <form action="/qna/reply/${question.id}" method="post">
                     <div class="input-group mb-3 shadow-sm">
@@ -101,7 +99,6 @@ Java
                 </form>
             </c:if>
 
-            <%-- 돌아가기 --%>
             <div class="text-center mt-4">
                 <a href="/qna/list?sort=${sort}&keyword=${keyword}"
                    class="btn btn-outline-secondary">
@@ -113,11 +110,15 @@ Java
 </main>
 
 <script>
-    // 수정된 editReply 함수: ID와 기존 내용을 직접 받습니다.
     function editReply(replyId, currentContent) {
-        const newContent = prompt("답변을 수정해주세요:", currentContent);
+        // 백틱(`)으로 받은 content에서 혹시 모를 이스케이프 문자 복구
+        const txt = document.createElement("textarea");
+        txt.innerHTML = currentContent;
+        const decodedContent = txt.value;
 
-        if (newContent === null) return; // 취소 클릭 시
+        const newContent = prompt("답변을 수정해주세요:", decodedContent);
+
+        if (newContent === null) return;
         if (newContent.trim() === '') {
             alert("내용을 입력해 주세요.");
             return;
