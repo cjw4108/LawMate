@@ -14,12 +14,45 @@
             <h2 class="display-5 fw-bold mb-4" style="color: #2d465e;">어떤 법률 도움이 필요하신가요?</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-7">
-                    <div class="search-wrapper bg-white shadow-sm rounded-pill p-2 d-flex border">
-                        <input type="text" class="form-control border-0 px-4" placeholder="사건 키워드, 법률 문서를 검색해보세요.(2차 - AI기능 추가)" style="background: transparent; box-shadow: none;">
-                        <button class="btn btn-primary rounded-pill px-4"><i class="bi bi-search"></i></button>
-                    </div>
+                    <%-- index.jsp 검색창 부분 교체 --%>
+                    <form action="/search" method="get">
+                        <div class="search-wrapper bg-white shadow-sm rounded-pill p-2 d-flex border">
+                            <input type="text" name="q"
+                                   class="form-control border-0 px-4"
+                                   placeholder="사건 키워드, 법률 문서를 검색해보세요."
+                                   style="background: transparent; box-shadow: none;">
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
+
+            <%-- 검색 결과 표시 --%>
+            <c:if test="${not empty searchResults}">
+                <div class="container mt-4" data-aos="fade-up">
+                    <h5 class="fw-bold mb-3">"${query}" 검색 결과</h5>
+                    <div class="list-group">
+                        <c:forEach items="${searchResults}" var="result">
+                            <a href="/content/${result.ref_id}"
+                               class="list-group-item list-group-item-action py-3">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">${result.document}</span>
+                                    <span class="badge bg-secondary rounded-pill ms-2">${result.source}</span>
+                                </div>
+                                <small class="text-muted">유사도: ${result.distance}</small>
+                            </a>
+                        </c:forEach>
+                    </div>
+                </div>
+            </c:if>
+
+            <c:if test="${not empty searchError}">
+                <div class="container mt-3">
+                    <div class="alert alert-warning">${searchError}</div>
+                </div>
+            </c:if>
         </div>
     </section>
 

@@ -1,115 +1,194 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
+<head>
+    <jsp:include page="/WEB-INF/views/common/header.jsp" />
+    <link rel="stylesheet" href="/css/custom.css">
+    <style>
+        .result-card { transition: box-shadow 0.2s; border-left: 4px solid transparent; }
+        .result-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+        .source-badge-lawyer    { border-color: #0d83fd; }
+        .source-badge-documents { border-color: #198754; }
+        .source-badge-law_content { border-color: #fd7e14; }
+        .source-badge-legal_terms { border-color: #6f42c1; }
+        .highlight { background: #fff3cd; border-radius: 3px; padding: 0 2px; }
+    </style>
+</head>
+<body class="index-page">
+<main class="main" style="padding-top: 100px;">
 
-<jsp:include page="/WEB-INF/views/common/header.jsp" />
-
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
-</style>
-
-<main class="main">
-    <section id="hero" class="hero section" data-aos="fade-up" data-aos-delay="100">
+    <%-- 검색창 --%>
+    <section class="py-4 bg-light border-bottom">
         <div class="container">
-            <!-- 상단 제목 -->
-            <div class="mb-5" data-aos="fade-up" data-aos-delay="200">
-                <h2 class="mb-4" style="color: #4169E1;">법률정보 플랫폼</h2>
-            </div>
-
-            <!-- 검색창 -->
-            <div class="mb-5" data-aos="fade-up" data-aos-delay="300">
-                <div class="input-group" style="max-width: 700px; margin: 0 auto;">
-                    <input type="text" class="form-control form-control-lg" placeholder="양육권" style="padding: 15px 20px;">
-                    <button class="btn btn-primary px-4" type="button" style="background-color: #4169E1; border-color: #4169E1;">검색</button>
+            <form action="/search" method="get">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="search-wrapper bg-white shadow-sm rounded-pill p-2 d-flex border">
+                            <input type="text" name="q" value="${query}"
+                                   class="form-control border-0 px-4"
+                                   placeholder="사건 키워드, 법률 문서를 검색해보세요."
+                                   style="background: transparent; box-shadow: none;" autofocus>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
+        </div>
+    </section>
 
-            <!-- 검색 결과 헤더 -->
-            <div class="mb-4" data-aos="fade-up" data-aos-delay="400">
-                <h3>'양육권' 검색 결과</h3>
-                <p class="text-muted">총 23건의 문서를 찾았습니다</p>
-            </div>
-
-            <!-- 카테고리 탭 -->
-            <div class="mb-4" data-aos="fade-up" data-aos-delay="500">
-                <div class="d-flex gap-2 flex-wrap">
-                    <button class="btn btn-primary rounded-pill px-4">전체 (23)</button>
-                    <button class="btn btn-outline-secondary rounded-pill px-4">법률정보 (15)</button>
-                    <button class="btn btn-outline-secondary rounded-pill px-4">판례 (8)</button>
-                    <button class="btn btn-outline-secondary rounded-pill px-4">용어 (5)</button>
-                    <button class="btn btn-outline-secondary rounded-pill px-4 ms-auto">관련도순</button>
-                </div>
-            </div>
-
-            <!-- 검색 결과 리스트 -->
-            <div class="list-group mb-4" data-aos="fade-up" data-aos-delay="600">
-                <!-- 항목 1 -->
-                <a href="#" class="list-group-item list-group-item-action p-4 mb-3 border rounded">
-                    <div class="mb-2">
-                        <span class="badge bg-primary me-2">법률정보</span>
-                        <span class="text-muted">/ 이혼/가족</span>
-                    </div>
-                    <h5 class="mb-2">양육권과 친권의 차이점 완벽 이해</h5>
-                    <p class="mb-3 text-muted">양육권은 자녀를 직접 키우고 보호할 권리이며, 친권은 법적 권리와 의무를 포함합니다.</p>
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <span class="text-primary text-decoration-none">#양육권</span>
-                        <span class="text-muted small">조회 15,234 | 2026.01.20</span>
-                    </div>
+    <%-- 필터 탭 --%>
+    <section class="py-3 bg-white border-bottom">
+        <div class="container">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
+                <span class="text-muted me-2" style="font-size:14px;">필터:</span>
+                <a href="/search?q=${query}" class="btn btn-sm ${empty sourceFilter ? 'btn-dark' : 'btn-outline-secondary'} rounded-pill">전체</a>
+                <a href="/search?q=${query}&source=legal_terms" class="btn btn-sm ${sourceFilter == 'legal_terms' ? 'btn-dark' : 'btn-outline-secondary'} rounded-pill">
+                    <span style="color:#6f42c1;">●</span> 법률 용어
                 </a>
-
-                <!-- 항목 2 -->
-                <a href="#" class="list-group-item list-group-item-action p-4 mb-3 border rounded">
-                    <div class="mb-2">
-                        <span class="badge bg-primary me-2">법률정보</span>
-                        <span class="text-muted">/ 이혼/가족</span>
-                    </div>
-                    <h5 class="mb-2">양육권 결정 기준과 변경 절차</h5>
-                    <p class="mb-3 text-muted">법원이 양육권을 결정할 때는 자녀의 복리를 최우선으로 고려합니다.</p>
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <span class="text-primary text-decoration-none">#양육권</span>
-                        <span class="text-muted small">조회 11,892 | 2026.01.18</span>
-                    </div>
+                <a href="/search?q=${query}&source=law_content" class="btn btn-sm ${sourceFilter == 'law_content' ? 'btn-dark' : 'btn-outline-secondary'} rounded-pill">
+                    <span style="color:#fd7e14;">●</span> 법률 가이드
                 </a>
-
-                <!-- 항목 3 -->
-                <a href="#" class="list-group-item list-group-item-action p-4 mb-3 border rounded">
-                    <div class="mb-2">
-                        <span class="badge me-2" style="background-color: #9370DB; color: white;">판례</span>
-                        <span class="text-muted">/ 가사</span>
-                    </div>
-                    <h5 class="mb-2">대법원 2023다98765 - 양육권 변경 청구</h5>
-                    <p class="mb-3 text-muted">양육 환경 변경 시 자녀 복리를 위해 양육권 변경이 인정될 수 있습니다.</p>
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <span class="text-primary text-decoration-none">#양육권</span>
-                        <span class="text-muted small">선고일 2023.05.15</span>
-                    </div>
+                <a href="/search?q=${query}&source=documents" class="btn btn-sm ${sourceFilter == 'documents' ? 'btn-dark' : 'btn-outline-secondary'} rounded-pill">
+                    <span style="color:#198754;">●</span> 서류 양식
                 </a>
-
-                <!-- 항목 4 -->
-                <a href="#" class="list-group-item list-group-item-action p-4 mb-3 border rounded">
-                    <div class="mb-2">
-                        <span class="badge me-2" style="background-color: #20B2AA; color: white;">용어</span>
-                        <span class="text-muted">/ 법률용어</span>
-                    </div>
-                    <h5 class="mb-2">양육권 (Custody)</h5>
-                    <p class="mb-3 text-muted">미성년 자녀를 직접 키우고 보호할 권리입니다.</p>
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <span class="text-primary text-decoration-none">#양육권</span>
-                        <span class="text-muted small">백과사전</span>
-                    </div>
+                <a href="/search?q=${query}&source=lawyer" class="btn btn-sm ${sourceFilter == 'lawyer' ? 'btn-dark' : 'btn-outline-secondary'} rounded-pill">
+                    <span style="color:#0d83fd;">●</span> 변호사
                 </a>
-            </div>
-
-            <!-- 더보기 버튼 -->
-            <div class="text-center mb-5" data-aos="fade-up" data-aos-delay="700">
-                <button class="btn btn-outline-secondary rounded-pill px-5">더보기</button>
             </div>
         </div>
     </section>
-</main>
 
+    <%-- 결과 본문 --%>
+    <section class="py-5">
+        <div class="container">
+
+            <c:choose>
+                <%-- 검색어 없음 --%>
+                <c:when test="${empty query}">
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-search fs-1 d-block mb-3"></i>
+                        검색어를 입력해주세요.
+                    </div>
+                </c:when>
+
+                <%-- 오류 --%>
+                <c:when test="${not empty searchError}">
+                    <div class="alert alert-warning">${searchError}</div>
+                </c:when>
+
+                <%-- 결과 없음 --%>
+                <c:when test="${empty searchResults}">
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-emoji-frown fs-1 d-block mb-3"></i>
+                        <strong>"${query}"</strong>에 대한 검색 결과가 없습니다.<br>
+                        <span style="font-size:14px;">다른 키워드로 검색해보세요.</span>
+                    </div>
+                </c:when>
+
+                <%-- 결과 있음 --%>
+                <c:otherwise>
+                    <p class="text-muted mb-4" style="font-size:14px;">
+                        <strong>"${query}"</strong> 검색 결과 ${resultCount}건
+                    </p>
+                    <div class="row g-3">
+                        <c:forEach items="${searchResults}" var="result" varStatus="st">
+                            <div class="col-12">
+                                <div class="result-card card border rounded-3 p-4 source-badge-${result.source}">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div style="flex:1; min-width:0;">
+
+                                                <%-- 출처 배지 --%>
+                                            <c:choose>
+                                                <c:when test="${result.source == 'lawyer'}">
+                                                    <span class="badge rounded-pill mb-2" style="background:#e8f3ff; color:#0d83fd;">변호사</span>
+                                                </c:when>
+                                                <c:when test="${result.source == 'documents'}">
+                                                    <span class="badge rounded-pill mb-2" style="background:#e9f7ef; color:#198754;">서류 양식</span>
+                                                </c:when>
+                                                <c:when test="${result.source == 'law_content'}">
+                                                    <span class="badge rounded-pill mb-2" style="background:#fff3e0; color:#fd7e14;">법률 가이드</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge rounded-pill mb-2" style="background:#f0ebff; color:#6f42c1;">법률 용어</span>
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                                <%-- 제목 --%>
+                                            <h6 class="fw-bold mb-1" style="font-size:16px;">
+                                                    ${result.title}
+                                            </h6>
+
+                                                <%-- 내용 미리보기 --%>
+                                            <p class="text-muted mb-2" style="font-size:14px; line-height:1.6;">
+                                                    ${result.preview}
+                                            </p>
+
+                                                <%-- 유사도 --%>
+                                            <small class="text-muted">
+                                                유사도
+                                                <span class="fw-bold" style="color:#0d83fd;">
+                                                    <fmt:formatNumber value="${(1 - result.distance) * 100}" maxFractionDigits="1"/>%
+                                                </span>
+                                            </small>
+                                        </div>
+
+                                            <%-- 상세보기 버튼 --%>
+                                        <div class="ms-3 flex-shrink-0">
+                                            <c:choose>
+                                                <c:when test="${result.source == 'lawyer'}">
+                                                    <%-- TB_LAWYER → LAWYER_ID --%>
+                                                    <a href="/lawyer/detail/${result['ref_id']}" class="btn btn-outline-primary btn-sm rounded-pill">상세보기</a>
+                                                </c:when>
+                                                <c:when test="${result.source == 'documents'}">
+                                                    <button
+                                                            onclick="event.stopPropagation(); handleDownload(${result['ref_id']})"
+                                                            class="btn btn-outline-success btn-sm rounded-pill">
+                                                        다운로드
+                                                    </button>
+                                                </c:when>
+                                                <c:when test="${result.source == 'law_content'}">
+                                                    <%-- LAW_CONTENT → CONTENT_ID --%>
+                                                    <a href="/content/${result['ref_id']}" class="btn btn-outline-warning btn-sm rounded-pill">상세보기</a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <%-- LEGAL_TERMS → ID --%>
+                                                    <a href="/legal-terms/${result['ref_id']}" class="btn btn-outline-secondary btn-sm rounded-pill">상세보기</a>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+
+        </div>
+    </section>
+</main>
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
+<script>
+    var isLoggedIn = ${not empty sessionScope.loginUser ? 'true' : 'false'};
+
+    function downloadFile(id) {
+        window.location.href = '/docs/download/' + id;
+    }
+
+    function handleDownload(id) {
+        if (!isLoggedIn) {
+            if (confirm('로그인이 필요합니다.\n로그인 페이지로 이동하시겠습니까?')) {
+                location.href = '/login';
+            }
+            return;
+        }
+        downloadFile(id);
+    }
+</script>
+</body>
 </html>

@@ -12,7 +12,7 @@ import fitz
 app = FastAPI()
 
 
-raw_api_key = "AIzaSyCP7BAdyu721nncv763cEzq1rHno5RDmC8"
+raw_api_key = "AIzaSyDU3Ij6EMTpXt3nODrrfxLDFlQskFGiJko" # 👈 여기에 실제 키를 정확히 입력하세요
 api_key = raw_api_key.strip().replace("\n", "").replace("\r", "")
 client = genai.Client(api_key=api_key)
 
@@ -41,7 +41,7 @@ async def analyze_file(file: UploadFile = File(...)):
         elif ext == 'txt':
             text = file_bytes.decode('utf-8', errors='ignore')
             response = client.models.generate_content(
-                model="gemini-3.1-flash-lite",
+                model="gemini-3-flash-preview",
                 contents=[f"{prompt}\n\n내용:\n{text}"]
             )
         else:
