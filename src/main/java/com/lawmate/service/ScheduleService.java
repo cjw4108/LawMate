@@ -18,7 +18,7 @@ public class ScheduleService {
     @Transactional
     public Long save(ScheduleRequestDto dto) {
         scheduleMapper.insertSchedule(dto);
-        return scheduleMapper.getLastInsertId();
+        return dto.getScheduleId();
     }
 
     public List<ScheduleResponseDto> findAll(String userId) {

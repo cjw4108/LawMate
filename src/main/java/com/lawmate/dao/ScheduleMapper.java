@@ -10,6 +10,5 @@ import java.util.List;
 @Mapper
 public interface ScheduleMapper {
     void insertSchedule(ScheduleRequestDto dto);
-    Long getLastInsertId();
     List<ScheduleResponseDto> selectByUserId(String userId);
 }
