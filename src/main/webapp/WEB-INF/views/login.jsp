@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -36,6 +38,10 @@
         .login-links a:hover {
             text-decoration: underline;
         }
+        /* 혹시 몰라 추가하는 안전장치: 내용이 비어있으면 박스 숨김 */
+        .alert:empty {
+            display: none;
+        }
     </style>
 </head>
 
@@ -47,7 +53,8 @@
 
                 <h2 class="login-title">로그인</h2>
 
-                <c:if test="${not empty requestScope.error}">
+                <%-- 에러 메시지가 존재하고, 공백을 제거했을 때 길이가 0보다 클 때만 출력 --%>
+                <c:if test="${not empty requestScope.error and fn:length(fn:trim(requestScope.error)) > 0}">
                     <div class="alert alert-danger text-center">
                             ${requestScope.error}
                     </div>
