@@ -1,0 +1,16 @@
+package com.lawmate.dto;
+
+import lombok.Data;
+
+@Data
+public class ScheduleResponseDto {
+    private Long scheduleId;
+    private String title;
+    private String content;
+    private String startTime;
+    private String endTime;
+    private String clientName;
+    private String status;
+    private String color;
+    private String allDay;
+}

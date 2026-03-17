@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -73,67 +75,67 @@
 </main>
 
 <script>
-    // 컨트롤러에서 넘어온 데이터
-    let socketServer = "${socketServer}";
     let roomId = "${roomId}";
-    let userId = "${userId}";
-    if(!userId) {
-        userId = "${sessionScope.loginUser.userId}";
-    }
-    let chatWith = "${chatWith}"; // "LAWYER"가 넘어옴
-    let wsocket = null;
+    let userId = "${userId}" || "${sessionScope.loginUser.userId}";
+    let userType = "${userType}"; // 'USER' 또는 'LAWYER'
+    let stompClient = null;
 
     $(document).ready(function(){
-        connect();
+        connect(); // 실행 시 연결
         $("#sndBtn").click(sendMsg);
         $("#msg").keyup(e => { if(e.keyCode == 13) sendMsg(); });
     });
 
-    function connect(){
-        // roomId를 쿼리스트링으로 전달하여 핸들러의 afterConnectionEstablished에서 인식하게 함
-        wsocket = new WebSocket(socketServer + "?roomId=" + roomId);
-        wsocket.onmessage = evt => receiveMsg(evt.data);
+    function connect() {
+        // 1. Config에서 설정한 엔드포인트(/ws-stomp)로 연결
+        var socket = new SockJS('/ws-stomp');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('연결 성공: ' + frame);
+
+            // 2. 구독(Subscribe): RedisSubscriber가 쏴주는 경로를 감시합니다.
+            stompClient.subscribe('/sub/chat/room/' + roomId, function (response) {
+                var msgObj = JSON.parse(response.body);
+                receiveMsg(msgObj);
+            });
+        }, function(error) {
+            console.error('STOMP 연결 에러: ' + error);
+        });
     }
 
-    function sendMsg(){
+    function sendMsg() {
         var msg = $("#msg").val();
-        if(msg.trim().length == 0) return;
+        if(msg.trim().length == 0 || !stompClient) return;
 
-        // 화면에 내 메시지 즉시 표시 (기존 로직 활용)
-        renderBubble({ senderType: "USER", message: msg, senderName: "나" }, true);
-
-        // 서버로 전송 시 chatWith 정보를 포함
+        // 3. 발행(Publish): StompChatController의 @MessageMapping으로 전송
         var sendData = {
-            roomId : roomId,
-            userId : userId,
-            message : msg,
-            chatWith : chatWith // 중요: 핸들러가 AI인지 변호사인지 판단하는 기준
+            roomId: roomId,
+            senderId: userId,
+            message: msg,
+            senderType: userType
         };
 
-        wsocket.send(JSON.stringify(sendData));
+        stompClient.send("/pub/chat/message", {}, JSON.stringify(sendData));
         $("#msg").val("");
     }
 
-    function receiveMsg(data){
-        console.log("수신 데이터:", data);
-        var msgObj = JSON.parse(data);
+    function receiveMsg(msgObj) {
+        // 내가 보낸 메시지인지 확인 (본인 아이디와 비교)
+        let isMe = (msgObj.senderId === userId);
 
-        // [해결 포인트]
-        // 내가 보낸 메시지(USER)는 이미 sendMsg()에서 화면에 그렸으므로,
-        // 서버에서 돌아온 내 메시지는 무시하고 상대방(AI 또는 LAWYER)의 메시지만 화면에 출력합니다.
-        if(msgObj.senderType === "USER") {
-            return; // 내가 보낸 거라면 함수 종료 (두 번 그려지는 것 방지)
-        }
-
-        // 아래는 기존의 메시지 그리는 로직 유지...
-        renderBubble(msgObj, false);
+        // 화면에 그리기
+        renderBubble(msgObj, isMe);
     }
 
     function renderBubble(msgObj, isMe) {
         var align = isMe ? "text-end" : "text-start";
         var bgColor = isMe ? "#007bff" : "#f1f0f0";
         var textColor = isMe ? "#ffffff" : "#000000";
-        var nameTag = isMe ? "" : '<div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold;">' + msgObj.senderName + '</div>';
+
+        // 상대방 이름 표시 (내가 아닐 때만)
+        var senderName = msgObj.senderName || (isMe ? "" : "상대방");
+        var nameTag = isMe ? "" : '<div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold;">' + senderName + '</div>';
 
         var bubble =
             '<div class="mb-3 ' + align + '">' +

@@ -38,6 +38,7 @@ dependencies {
     implementation("com.oracle.database.jdbc:ojdbc11")
     implementation("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
 tasks.test {
