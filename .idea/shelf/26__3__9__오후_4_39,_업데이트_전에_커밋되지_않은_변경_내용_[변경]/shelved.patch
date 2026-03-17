@@ -1,0 +1,18 @@
+Index: src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>spring.mvc.view.prefix=/WEB-INF/views/\r\nspring.mvc.view.suffix=.jsp\r\nserver.port=8080\r\nserver.servlet.jsp.init-parameters.development=true\r\n\r\nspring.datasource.driver-class-name=oracle.jdbc.OracleDriver\r\nspring.datasource.username=prj01\r\nspring.datasource.password=1111\r\nspring.datasource.url=jdbc:oracle:thin:@110.93.189.231:1522/XE\r\n\r\nmybatis.configuration.map-underscore-to-camel-case=true\r\nmybatis.mapper-locations=classpath:mapper/*.xml\r\nmybatis.type-aliases-package=com.lawmate.dto\r\n\r\nspring.servlet.multipart.max-file-size=10MB\r\nspring.servlet.multipart.max-request-size=10MB\r\nspring.mvc.format.date=yyyy-MM-dd\r\nfile.upload-dir=file:src/main/resources/static/uploads/\r\n// gemini.api.key=AIzaSyAwwTFwl4BUBIR3MNaqr590_KZ5pgLOEpc
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+--- a/src/main/resources/application.properties	(revision bc82e9fce627bf62bdcd7d52f7321b196cceccdd)
++++ b/src/main/resources/application.properties	(date 1773038840698)
+@@ -16,4 +16,4 @@
+ spring.servlet.multipart.max-request-size=10MB
+ spring.mvc.format.date=yyyy-MM-dd
+ file.upload-dir=file:src/main/resources/static/uploads/
+-// gemini.api.key=AIzaSyAwwTFwl4BUBIR3MNaqr590_KZ5pgLOEpc
+\ No newline at end of file
++ gemini.api.key=AIzaSyAwwTFwl4BUBIR3MNaqr590_KZ5pgLOEpc
+\ No newline at end of file
