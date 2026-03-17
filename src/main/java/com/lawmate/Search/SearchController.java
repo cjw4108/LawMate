@@ -31,7 +31,7 @@ public class SearchController {
 
         if (!query.isBlank()) {
             try {
-                String url = "http://localhost:8000/search?q={q}&k=10"
+                String url = "http://localhost:8001/search?q={q}&k=10"
                         + (source.isBlank() ? "" : "&source=" + source);
 
                 ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class, query);
