@@ -1,5 +1,6 @@
 package com.lawmate.service;
 
+import com.lawmate.Chatting.ChatMapper;
 import com.lawmate.dto.LawyerDTO;
 import com.lawmate.dao.LawyerDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,23 @@ public class LawyerService {
     @Autowired(required = false)
     private LawyerDAO lawyerDAO;
 
+    @Autowired // 2. 채팅 상태 확인을 위해 ChatMapper 주입
+    private ChatMapper chatMapper;
+
     public List<LawyerDTO> getLawyerList(LawyerDTO dto) {
-        // 기본값 처리
         if (dto.getPageNo() <= 0) dto.setPageNo(1);
         if (dto.getPageSize() <= 0) dto.setPageSize(10);
-        return lawyerDAO.selectLawyerList(dto);
+
+        List<LawyerDTO> list = lawyerDAO.selectLawyerList(dto);
+
+        if (list != null) {
+            for (LawyerDTO lawyer : list) {
+                // lawyerId(고유번호)를 사용하여 활성 상담 수 조회
+                int activeCount = chatMapper.countActiveConsultations(lawyer.getLawyerId() + "");
+                lawyer.setConsulting(activeCount > 0);
+            }
+        }
+        return list;
     }
 
     public int getLawyerCount(LawyerDTO dto) {

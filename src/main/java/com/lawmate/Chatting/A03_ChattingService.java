@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @Service
 public class A03_ChattingService {
 
@@ -37,22 +38,24 @@ public class A03_ChattingService {
     /**
      * 1. 방 생성 또는 기존 방 조회 (자동 생성 로직 추가)
      */
-    @Transactional
-    public String getOrCreateRoom(String userId, String lawyerId, String chatWith) {
-        // 1. 대상 아이디 결정
-        String targetId = "AI".equals(chatWith) ? "GEMINI_AI" : lawyerId;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(A03_ChattingService.class);
 
-        // 2. 기존 방이 있는지 확인
-        String existingRoomId = chatMapper.findRoomIdByParticipants(userId, targetId);
+    public String getOrCreateRoom(String userId, String lawyerId) {
+        // 1. 기존 방이 있는지 확인 (위에서 수정한 쿼리 덕분에 숫자/문자 둘 다 대응 가능)
+        String roomId = chatMapper.findRoom(userId, lawyerId);
 
-        if (existingRoomId != null) {
-            return existingRoomId; // 기존 방 리턴
+        if (roomId != null) {
+            return roomId;
         }
 
-        // 3. 없으면 새로 생성
-        String newRoomId = java.util.UUID.randomUUID().toString();
-        chatMapper.insertChatRoom(newRoomId, userId, targetId);
-        return newRoomId;
+        // 2. 방이 없을 경우 생성하기 전에 '진짜 이메일 아이디'를 한 번 조회해옵니다.
+        // (만약 lawyerId가 '16' 같은 숫자라면 이메일 아이디로 변환하는 과정)
+        String realLawyerId = chatMapper.getLawyerEmailId(lawyerId);
+
+        roomId = UUID.randomUUID().toString();
+        chatMapper.createChatRoom(roomId, userId, realLawyerId); // 반드시 이메일 아이디로 저장!
+
+        return roomId;
     }
 
     /**
@@ -252,4 +255,52 @@ public class A03_ChattingService {
         }
         // catch 블록 밖에도 리턴이 없으면 에러가 날 수 있으므로 최종 리턴을 보장합니다.
     }
+
+    @Transactional
+    public boolean acceptConsultation(String roomId, String lawyerId) {
+        // 1. 방 상태 업데이트 (성공하면 1, 실패하면 0 반환됨)
+        int roomResult = chatMapper.updateRoomStatus(roomId, "ONGOING");
+
+        // 2. 변호사 상태 업데이트
+        String realLawyerId = chatMapper.getLawyerEmailId(lawyerId);
+        chatMapper.updateLawyerStatus(realLawyerId, "상담중");
+
+        // 방 업데이트가 성공(1)했다면 true 반환
+        return roomResult > 0;
+    }
+
+    public List<Map<String, Object>> getLawyerChatList(String lawyerId) {
+        System.out.println("🔍 [목록 조회] 변호사 ID: " + lawyerId + "의 상담 리스트를 요청합니다.");
+
+        // Mapper를 통해 DB에서 데이터를 가져옵니다.
+        List<Map<String, Object>> chatList = chatMapper.getLawyerChatList(lawyerId);
+
+        // 데이터 가공: 메시지가 전혀 없는 방의 경우 기본 문구를 넣어줍니다.
+        if (chatList != null && !chatList.isEmpty()) {
+            for (Map<String, Object> chat : chatList) {
+                if (chat.get("lastMessage") == null) {
+                    chat.put("lastMessage", "새로운 상담 요청이 도착했습니다.");
+                }
+            }
+            System.out.println("✅ [조회 완료] 총 " + chatList.size() + "건의 목록을 반환합니다.");
+        } else {
+            System.out.println("ℹ️ [조회 결과] 현재 진행 중인 상담이 없습니다.");
+        }
+
+        return chatList;
+    }
+
+    @Transactional
+    public void closeChat(String roomId, String lawyerId) {
+        // 1. CHAT_ROOM 상태를 'CLOSED'로 변경
+        chatMapper.updateRoomStatus(roomId, "CLOSED");
+
+        // 2. TB_LAWYER 상태를 'ACTIVE'로 복구
+        String realLawyerId = chatMapper.getLawyerEmailId(lawyerId);
+        chatMapper.updateLawyerStatus(realLawyerId, "ACTIVE");
+
+        log.info("상담 종료: 방번호 {}, 변호사 {} 상태를 'ACTIVE'로 복구", roomId, realLawyerId);
+    }
+
+
 }

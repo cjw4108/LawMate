@@ -53,6 +53,7 @@
         <select name="status">
             <option value="">-- 상태 전체 --</option>
             <option value="ACTIVE"   <c:if test="${searchDTO.status == 'ACTIVE'}">selected</c:if>>활성</option>
+            <option value="상담중" <c:if test="${searchDTO.status == '상담중'}">selected</c:if>>상담중</option>
             <option value="INACTIVE" <c:if test="${searchDTO.status == 'INACTIVE'}">selected</c:if>>비활성</option>
         </select>
         <input type="hidden" name="pageNo"   value="1"/>
@@ -96,9 +97,13 @@
                         <td>${lawyer.phone}</td>
                         <td><fmt:formatDate value="${lawyer.admissionDate}" pattern="yyyy-MM-dd"/></td>
                         <td>
+
                             <c:choose>
                                 <c:when test="${lawyer.status == 'ACTIVE'}">
                                     <span class="badge-active">활성</span>
+                                </c:when>
+                                <c:when test="${lawyer.status == '상담중'}">
+                                    <span class="badge-active" style="background: #fd7e14;">상담중</span>
                                 </c:when>
                                 <c:otherwise>
                                     <span class="badge-inactive">비활성</span>
@@ -106,8 +111,12 @@
                             </c:choose>
                         </td>
                         <td>
+                            <c:if test="${lawyer.status == 'ACTIVE' && loginUser.role != 'ROLE_LAWYER' && loginUser.role != 'ROLE_ADMIN'}">
+                                <a href="/consult/apply?lawyerId=${lawyer.lawyerId}" class="btn btn-success" style="font-size:12px;">상담 신청</a>
+                            </c:if>
                             <c:choose>
                                 <c:when test="${loginUser.role eq 'ROLE_LAWYER'}">
+
                                     <c:choose>
                                         <c:when test="${loginUser.email eq lawyer.email}">
                                             <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary" style="font-size:12px;">수정</a>

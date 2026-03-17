@@ -23,6 +23,8 @@ public class LawyerDTO {
     private Date createdAt;          // 등록일시
     private Date updatedAt;          // 수정일시
 
+    private boolean isConsulting;
+
     // 검색용 추가 필드
     private String searchKeyword;    // 검색 키워드
     private int pageNo;              // 페이지 번호
@@ -94,6 +96,9 @@ public class LawyerDTO {
 
     public int getBlockSize() { return blockSize; }
     public void setBlockSize(int blockSize) { this.blockSize = blockSize; }
+
+    public boolean isConsulting() { return isConsulting; }
+    public void setConsulting(boolean consulting) { isConsulting = consulting; }
 
     @Override
     public String toString() {
