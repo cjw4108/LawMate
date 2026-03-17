@@ -41,21 +41,26 @@ public class A03_ChattingService {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(A03_ChattingService.class);
 
     public String getOrCreateRoom(String userId, String lawyerId) {
-        // 1. 기존 방이 있는지 확인 (위에서 수정한 쿼리 덕분에 숫자/문자 둘 다 대응 가능)
+        // 1. 여기서 lawyerId는 컨트롤러에서 보낸 "GEMINI_AI"여야 합니다.
+        log.info("로그: findRoom 호출 직전 - userId={}, lawyerId={}", userId, lawyerId);
+
         String roomId = chatMapper.findRoom(userId, lawyerId);
 
-        if (roomId != null) {
+        if (roomId != null && !roomId.isEmpty()) {
+            log.info("로그: 방 찾기 성공! roomId={}", roomId);
             return roomId;
         }
 
-        // 2. 방이 없을 경우 생성하기 전에 '진짜 이메일 아이디'를 한 번 조회해옵니다.
-        // (만약 lawyerId가 '16' 같은 숫자라면 이메일 아이디로 변환하는 과정)
-        String realLawyerId = chatMapper.getLawyerEmailId(lawyerId);
+        log.warn("로그: 방 찾기 실패. 새로 생성합니다.");
 
-        roomId = UUID.randomUUID().toString();
-        chatMapper.createChatRoom(roomId, userId, realLawyerId); // 반드시 이메일 아이디로 저장!
+        // 2. 여기서만 변환을 수행해야 합니다.
+        String realLawyerId = "GEMINI_AI".equals(lawyerId) ? "GEMINI_AI" : chatMapper.getLawyerEmailId(lawyerId);
+        if (realLawyerId == null) realLawyerId = lawyerId;
 
-        return roomId;
+        String newRoomId = UUID.randomUUID().toString();
+        chatMapper.createChatRoom(newRoomId, userId, realLawyerId);
+
+        return newRoomId;
     }
 
     /**
@@ -302,5 +307,9 @@ public class A03_ChattingService {
         log.info("상담 종료: 방번호 {}, 변호사 {} 상태를 'ACTIVE'로 복구", roomId, realLawyerId);
     }
 
+    public String findRoom(String userId, String lawyerId) {
+        // 이미 주입된 chatMapper를 사용하여 DB를 조회합니다.
+        return chatMapper.findRoom(userId, lawyerId);
+    }
 
 }

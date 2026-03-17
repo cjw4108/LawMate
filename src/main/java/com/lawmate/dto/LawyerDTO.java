@@ -22,7 +22,7 @@ public class LawyerDTO {
     private Date admissionDate;      // 변호사 등록일
     private Date createdAt;          // 등록일시
     private Date updatedAt;          // 수정일시
-
+    private String existingRoomId;
     private boolean isConsulting;
 
     // 검색용 추가 필드
@@ -99,6 +99,14 @@ public class LawyerDTO {
 
     public boolean isConsulting() { return isConsulting; }
     public void setConsulting(boolean consulting) { isConsulting = consulting; }
+
+    public String getExistingRoomId() {
+        return existingRoomId;
+    }
+
+    public void setExistingRoomId(String existingRoomId) {
+        this.existingRoomId = existingRoomId;
+    }
 
     @Override
     public String toString() {

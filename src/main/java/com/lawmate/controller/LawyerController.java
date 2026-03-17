@@ -1,7 +1,10 @@
 package com.lawmate.controller;
 
+import com.lawmate.Chatting.A03_ChattingService;
 import com.lawmate.dto.LawyerDTO;
+import com.lawmate.dto.UserDTO;
 import com.lawmate.service.LawyerService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,18 +23,36 @@ public class LawyerController {
     @Autowired(required = false)
     private LawyerService lawyerService;
 
+    @Autowired
+    private A03_ChattingService chattingService;
+
     /**
      * 변호사 목록 조회
      * GET /lawyer/list
      */
     @GetMapping("/list")
-    public String lawyerList(LawyerDTO dto, Model model) {
+    public String lawyerList(LawyerDTO dto, Model model, HttpSession session) {
         if (dto.getPageNo() <= 0) dto.setPageNo(1);
         if (dto.getPageSize() <= 0) dto.setPageSize(10);
         if (dto.getBlockSize() <= 0) dto.setBlockSize(5);
 //        System.out.println("# process 11 #");
         int totalCount = lawyerService.getLawyerCount(dto);
         List<LawyerDTO> lawyerList = lawyerService.getLawyerList(dto);
+
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser != null) {
+            String userId = loginUser.getUserId();
+            for (LawyerDTO lawyer : lawyerList) {
+                if (lawyer.getEmail() != null) {
+                    // 이메일에서 ID만 추출 (예: lawyer123)
+                    String lawyerEmailId = lawyer.getEmail().split("@")[0];
+                    // 기존에 생성된 방 ID가 있는지 조회
+                    String existingRoomId = chattingService.findRoom(userId, lawyerEmailId);
+                    // DTO에 담아줍니다 (JSP에서 사용)
+                    lawyer.setExistingRoomId(existingRoomId);
+                }
+            }
+        }
 
         // 페이징 계산
         int totalPages = (int) Math.ceil((double) totalCount / dto.getPageSize());

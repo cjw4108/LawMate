@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     Object loginUser = session.getAttribute("loginUser");
 
@@ -111,37 +112,47 @@
                             </c:choose>
                         </td>
                         <td>
-                            <c:if test="${lawyer.status == 'ACTIVE' && loginUser.role != 'ROLE_LAWYER' && loginUser.role != 'ROLE_ADMIN'}">
-                                <a href="/consult/apply?lawyerId=${lawyer.lawyerId}" class="btn btn-success" style="font-size:12px;">상담 신청</a>
+                                <%-- 1. [상담 재개/신청 버튼] 일반 사용자(의뢰인) 전용 로직 --%>
+                            <c:if test="${loginUser.role != 'ROLE_LAWYER' && loginUser.role != 'ROLE_ADMIN'}">
+                                <c:choose>
+                                    <%-- 이미 이 변호사와 생성된 방 ID가 있는 경우 (상태 불문 우선 표시) --%>
+                                    <c:when test="${not empty lawyer.existingRoomId}">
+                                        <a href="/direct/consult?roomId=${lawyer.existingRoomId}&lawyerId=${fn:split(lawyer.email, '@')[0]}"
+                                           class="btn btn-primary" style="font-size:12px; background: #007bff;">상담 재개</a>
+                                    </c:when>
+
+                                    <%-- 방은 없는데 변호사가 현재 다른 사람과 상담 중인 경우 --%>
+                                    <c:when test="${lawyer.status == '상담중'}">
+                                        <button class="btn btn-secondary" style="font-size:12px; background:#6c757d; cursor:not-allowed;" disabled>상담 중</button>
+                                    </c:when>
+
+                                    <%-- 변호사가 활성 상태이고 생성된 방이 없는 경우 --%>
+                                    <c:when test="${lawyer.status == 'ACTIVE'}">
+                                        <a href="/consult/apply?lawyerId=${lawyer.lawyerId}" class="btn btn-success" style="font-size:12px;">상담 신청</a>
+                                    </c:when>
+                                </c:choose>
                             </c:if>
+
+                                <%-- 2. [수정/삭제 버튼] 기존 관리자 및 변호사 본인 로직 --%>
                             <c:choose>
                                 <c:when test="${loginUser.role eq 'ROLE_LAWYER'}">
-
-                                    <c:choose>
-                                        <c:when test="${loginUser.email eq lawyer.email}">
-                                            <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary" style="font-size:12px;">수정</a>
-                                            <c:if test="${lawyer.status == 'ACTIVE'}">
-                                            <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="display:inline"
-                                                  onsubmit="return confirm('삭제하시겠습니까?')">
-                                                <button type="submit" class="btn btn-danger" style="font-size:12px;">삭제</button>
-                                            </form>
-                                            </c:if>
-                                        </c:when>
-                                    </c:choose>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:choose>
-                                    <c:when test="${loginUser.role eq 'ROLE_ADMIN'}">
+                                    <c:if test="${loginUser.email eq lawyer.email}">
                                         <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary" style="font-size:12px;">수정</a>
                                         <c:if test="${lawyer.status == 'ACTIVE'}">
-                                        <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="display:inline"
-                                              onsubmit="return confirm('삭제하시겠습니까?')">
+                                            <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="display:inline" onsubmit="return confirm('삭제하시겠습니까?')">
+                                                <button type="submit" class="btn btn-danger" style="font-size:12px;">삭제</button>
+                                            </form>
+                                        </c:if>
+                                    </c:if>
+                                </c:when>
+                                <c:when test="${loginUser.role eq 'ROLE_ADMIN'}">
+                                    <a href="/lawyer/modify/${lawyer.lawyerId}" class="btn btn-primary" style="font-size:12px;">수정</a>
+                                    <c:if test="${lawyer.status == 'ACTIVE'}">
+                                        <form method="post" action="/lawyer/delete/${lawyer.lawyerId}" style="display:inline" onsubmit="return confirm('삭제하시겠습니까?')">
                                             <button type="submit" class="btn btn-danger" style="font-size:12px;">삭제</button>
                                         </form>
-                                        </c:if>
-                                    </c:when>
-                                    </c:choose>
-                                </c:otherwise>
+                                    </c:if>
+                                </c:when>
                             </c:choose>
                         </td>
                     </tr>

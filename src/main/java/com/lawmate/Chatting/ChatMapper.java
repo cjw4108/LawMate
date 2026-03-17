@@ -26,9 +26,9 @@ public interface ChatMapper {
      * 여기서는 에러 방지를 위해 파라미터 개수를 쿼리와 맞췄습니다.
      */
     @Insert("""
-        INSERT INTO CHAT_ROOM (ROOM_ID, USER_ID, LAWYER_ID, STATUS, CREATED_AT)
-        VALUES (#{roomId}, #{userId}, #{lawyerId}, 'LIVE', SYSDATE)
-    """)
+    INSERT INTO CHAT_ROOM (ROOM_ID, USER_ID, LAWYER_ID, CREATED_AT, STATUS)
+    VALUES (#{roomId}, #{userId}, #{lawyerId, jdbcType=VARCHAR}, SYSDATE, 'LIVE')
+""")
     void createChatRoom(@Param("roomId") String roomId,
                         @Param("userId") String userId,
                         @Param("lawyerId") String lawyerId);
@@ -38,19 +38,14 @@ public interface ChatMapper {
      * 수정사항: Service에서 String으로 넘길 때를 대비해 타입을 유연하게 맞췄습니다.
      */
     @Select("""
-    SELECT ROOM_ID FROM CHAT_ROOM 
-    WHERE USER_ID = #{userId} 
-      AND LAWYER_ID = (
-          /* 입력받은 값이 숫자(16)든 문자든 상관없이 해당 변호사의 이메일 아이디를 가져옴 */
-          SELECT SUBSTR(EMAIL, 1, INSTR(EMAIL, '@') - 1) 
-          FROM TB_LAWYER 
-          WHERE TO_CHAR(LAWYER_ID) = TO_CHAR(#{lawyerId})
-             OR SUBSTR(EMAIL, 1, INSTR(EMAIL, '@') - 1) = TO_CHAR(#{lawyerId})
-      )
-      AND STATUS IN ('LIVE', 'ONGOING')
+    SELECT ROOM_ID 
+    FROM CHAT_ROOM 
+    WHERE USER_ID = #{uId} 
+      AND LAWYER_ID = #{lId}
+      AND STATUS != 'CLOSED'
       AND ROWNUM = 1
 """)
-    String findRoom(@Param("userId") String userId, @Param("lawyerId") String lawyerId);
+    String findRoom(@Param("uId") String userId, @Param("lId") String lawyerId);
 
     /**
      * 4. 변호사 대시보드용 상담 목록 조회

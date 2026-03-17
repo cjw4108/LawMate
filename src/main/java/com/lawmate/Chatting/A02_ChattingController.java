@@ -29,7 +29,10 @@ public class A02_ChattingController {
         if (loginUser == null) return "redirect:/login";
 
         String currentUserId = loginUser.getUserId();
+
+        // 이 부분을 간단히 고정합니다.
         String aiTargetId = "GEMINI_AI";
+
         String roomId = chattingService.getOrCreateRoom(currentUserId, aiTargetId);
         List<ChatMessage> chatHistory = chattingService.selectChatHistory(roomId);
 
