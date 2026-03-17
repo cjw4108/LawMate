@@ -12,7 +12,7 @@ import fitz
 app = FastAPI()
 
 
-raw_api_key = "AIzaSyDU3Ij6EMTpXt3nODrrfxLDFlQskFGiJko" # 👈 여기에 실제 키를 정확히 입력하세요
+raw_api_key = "AIzaSyDm6qqLGhs_Wl8489Oeq0tqWSv_exDyS8w" # 👈 여기에 실제 키를 정확히 입력하세요
 api_key = raw_api_key.strip().replace("\n", "").replace("\r", "")
 client = genai.Client(api_key=api_key)
 
