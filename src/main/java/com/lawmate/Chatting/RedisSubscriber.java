@@ -42,6 +42,7 @@ public class RedisSubscriber implements MessageListener {
 
             // 웹소켓을 구독 중인 클라이언트들에게 메시지 전파
             // 프론트엔드(JS)의 subscribe 경로와 일치해야 함: /sub/chat/room/{roomId}
+            // 이 경로로 쏘고 있는지 확인
             messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
 
             log.info("[Redis 전파 성공] 방ID: {}, 보낸이: {}", chatMessage.getRoomId(), chatMessage.getSenderId());
