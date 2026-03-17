@@ -1,0 +1,51 @@
+Index: src/main/resources/static/js/vue-app/.gitkeep
+===================================================================
+diff --git a/src/main/resources/static/js/vue-app/.gitkeep b/src/main/resources/mapper/ScheduleMapper.xml
+rename from src/main/resources/static/js/vue-app/.gitkeep
+rename to src/main/resources/mapper/ScheduleMapper.xml
+--- a/src/main/resources/static/js/vue-app/.gitkeep	(revision aab53a9df593fa8b922b369a5fe0b5cabfc183d9)
++++ b/src/main/resources/mapper/ScheduleMapper.xml
+@@ -1,0 +1,42 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
++        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
++
++<mapper namespace="com.lawmate.dao.ScheduleMapper">
++
++    <insert id="insertSchedule" parameterType="com.lawmate.dto.ScheduleRequestDto">
++        INSERT INTO SCHEDULE (
++            SCHEDULE_ID, USER_ID, TITLE, CONTENT,
++            START_TIME, END_TIME,
++            CLIENT_NAME, STATUS, COLOR, ALL_DAY
++        ) VALUES (
++                     SCHEDULE_SEQ.NEXTVAL,
++                     #{userId}, #{title}, #{content},
++                     TO_TIMESTAMP(#{startTime}, 'YYYY-MM-DD"T"HH24:MI'),
++                     TO_TIMESTAMP(#{endTime},   'YYYY-MM-DD"T"HH24:MI'),
++                     #{clientName}, #{status}, #{color}, #{allDay}
++                 )
++    </insert>
++
++    <select id="getLastInsertId" resultType="Long">
++        SELECT SCHEDULE_SEQ.CURRVAL FROM DUAL
++    </select>
++
++    <select id="selectByUserId" parameterType="String"
++            resultType="com.lawmate.dto.ScheduleResponseDto">
++        SELECT
++            SCHEDULE_ID   AS scheduleId,
++            TITLE,
++            CONTENT,
++            TO_CHAR(START_TIME, 'YYYY-MM-DD"T"HH24:MI') AS startTime,
++            TO_CHAR(END_TIME,   'YYYY-MM-DD"T"HH24:MI') AS endTime,
++            CLIENT_NAME   AS clientName,
++            STATUS,
++            COLOR,
++            ALL_DAY       AS allDay
++        FROM SCHEDULE
++        WHERE USER_ID = #{userId}
++        ORDER BY START_TIME
++    </select>
++
++</mapper>
+\ No newline at end of file
