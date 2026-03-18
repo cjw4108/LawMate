@@ -35,9 +35,21 @@
         #{allDay, jdbcType=CHAR})
     </insert>
 
-    <select id="getLastInsertId" resultType="Long">
-        SELECT SEQ_SCHEDULE.CURRVAL FROM DUAL
-    </select>
+    <update id="updateSchedule" parameterType="com.lawmate.dto.ScheduleRequestDto">
+        UPDATE SCHEDULE SET
+            TITLE      = #{title},
+            CONTENT    = #{content, jdbcType=CLOB},
+            START_TIME = TO_TIMESTAMP(#{startTime}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+            END_TIME   = TO_TIMESTAMP(#{endTime}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+            CLIENT_NAME = #{clientName, jdbcType=VARCHAR},
+            COLOR      = #{color, jdbcType=VARCHAR},
+            ALL_DAY    = #{allDay, jdbcType=CHAR}
+        WHERE SCHEDULE_ID = #{scheduleId}
+    </update>
+
+    <delete id="deleteSchedule" parameterType="Long">
+        DELETE FROM SCHEDULE WHERE SCHEDULE_ID = #{scheduleId}
+    </delete>
 
     <select id="selectByUserId" parameterType="String" resultMap="scheduleResultMap">
         SELECT * FROM SCHEDULE WHERE USER_ID = #{userId}

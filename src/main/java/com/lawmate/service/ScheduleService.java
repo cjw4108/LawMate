@@ -21,6 +21,16 @@ public class ScheduleService {
         return dto.getScheduleId();
     }
 
+    @Transactional
+    public void update(ScheduleRequestDto dto) {
+        scheduleMapper.updateSchedule(dto);
+    }
+
+    @Transactional
+    public void delete(Long scheduleId) {
+        scheduleMapper.deleteSchedule(scheduleId);
+    }
+
     public List<ScheduleResponseDto> findAll(String userId) {
         return scheduleMapper.selectByUserId(userId);
     }
