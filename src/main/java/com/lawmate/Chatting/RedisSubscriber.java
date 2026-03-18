@@ -31,23 +31,18 @@ public class RedisSubscriber implements MessageListener {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            // Redis에서 메시지 본문(body)을 읽어옴
+            // 1. 메시지 역직렬화
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-
-            // JSON 문자열을 ChatMessage 객체로 역직렬화
             ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
 
-            // 웹소켓을 구독 중인 클라이언트들에게 메시지 전파
-            // 프론트엔드(JS)의 subscribe 경로와 일치해야 함: /sub/chat/room/{roomId}
-            // 이 경로로 쏘고 있는지 확인
+            // 2. 브라우저로 전송 (이 주소가 중요!)
+            // JSP가 /sub/chat/room/b685... 주소를 구독하고 있으므로 똑같이 맞춰줍니다.
             messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
 
-            log.info("[Redis 전파 성공] 방ID: {}, 보낸이: {}", chatMessage.getRoomId(), chatMessage.getSenderId());
         } catch (Exception e) {
-            log.error("Redis Subscriber 에러 발생: {}", e.getMessage());
+            log.error("Exception {}", e.getStackTrace());
         }
     }
 }

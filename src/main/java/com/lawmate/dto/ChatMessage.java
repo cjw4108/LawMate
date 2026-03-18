@@ -10,6 +10,8 @@ public class ChatMessage {
     private String senderType; // USER, LAWYER, AI
     private String message;
     private Date createdAt;
+    private String fileName;
+    private String filePath;
 
     // getter / setter
     public String getRoomId() { return roomId; }
@@ -29,4 +31,20 @@ public class ChatMessage {
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 }
