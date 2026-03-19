@@ -39,7 +39,7 @@ dependencies {
     implementation("com.oracle.database.jdbc:ojdbc11")
     implementation("org.projectlombok:lombok")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
-
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.apache.logging.log4j:log4j-core:2.19.0")
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
