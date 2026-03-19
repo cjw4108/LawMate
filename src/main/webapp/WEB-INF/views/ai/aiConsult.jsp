@@ -115,7 +115,8 @@
 
 <script>
     // 1. 설정값 준비
-    var socketServer = "http://" + window.location.hostname + ":8080/ws-stomp";
+    var socketServer = window.location.origin + "/ws-stomp";
+    var socket = new SockJS(socketServer);
     var roomId = "${roomId}";
     var userId = "${userId}";
     var userType = "${userType}";

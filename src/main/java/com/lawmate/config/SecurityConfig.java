@@ -17,11 +17,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers("/", "/home", "/login", "/api/**", "/ws-stomp/**").permitAll()
+                        .anyRequest().permitAll() // 모든 요청 허용
                 )
-                .csrf().disable()
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+                // 직접 만든 로그인을 쓴다면 .formLogin()은 빼야 합니다.
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                );
 
         return http.build();
     }
@@ -52,7 +58,9 @@ public class SecurityConfig {
                         "/uploads/**",
                         "/temp_uploads/**",
                         "/favicon.ico",
-                        "/favicon.png"
+                        "/favicon.png",
+                        "/api/**"
                 );
     }
+
 }
