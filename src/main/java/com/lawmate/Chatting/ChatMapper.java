@@ -130,4 +130,8 @@ public interface ChatMapper {
 
     @Update("UPDATE CHAT_ROOM SET STATUS = #{status} WHERE ROOM_ID = #{roomId}")
     int updateRoomStatus(@Param("roomId") String roomId, @Param("status") String status);
+
+    @Select("SELECT COUNT(*) FROM CHAT_ROOM WHERE ROOM_ID = #{roomId} AND LAWYER_ID = 'GEMINI_AI'")
+    int countAiRoom(String roomId);
 }
+

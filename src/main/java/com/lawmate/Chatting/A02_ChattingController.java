@@ -34,7 +34,7 @@ public class A02_ChattingController {
         String aiTargetId = "GEMINI_AI";
 
         String roomId = chattingService.getOrCreateRoom(currentUserId, aiTargetId);
-        List<ChatMessage> chatHistory = chattingService.selectChatHistory(roomId);
+        List<ChatMessage> chatHistory = chattingService.getChatHistory(roomId);
 
         model.addAttribute("roomId", roomId);
         model.addAttribute("userId", currentUserId);
