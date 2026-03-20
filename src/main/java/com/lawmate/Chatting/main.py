@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 app = FastAPI()
 load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env")
 
-raw_api_key = "${gemini.api.key}" # 👈 여기에 실제 키를 정확히 입력하세요
+raw_api_key = "AIzaSyB--2UJ3eaC-iQt0aYz5bz_dQoTrBWtTU4" # 👈 여기에 실제 키를 정확히 입력하세요
 api_key = raw_api_key.strip().replace("\n", "").replace("\r", "")
 client = genai.Client(api_key=api_key)
 
