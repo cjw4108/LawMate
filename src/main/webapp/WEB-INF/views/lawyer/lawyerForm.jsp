@@ -164,7 +164,7 @@
             <div class="form-group full">
                 <label>프로필 이미지 경로</label>
                 <input type="text" name="profileImage" value="${lawyer.profileImage}"
-                       placeholder="/images/profile/lawyer_001.jpg" maxlength="300"/>
+                       placeholder="/img/profile/lawyer_001.jpg" maxlength="300"/>
             </div>
         </div>
 
