@@ -14,7 +14,6 @@
             <h2 class="display-5 fw-bold mb-4" style="color: #2d465e;">어떤 법률 도움이 필요하신가요?</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-7">
-                    <%-- index.jsp 검색창 부분 교체 --%>
                     <form action="/search" method="get">
                         <div class="search-wrapper bg-white shadow-sm rounded-pill p-2 d-flex border">
                             <input type="text" name="q"
@@ -85,9 +84,8 @@
 
     <section class="py-5 bg-white border-top">
         <div class="container" data-aos="fade-up">
-            <div class="row g-5">
-                <%-- ── 인기 콘텐츠 (DB 연동) ── --%>
-                <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-12">
                     <h4 class="fw-bold mb-4">인기 콘텐츠 <i class="bi bi-fire text-danger"></i></h4>
                     <div class="list-group list-group-flush border-top">
                         <c:choose>
@@ -96,7 +94,7 @@
                                     <a href="/content/${item.contentId}"
                                        class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
                                         <span>
-                                            <span class="text-muted me-2" style="font-size:12px;">${st.index + 1}.</span>
+                                            <span class="text-muted me-3" style="font-size:13px; font-weight: bold;">${st.index + 1}.</span>
                                             ${item.title}
                                         </span>
                                         <span class="badge bg-light text-dark rounded-pill border flex-shrink-0 ms-2">
@@ -106,31 +104,11 @@
                                 </c:forEach>
                             </c:when>
                             <c:otherwise>
-                                <div class="list-group-item py-3 text-muted text-center">
-                                    등록된 콘텐츠가 없습니다.
+                                <div class="list-group-item py-4 text-muted text-center">
+                                    등록된 인기 콘텐츠가 없습니다.
                                 </div>
                             </c:otherwise>
                         </c:choose>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="fw-bold">최신 법률 문서</h4>
-                        <button class="btn btn-outline-dark btn-sm rounded-pill">전체보기</button>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="p-4 border rounded shadow-sm text-center" style="cursor:pointer; transition: 0.3s;" onmouseover="this.style.borderColor='#0d83fd'" onmouseout="this.style.borderColor='#dee2e6'">
-                                <i class="bi bi-file-earmark-text fs-3 mb-2 d-block"></i>
-                                <span>임대차 계약서</span>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-4 border rounded shadow-sm text-center" style="cursor:pointer; transition: 0.3s;" onmouseover="this.style.borderColor='#0d83fd'" onmouseout="this.style.borderColor='#dee2e6'">
-                                <i class="bi bi-file-earmark-medical fs-3 mb-2 d-block"></i>
-                                <span>고소장 표준양식</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
