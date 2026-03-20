@@ -33,6 +33,17 @@
         .signup-links a:hover {
             text-decoration: underline;
         }
+        .id-check-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+        .id-check-wrapper input {
+            flex: 1;
+        }
+        #idCheckMsg {
+            font-size: 12px;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -48,39 +59,50 @@
             <input type="hidden" name="role" value="ROLE_LAWYER">
             <input type="hidden" name="lawyerStatus" value="PENDING">
             <input type="hidden" name="status" value="정상">
+            <input type="hidden" name="idChecked" id="idChecked" value="false">
 
+            <!-- 1. 아이디 입력 + 중복확인 버튼 -->
             <div class="mb-3">
                 <label class="form-label">아이디 <span class="text-danger">*</span></label>
-                <input type="text" name="userId" class="form-control" placeholder="아이디 입력" required>
+                <div class="id-check-wrapper">
+                    <input type="text" name="userId" id="userId" class="form-control" placeholder="아이디 입력" required>
+                    <button type="button" class="btn btn-outline-secondary" onclick="checkDuplicate()">중복확인</button>
+                </div>
+                <div id="idCheckMsg"></div>
             </div>
 
+            <!-- 2. 성함 입력 -->
             <div class="mb-3">
                 <label class="form-label">성함 <span class="text-danger">*</span></label>
                 <input type="text" name="name" class="form-control" placeholder="성함을 입력해주세요" required>
             </div>
 
+            <!-- 3. 전화번호 입력 -->
             <div class="mb-3">
                 <label class="form-label">전화번호 <span class="text-danger">*</span></label>
-                <%-- 실시간 포맷팅이 적용됩니다 --%>
                 <input type="text" name="phone" class="form-control" placeholder="010-0000-0000" maxlength="13" required>
             </div>
 
+            <!-- 4. 비밀번호 입력 -->
             <div class="mb-3">
                 <label class="form-label">비밀번호 <span class="text-danger">*</span></label>
                 <input type="password" name="password" id="password" class="form-control" placeholder="비밀번호 입력" required>
             </div>
 
+            <!-- 5. 비밀번호 확인 -->
             <div class="mb-3">
                 <label class="form-label">비밀번호 확인 <span class="text-danger">*</span></label>
                 <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control" placeholder="비밀번호 재 입력" required>
                 <div id="pwHint"></div>
             </div>
 
+            <!-- 6. 이메일 입력 -->
             <div class="mb-3">
                 <label class="form-label">이메일 <span class="text-danger">*</span></label>
                 <input type="email" name="email" class="form-control" placeholder="example@mail.com" required>
             </div>
 
+            <!-- 7. 자격 증빙 파일 업로드 -->
             <div class="mb-4">
                 <label class="form-label">자격 증빙 파일 업로드 <span class="text-danger">*</span></label>
                 <input type="file" name="uploadFile" class="form-control" accept=".pdf, image/*" required>
@@ -97,14 +119,47 @@
 </div>
 
 <script>
-    // 1. 전화번호 자동 하이픈 생성 (수진님의 010-0000-0000 봇)
-    const phoneInput = document.querySelector('input[name="phone"]');
+    // 1. 아이디 중복확인
+    function checkDuplicate() {
+        const userId = document.getElementById('userId').value.trim();
+        const msg = document.getElementById('idCheckMsg');
 
+        if (!userId) {
+            msg.textContent = '아이디를 입력해주세요.';
+            msg.style.color = '#dc3545';
+            return;
+        }
+
+        fetch('${pageContext.request.contextPath}/check-id?userId=' + encodeURIComponent(userId))
+            .then(res => res.json())
+            .then(data => {
+                if (data.available) {
+                    msg.textContent = '사용 가능한 아이디입니다.';
+                    msg.style.color = '#198754';
+                    document.getElementById('idChecked').value = 'true';
+                } else {
+                    msg.textContent = '이미 사용 중인 아이디입니다.';
+                    msg.style.color = '#dc3545';
+                    document.getElementById('idChecked').value = 'false';
+                }
+            })
+            .catch(() => {
+                msg.textContent = '중복확인 중 오류가 발생했습니다.';
+                msg.style.color = '#dc3545';
+            });
+    }
+
+    // 아이디 변경 시 중복확인 초기화
+    document.getElementById('userId').addEventListener('input', function() {
+        document.getElementById('idChecked').value = 'false';
+        document.getElementById('idCheckMsg').textContent = '';
+    });
+
+    // 2. 전화번호 자동 하이픈
+    const phoneInput = document.querySelector('input[name="phone"]');
     phoneInput.addEventListener('input', function(e) {
-        // 숫자만 남기기 (최대 11자까지만 취급)
         let val = e.target.value.replace(/[^0-9]/g, '').substring(0, 11);
         let result = '';
-
         if (val.length < 4) {
             result = val;
         } else if (val.length < 8) {
@@ -115,7 +170,7 @@
         e.target.value = result;
     });
 
-    // 2. 비밀번호 일치 실시간 체크
+    // 3. 비밀번호 일치 실시간 체크
     const pwInput = document.getElementById('password');
     const pwConfirmInput = document.getElementById('passwordConfirm');
     const pwHint = document.getElementById('pwHint');
@@ -137,12 +192,20 @@
     }
 
     pwConfirmInput.addEventListener('input', checkPassword);
-    pwInput.addEventListener('input', checkPassword); // 비밀번호를 중간에 수정할 경우도 대비
+    pwInput.addEventListener('input', checkPassword);
 
-    // 3. 폼 제출 전 최종 유효성 검사
+    // 4. 폼 제출 전 최종 유효성 검사
     document.getElementById('lawyerForm').addEventListener('submit', function(e) {
         const phone = phoneInput.value;
-        const phoneReg = /^010-\d{3,4}-\d{4}$/; // 010으로 시작하는 형식 강제
+        const phoneReg = /^010-\d{3,4}-\d{4}$/;
+        const checked = document.getElementById('idChecked').value;
+
+        // 중복확인 여부 체크
+        if (checked !== 'true') {
+            e.preventDefault();
+            alert('아이디 중복확인을 해주세요.');
+            return;
+        }
 
         // 비밀번호 최종 체크
         if (pwInput.value !== pwConfirmInput.value) {
@@ -152,7 +215,7 @@
             return;
         }
 
-        // 전화번호 형식 최종 체크 (글자수 부족 방지)
+        // 전화번호 형식 최종 체크
         if (!phoneReg.test(phone)) {
             e.preventDefault();
             alert('전화번호 11자리를 모두 입력해주세요. (예: 010-1234-5678)');
