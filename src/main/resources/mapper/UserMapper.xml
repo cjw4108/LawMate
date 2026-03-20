@@ -3,6 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lawmate.dao.UserDAO">
+
     <select id="existsByUserId" resultType="int">
         SELECT COUNT(*) FROM USERS WHERE USER_ID = #{userId}
     </select>
@@ -11,39 +12,101 @@
         INSERT INTO USERS (
             USER_ID, PASSWORD, NAME, PHONE, EMAIL, ROLE, STATUS, JOIN_DATE
         ) VALUES (
-                     #{userId, jdbcType=VARCHAR},
-                     #{password, jdbcType=VARCHAR},
-                     #{name, jdbcType=VARCHAR},
-                     #{phone, jdbcType=VARCHAR},
-                     #{email, jdbcType=VARCHAR},
-                     'ROLE_USER',
-                     '정상',
-                     SYSDATE
-                 )
+            #{userId,    jdbcType=VARCHAR},
+            #{password,  jdbcType=VARCHAR},
+            #{name,      jdbcType=VARCHAR},
+            #{phone,     jdbcType=VARCHAR},
+            #{email,     jdbcType=VARCHAR},
+            'ROLE_USER',
+            '정상',
+            SYSDATE
+        )
     </insert>
 
     <insert id="saveLawyer" parameterType="com.lawmate.dto.UserDTO">
         INSERT INTO USERS (
-        USER_ID, PASSWORD, NAME, PHONE, EMAIL, ROLE, STATUS,
-        LAWYER_STATUS, LICENSE_FILE, JOIN_DATE
+            USER_ID, PASSWORD, NAME, PHONE, EMAIL, ROLE, STATUS,
+            LAWYER_STATUS, LICENSE_FILE, JOIN_DATE
         ) VALUES (
-            #{userId},
-            #{password},
-            #{name},
-            #{phone},
-            #{email},
-            #{role},          <!-- Service에서 ROLE_LAWYER 세팅 -->
-            #{status},        <!-- Service에서 승인대기 세팅 -->
-            #{lawyerStatus},  <!-- Service에서 PENDING 세팅 -->
-            #{licenseFile},
+            #{userId,       jdbcType=VARCHAR},
+            #{password,     jdbcType=VARCHAR},
+            #{name,         jdbcType=VARCHAR},
+            #{phone,        jdbcType=VARCHAR},
+            #{email,        jdbcType=VARCHAR},
+            #{role,         jdbcType=VARCHAR},
+            #{status,       jdbcType=VARCHAR},
+            #{lawyerStatus, jdbcType=VARCHAR},
+            #{licenseFile,  jdbcType=VARCHAR},
             SYSDATE
         )
     </insert>
 
     <select id="login" resultType="com.lawmate.dto.UserDTO">
-        SELECT * FROM USERS
+        SELECT
+            USER_ID       AS userId,
+            NAME          AS name,
+            EMAIL         AS email,
+            PHONE         AS phone,
+            ROLE          AS role,
+            STATUS        AS status,
+            LAWYER_STATUS AS lawyerStatus
+        FROM USERS
         WHERE USER_ID = #{userId} AND PASSWORD = #{password}
     </select>
 
+    <select id="findByUserId" resultType="com.lawmate.dto.UserDTO">
+        SELECT
+            USER_ID       AS userId,
+            NAME          AS name,
+            EMAIL         AS email,
+            PHONE         AS phone,
+            ROLE          AS role,
+            STATUS        AS status,
+            LAWYER_STATUS AS lawyerStatus,
+            LICENSE_FILE  AS licenseFile
+        FROM USERS
+        WHERE USER_ID = #{userId, jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateProfile" parameterType="com.lawmate.dto.UserDTO">
+        UPDATE USERS
+        SET
+            NAME  = #{name,  jdbcType=VARCHAR},
+            EMAIL = #{email, jdbcType=VARCHAR},
+            PHONE = #{phone, jdbcType=VARCHAR}
+            <if test="password != null and password != ''">
+            , PASSWORD = #{password, jdbcType=VARCHAR}
+            </if>
+        WHERE USER_ID = #{userId, jdbcType=VARCHAR}
+    </update>
+
+    <select id="findPendingLawyers" resultType="com.lawmate.dto.UserDTO">
+        SELECT
+            USER_ID       AS userId,
+            NAME          AS name,
+            EMAIL         AS email,
+            PHONE         AS phone,
+            ROLE          AS role,
+            STATUS        AS status,
+            LAWYER_STATUS AS lawyerStatus,
+            LICENSE_FILE  AS licenseFile
+        FROM USERS
+        WHERE LAWYER_STATUS = 'PENDING'
+        ORDER BY JOIN_DATE DESC
+    </select>
+
+    <update id="updateLawyerStatus">
+        UPDATE USERS
+        SET
+            LAWYER_STATUS = #{lawyerStatus, jdbcType=VARCHAR},
+            REJECT_REASON = #{rejectReason, jdbcType=VARCHAR}
+        WHERE USER_ID = #{userId, jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE USERS
+        SET STATUS    = #{param2, jdbcType=VARCHAR}
+        WHERE USER_ID = #{param1, jdbcType=VARCHAR}
+    </update>
 
 </mapper>
