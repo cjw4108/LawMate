@@ -4,17 +4,55 @@
 
 <mapper namespace="com.lawmate.dao.ScheduleMapper">
 
+    <resultMap id="scheduleResultMap" type="com.lawmate.dto.ScheduleResponseDto">
+        <id     property="scheduleId"  column="SCHEDULE_ID"/>
+        <result property="userId"      column="USER_ID"/>
+        <result property="title"       column="TITLE"/>
+        <result property="content"     column="CONTENT"/>
+        <result property="startTime"   column="START_TIME"/>
+        <result property="endTime"     column="END_TIME"/>
+        <result property="clientId"    column="CLIENT_ID"/>
+        <result property="clientName"  column="CLIENT_NAME"/>
+        <result property="status"      column="STATUS"/>
+        <result property="color"       column="COLOR"/>
+        <result property="allDay"      column="ALL_DAY"/>
+    </resultMap>
+
     <insert id="insertSchedule" parameterType="com.lawmate.dto.ScheduleRequestDto">
-        INSERT INTO schedule (user_id, title, content, start_date, end_date)
-        VALUES (#{userId}, #{title}, #{content}, #{startDate}, #{endDate})
+        <selectKey keyProperty="scheduleId" resultType="Long" order="BEFORE">
+            SELECT SEQ_SCHEDULE.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO SCHEDULE (SCHEDULE_ID, USER_ID, TITLE, CONTENT, START_TIME, END_TIME, CLIENT_ID, CLIENT_NAME, COLOR, ALL_DAY)
+        VALUES (#{scheduleId},
+        #{userId},
+        #{title},
+        #{content, jdbcType=CLOB},
+        TO_TIMESTAMP(#{startTime}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+        TO_TIMESTAMP(#{endTime}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+        #{clientId, jdbcType=VARCHAR},
+        #{clientName, jdbcType=VARCHAR},
+        #{color, jdbcType=VARCHAR},
+        #{allDay, jdbcType=CHAR})
     </insert>
 
-    <select id="getLastInsertId" resultType="Long">
-        SELECT LAST_INSERT_ID()
-    </select>
+    <update id="updateSchedule" parameterType="com.lawmate.dto.ScheduleRequestDto">
+        UPDATE SCHEDULE SET
+            TITLE      = #{title},
+            CONTENT    = #{content, jdbcType=CLOB},
+            START_TIME = TO_TIMESTAMP(#{startTime}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+            END_TIME   = TO_TIMESTAMP(#{endTime}, 'YYYY-MM-DD"T"HH24:MI:SS'),
+            CLIENT_NAME = #{clientName, jdbcType=VARCHAR},
+            COLOR      = #{color, jdbcType=VARCHAR},
+            ALL_DAY    = #{allDay, jdbcType=CHAR}
+        WHERE SCHEDULE_ID = #{scheduleId}
+    </update>
 
-    <select id="selectByUserId" parameterType="String" resultType="com.lawmate.dto.ScheduleResponseDto">
-        SELECT * FROM schedule WHERE user_id = #{userId}
+    <delete id="deleteSchedule" parameterType="Long">
+        DELETE FROM SCHEDULE WHERE SCHEDULE_ID = #{scheduleId}
+    </delete>
+
+    <select id="selectByUserId" parameterType="String" resultMap="scheduleResultMap">
+        SELECT * FROM SCHEDULE WHERE USER_ID = #{userId}
     </select>
 
 </mapper>

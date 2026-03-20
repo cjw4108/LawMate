@@ -1,10 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <jsp:include page="/WEB-INF/views/common/header.jsp" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
     <link rel="stylesheet" href="/css/custom.css">
     <style>
         #chatArea {
@@ -33,7 +38,7 @@
         .file-link:hover { background: #f1f1f1; }
 
         .chat-img {
-            max-width: 250px; /* 너무 크지 않게 조절 */
+            max-width: 250px;
             height: auto;
             border-radius: 10px;
             margin-bottom: 5px;
@@ -76,8 +81,6 @@
                                         </div>
                                     </div>
                                 </c:forEach>
-                                <div id="chatMessageArea">
-                                </div>
                             </div>
                         </div>
 
@@ -89,10 +92,7 @@
 
                             <div class="input-group">
                                 <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelect(this)">
-                                <button class="btn btn-outline-secondary" type="button" onclick="$('#fileInput').click();">
-                                    📎
-                                </button>
-
+                                <button class="btn btn-outline-secondary" type="button" onclick="$('#fileInput').click();">📎</button>
                                 <input type="text" id="msg" class="form-control" placeholder="궁금한 법률 질문을 입력하세요">
                                 <button class="btn btn-primary" id="sndBtn">전송</button>
                             </div>
@@ -114,14 +114,143 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 <script>
-    let socketServer = "${socketServer}";
-    let roomId = "${roomId}";
-    let userId = "${userId}";
-    let userType = "${userType}";
-    let wsocket = null;
-    let selectedFile = null;
+    // 1. 설정값 준비
+    var socketServer = window.location.origin + "/ws-stomp";
+    var socket = new SockJS(socketServer);
+    var roomId = "${roomId}";
+    var userId = "${userId}";
+    var userType = "${userType}";
+    var stompClient = null;
+    var selectedFile = null;
 
-    // 파일 선택 핸들러
+    // 문서 로드 시 실행
+    $(document).ready(function(){
+        connect(); // 연결 시작
+
+        // 스크롤 하단 이동
+        setTimeout(scrollToBottom, 200);
+
+        // 이벤트 바인딩
+        $("#sndBtn").off("click").on("click", function(){ sendMsg(); });
+        $("#msg").off("keyup").on("keyup", function(e){ if(e.keyCode == 13) sendMsg(); });
+    });
+
+    // 🚀 연결 함수 (딱 하나만 남겨두었습니다)
+    function connect() {
+        console.log("🔗 웹소켓 연결 시도 중... : " + socketServer);
+        var socket = new SockJS(socketServer);
+        stompClient = Stomp.over(socket);
+
+        // 디버그 로그가 너무 지저분하면 주석 해제하세요
+        // stompClient.debug = null;
+
+        stompClient.connect({}, function (frame) {
+            console.log('✅ STOMP 연결 성공! (실시간 수신 가능)');
+
+            // 🚀 실시간 메시지 수신 (구독)
+            stompClient.subscribe('/sub/chat/room/' + roomId, function (chat) {
+                console.log("📩 새 메시지 도착!");
+                var msgObj = JSON.parse(chat.body); // chat.body가 실제 데이터입니다.
+
+                // 화면에 말풍선 추가
+                renderBubble(msgObj);
+                // 자동 스크롤
+                scrollToBottom();
+            });
+        }, function(error) {
+            console.error('❌ 연결 끊김: ', error);
+            // 5초 후 자동으로 재연결 시도
+            setTimeout(connect, 5000);
+        });
+    }
+
+    // 메시지 전송
+    async function sendMsg() {
+        var msg = $("#msg").val();
+        if (msg.trim().length == 0 && !selectedFile) return;
+
+        let fileInfo = null;
+
+        // 파일 업로드 처리
+        if (selectedFile) {
+            $("#sndBtn").prop("disabled", true);
+            let formData = new FormData();
+            formData.append("file", selectedFile);
+            formData.append("roomId", roomId);
+
+            try {
+                const response = await fetch("/chat/upload", { method: "POST", body: formData });
+                if (response.ok) fileInfo = await response.json();
+            } catch (e) {
+                alert("파일 업로드 실패");
+                $("#sndBtn").prop("disabled", false);
+                return;
+            }
+        }
+
+        // 서버 전송 데이터 구성
+        var sendData = {
+            roomId: roomId,
+            senderId: userId,
+            senderType: userType,
+            senderName: (userType === 'USER' ? '나' : '변호사'),
+            message: msg,
+            fileName: fileInfo ? fileInfo.fileName : null,
+            filePath: fileInfo ? fileInfo.filePath : null
+        };
+
+        // 🚀 서버로 발송 (발송하면 서버를 거쳐 위 subscribe로 다시 내려옵니다)
+        if(stompClient && stompClient.connected) {
+            stompClient.send("/pub/chat/message", {}, JSON.stringify(sendData));
+            $("#msg").val("");
+            cancelFile();
+        } else {
+            alert("연결이 원활하지 않습니다. 잠시 후 다시 시도해주세요.");
+        }
+
+        $("#sndBtn").prop("disabled", false);
+    }
+
+    // 말풍선 그리기
+    function renderBubble(msgObj) {
+        // 내 메시지인지 확인 (문자열/숫자 타입 다를 수 있어 == 사용)
+        var isMe = (msgObj.senderId == userId);
+        var isAI = (msgObj.senderType === 'AI' || msgObj.senderId === 'GEMINI_AI');
+
+        var alignClass = isMe ? "text-end" : "text-start";
+        var bgColor = isMe ? "#007bff" : (isAI ? "#e9ecef" : "#f1f0f0");
+        var textColor = isMe ? "#ffffff" : "#000000";
+        var senderTitle = isAI ? "AI 법률상담사" : (msgObj.senderName || "상대방");
+
+        var formattedMsg = msgObj.message ? msgObj.message.replace(/\n/g, "<br>") : "";
+
+        // 이미지 처리
+        if (msgObj.filePath) {
+            var ext = msgObj.fileName.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                formattedMsg += '<div class="mt-2"><img src="' + msgObj.filePath + '" class="chat-img"></div>';
+            }
+            formattedMsg += '<a href="' + msgObj.filePath + '" class="file-link" download="' + msgObj.fileName + '">💾 ' + msgObj.fileName + '</a>';
+        }
+
+        var bubble =
+            '<div class="mb-3 ' + alignClass + '">' +
+            '<div style="display:inline-block; max-width: 80%; text-align: left;">' +
+            (!isMe ? '<div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">' + senderTitle + '</div>' : '') +
+            '<div class="p-2 rounded shadow-sm" style="background-color: ' + bgColor + '; color: ' + textColor + '; word-break: break-all; white-space: pre-wrap;">' +
+            formattedMsg +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        $("#chatMessageArea").append(bubble);
+    }
+
+    function scrollToBottom() {
+        var chatArea = document.getElementById("chatArea");
+        if (chatArea) chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
     function handleFileSelect(input) {
         if (input.files && input.files[0]) {
             selectedFile = input.files[0];
@@ -130,177 +259,10 @@
         }
     }
 
-    // 파일 선택 취소
     function cancelFile() {
         selectedFile = null;
         $("#fileInput").val("");
         $("#filePreview").hide();
-    }
-
-    $(document).ready(function(){
-        connect();
-
-        setTimeout(function() {
-            var chatArea = document.getElementById("chatArea");
-            if(chatArea) chatArea.scrollTop = chatArea.scrollHeight;
-        }, 100);
-
-        $("#sndBtn").click(function(){
-            sendMsg();
-        });
-
-        $("#msg").keyup(function(e){
-            if(e.keyCode == 13) sendMsg();
-        });
-    });
-
-    function connect(){
-        wsocket = new WebSocket(socketServer + "?roomId=" + roomId);
-        wsocket.onmessage = function(evt){
-            receiveMsg(evt.data);
-        };
-    }
-
-    async function sendMsg() {
-        var msg = $("#msg").val();
-        if (msg.trim().length == 0 && !selectedFile) return;
-
-        // 🚀 수정: 고정 로딩 영역을 보여주는 대신 버튼을 잠시 비활성화
-        if (selectedFile) {
-            $("#sndBtn").prop("disabled", true); // 분석 중 클릭 방지
-        }
-
-        let fileInfo = null;
-
-        // 1. 파일이 있으면 먼저 업로드 (여기서는 저장만 하고 가상 경로만 받아옴)
-        if (selectedFile) {
-            let formData = new FormData();
-            formData.append("file", selectedFile);
-            formData.append("roomId", roomId);
-
-            try {
-                const response = await fetch("/chat/upload", {
-                    method: "POST",
-                    body: formData
-                });
-                if (response.ok) {
-                    fileInfo = await response.json();
-                    // fileInfo에는 이제 { fileName, filePath }만 들어있음 (분석결과 X)
-                }
-            } catch (e) {
-                alert("파일 업로드 실패");
-                return;
-            }
-        }
-
-        // 2. 내 화면에 즉시 표시 (분석 결과 없이 이미지만!)
-        var displayMsg = msg.replace(/\n/g, "<br>");
-
-        if (fileInfo) {
-            var ext = fileInfo.fileName.split('.').pop().toLowerCase();
-
-            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                displayMsg += '<div class="mt-2"><img src="' + fileInfo.filePath + '" class="chat-img"></div>';
-            } else if (ext === 'pdf') {
-                displayMsg += '<div class="mt-2">📄 PDF 문서 분석 요청 중...</div>';
-            } else if (ext === 'txt') {
-                displayMsg += '<div class="mt-2">📑 텍스트 파일 분석 요청 중...</div>';
-            } else {
-                displayMsg += '<div class="mt-2">📁 파일이 첨부되었습니다.</div>';
-            }
-
-            displayMsg += '<a href="' + fileInfo.filePath + '" class="file-link" download="' + fileInfo.fileName + '">💾 ' + fileInfo.fileName + '</a>';
-        }
-
-        renderMyBubble(displayMsg, fileInfo != null); // 내 말풍선 그리기 함수(별도 분리 권장)
-
-        // 3. 서버(Websocket)로 전송
-        // 여기서 AI가 상대라면, 서버(Java)가 이 데이터를 보고 AI에게 분석을 시킵니다.
-        var sendData = {
-            roomId: roomId,
-            userId: userId,
-            senderType: userType,
-            senderName: "사용자",
-            message: msg,
-            chatWith: "AI", // 상대가 AI임을 명시
-            fileName: fileInfo ? fileInfo.fileName : null,
-            filePath: fileInfo ? fileInfo.filePath : null
-        };
-
-        wsocket.send(JSON.stringify(sendData));
-        $("#msg").val("");
-        cancelFile();
-    }
-
-    function renderMyBubble(displayMsg, hasFile) {
-        // 내가 보낸 메시지 렌더링
-        var html = '<div class="me mb-3 text-end">';
-        html += '  <div class="p-2 rounded shadow-sm d-inline-block" style="background-color: #DCF8C6; max-width: 80%; text-align: left;">';
-        html +=      displayMsg;
-        html += '  </div>';
-        html += '</div>';
-
-        // 🚀 파일이 있으면 그 바로 아래에 'AI 분석 중' 로딩 박스를 추가
-        if (hasFile) {
-            html += '<div id="ai-loading-box" class="mb-3 text-start">';
-            html += '  <div style="display:inline-block; max-width: 80%;">';
-            html += '    <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">AI상담사</div>';
-            html += '    <div class="p-2 rounded shadow-sm" style="background-color: #f1f0f0;">';
-            html += '      <span class="spinner-border spinner-border-sm" role="status"></span>';
-            html += '      <span class="ms-2" style="font-size: 0.9rem;">파일 내용을 분석하고 있습니다...</span>';
-            html += '    </div>';
-            html += '  </div>';
-            html += '</div>';
-        }
-
-        $("#chatMessageArea").append(html);
-
-        // 스크롤 아래로 내리기
-        var chatArea = document.getElementById("chatArea");
-        chatArea.scrollTop = chatArea.scrollHeight;
-    }
-
-    function receiveMsg(data) {
-        var msgObj = JSON.parse(data);
-
-        if (msgObj.senderType === "AI") {
-            $("#ai-loading-box").remove(); // 동적 로딩 박스 제거
-            $("#sndBtn").prop("disabled", false); // 버튼 다시 활성화
-        }
-
-        // 중복 방지
-        if (msgObj.senderType === "USER") return;
-
-        var alignClass = "text-start";
-        var bgColor = "#f1f0f0";
-        var formattedMsg = msgObj.message ? msgObj.message.replace(/\n/g, "<br>") : "";
-
-        // [핵심] 이미지 처리 로직 추가
-        if (msgObj.filePath) {
-            var ext = msgObj.fileName.split('.').pop().toLowerCase();
-            // 이미지 확장자인 경우 화면에 <img> 태그 추가
-            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                formattedMsg += '<div class="mt-2"><img src="' + msgObj.filePath + '" style="max-width:100%; border-radius:10px; border:1px solid #ddd;"></div>';
-            }
-            // 다운로드 링크도 함께 표시
-            formattedMsg += '<a href="' + msgObj.filePath + '" class="file-link" download="' + msgObj.fileName + '">💾 ' + msgObj.fileName + ' (다운로드)</a>';
-        }
-
-        var bubble =
-            '<div class="mb-3 ' + alignClass + '">' +
-            '<div style="display:inline-block; max-width: 80%; text-align: left;">' +
-            '<div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">' + msgObj.senderName + '</div>' +
-            '<div class="p-2 rounded shadow-sm" style="background-color: ' + bgColor + '; word-break: break-all;">' +
-            formattedMsg +
-            '</div>' +
-            '</div>' +
-            '</div>';
-
-        $("#chatMessageArea").append(bubble);
-
-        // 스크롤 하단으로
-        var chatArea = document.getElementById("chatArea");
-        if(chatArea) chatArea.scrollTop = chatArea.scrollHeight;
     }
 </script>
 </body>

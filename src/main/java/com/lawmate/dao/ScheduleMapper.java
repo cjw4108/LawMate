@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper
 public interface ScheduleMapper {
     void insertSchedule(ScheduleRequestDto dto);
-    Long getLastInsertId();
+    void updateSchedule(ScheduleRequestDto dto);
+    void deleteSchedule(Long scheduleId);
     List<ScheduleResponseDto> selectByUserId(String userId);
 }

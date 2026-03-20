@@ -1,5 +1,6 @@
 package com.lawmate.Chatting;
 
+import ch.qos.logback.core.util.Loader;
 import com.lawmate.dto.ChatMessage;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.apache.poi.xwpf.usermodel.XWPFDocument; // DOCX용
+import java.nio.file.Files;
+import java.util.Base64;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -73,12 +80,7 @@ public class A03_ChattingService {
         return chatMapper.selectChatHistory(roomId);
     }
 
-    /**
-     * 3. 메시지 DB 저장 (방 존재 여부 체크 로직 추가)
-     */
-    /**
-     * 3. 메시지 DB 저장 (방 존재 여부 체크 로직 추가)
-     */
+
     @Transactional
     public void saveMessage(String roomId, String senderId, String senderType, String content) {
 
@@ -121,39 +123,65 @@ public class A03_ChattingService {
     /**
      * 4. Gemini AI 상담 호출
      */
-    public String askGemini(String userMessage) {
-        // 엔드포인트는 잘 작성되었습니다.
+    public String askGemini(String userMessage, String fileData) {
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=" + API_KEY;
 
+        // 1. 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, Object> textPart = Map.of("text", userMessage);
-        Map<String, Object> parts = Map.of("parts", List.of(textPart));
-        Map<String, Object> body = Map.of("contents", List.of(parts));
+        // 2. 질문 내용 결정
+        String finalPrompt = (userMessage == null || userMessage.trim().isEmpty() || userMessage.equals("(첨부파일 전송)"))
+                ? "이 이미지(또는 문서)의 내용을 자세히 분석해서 설명해줘."
+                : userMessage;
 
+        // 3. API 몸체(Body) 구조 조립
+        Map<String, Object> body = new java.util.HashMap<>();
+        List<Map<String, Object>> parts = new java.util.ArrayList<>();
+
+        // 🌟 [중요] 이미지 데이터 처리
+        if (fileData != null && fileData.startsWith("[IMAGE_DATA]:")) {
+            String base64Data = fileData.replace("[IMAGE_DATA]:", "");
+
+            // 텍스트 파트 먼저 추가
+            parts.add(Map.of("text", finalPrompt));
+
+            // 이미지 파트 추가 (inline_data)
+            Map<String, Object> inlineData = new java.util.HashMap<>();
+            inlineData.put("mime_type", "image/png"); // PNG, JPG 모두 png로 보내도 대개 인식합니다.
+            inlineData.put("data", base64Data);
+            parts.add(Map.of("inline_data", inlineData));
+
+            System.out.println("📸 [Gemini 전송] 이미지 데이터 포함됨 (길이: " + base64Data.length() + ")");
+        }
+        // 🌟 [중요] 일반 문서(PDF/DOCX) 처리
+        else if (fileData != null && !fileData.isEmpty()) {
+            String combinedText = finalPrompt + "\n\n[첨부 문서 내용]:\n" + fileData;
+            parts.add(Map.of("text", combinedText));
+            System.out.println("📄 [Gemini 전송] 문서 텍스트 포함됨 (길이: " + fileData.length() + ")");
+        }
+        // 일반 채팅
+        else {
+            parts.add(Map.of("text", finalPrompt));
+        }
+
+        body.put("contents", List.of(Map.of("parts", parts)));
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
         try {
-            System.out.println("🚀 Gemini API 호출 시도: gemini-3.1-flash-lite");
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
 
-            // 응답 파싱 로직 (생략)
+            // 응답 추출 (안전한 체이닝)
             List candidates = (List) response.getBody().get("candidates");
             Map first = (Map) candidates.get(0);
             Map content = (Map) first.get("content");
-            List partList = (List) content.get("parts");
-            Map textMap = (Map) partList.get(0);
+            List resParts = (List) content.get("parts");
 
-            return textMap.get("text").toString();
+            return ((Map) resParts.get(0)).get("text").toString();
 
-        } catch (HttpClientErrorException e) { // NotFound 대신 상위 클래스인 HttpClientErrorException 권장
-            // 💡 여기서 로그를 찍어보면 실제 구글이 보내는 정확한 에러 메시지를 볼 수 있습니다.
-            System.err.println("❌ API 에러 발생: " + e.getResponseBodyAsString());
-            return "AI 상담 연결에 실패했습니다 (모델 확인 필요).";
         } catch (Exception e) {
-            System.err.println("❌ 일반 에러: " + e.getMessage());
-            return "상담사와 연결할 수 없습니다.";
+            System.err.println("❌ Gemini 호출 에러: " + e.getMessage());
+            return "AI 분석 중 오류가 발생했습니다: " + e.getMessage();
         }
     }
 
@@ -182,84 +210,45 @@ public class A03_ChattingService {
 
     // A03_ChattingService.java 에 추가할 로직 예시
 
-    public String requestAiAnalysis(MultipartFile file) {
-        String pythonUrl = "http://localhost:8000/analyze";
-
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-            // [핵심] 파이썬 서버가 '파일'임을 인식하게 하는 리소스 생성
-            ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
-                @Override
-                public String getFilename() {
-                    return file.getOriginalFilename();
-                }
-            };
-
-            // 'file'이라는 키값은 파이썬의 analyze_file(file: UploadFile = File(...))과 일치해야 합니다.
-            body.add("file", resource);
-
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-            // Python 서버 호출
-            ResponseEntity<Map> response = restTemplate.postForEntity(pythonUrl, requestEntity, Map.class);
-
-            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-                Map<String, Object> result = response.getBody();
-                // 파이썬에서 return {"status": "success", "analysis": "..."} 라고 보낸 경우
-                return result.get("analysis").toString();
-            }
-        } catch (Exception e) {
-            // [디버깅용] 콘솔에 에러 내용을 상세히 찍어줍니다.
-            System.err.println("❌ 파이썬 서버 통신 중 예외 발생: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return "파일 분석에 실패했습니다.";
-    }
-
     public String requestAiAnalysisByPath(String filePath) {
         String pythonUrl = "http://localhost:8000/analyze";
-
         try {
-            // 1. 가상 경로(/temp_uploads/...)를 실제 물리 경로로 변환
-            String projectRoot = System.getProperty("user.dir");
-            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-            String fullPath = projectRoot + File.separator + "storage" + File.separator + "uploads" + File.separator + fileName;
+            String absolutePath = getAbsolutePath(filePath);
+            File file = new File(absolutePath);
 
-            File file = new File(fullPath);
-            if (!file.exists()) {
-                return "[시스템] 분석할 파일을 찾을 수 없습니다.";
-            }
+            if (!file.exists()) return "[시스템] 분석할 파일을 찾을 수 없습니다.";
 
-            // 2. 파이썬 서버로 보낼 요청 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            // 저장된 파일을 다시 읽어서 리소스로 만듭니다.
             body.add("file", new FileSystemResource(file));
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-            // 3. 파이썬 서버 호출 및 응답 처리
+            // 🚀 파이썬 서버 호출 전 로그
+            System.err.println("🚀 [파이썬 전송 직전] URL: " + pythonUrl + " | 파일명: " + file.getName());
+
             ResponseEntity<Map> response = restTemplate.postForEntity(pythonUrl, requestEntity, Map.class);
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-                // 성공적으로 분석 결과를 받은 경우
-                return response.getBody().get("analysis").toString();
+                // 파이썬 main.py에서 return {"analysis": "..."} 라고 보낸 값을 가져옴
+                Object analysisResult = response.getBody().get("analysis");
+                System.err.println("✅ [파이썬 응답 성공] 결과 수신 완료");
+                return (analysisResult != null) ? analysisResult.toString() : "분석 결과가 비어있습니다.";
             } else {
-                return "[시스템] AI 분석 서버 응답 오류";
+                return "[시스템] AI 서버 응답 오류: " + response.getStatusCode();
             }
-
         } catch (Exception e) {
-            System.err.println("❌ 파일 경로 기반 분석 중 오류: " + e.getMessage());
-            return "[시스템] 파일 분석 중 기술적 오류가 발생했습니다.";
+            System.err.println("❌ [통신 에러] " + e.getMessage());
+            return "[시스템] 분석 중 서버 통신 오류가 발생했습니다.";
         }
-        // catch 블록 밖에도 리턴이 없으면 에러가 날 수 있으므로 최종 리턴을 보장합니다.
+
+
+
     }
+
+
 
     @Transactional
     public boolean acceptConsultation(String roomId, String lawyerId) {
@@ -310,6 +299,149 @@ public class A03_ChattingService {
     public String findRoom(String userId, String lawyerId) {
         // 이미 주입된 chatMapper를 사용하여 DB를 조회합니다.
         return chatMapper.findRoom(userId, lawyerId);
+    }
+
+
+    /**
+     * PDF 파일로부터 텍스트를 추출하는 메서드
+     * @param filePath DB에 저장된 상대 경로 (예: /temp_uploads/uuid_파일명.pdf)
+     * @return 추출된 텍스트 문자열
+     */
+    public String extractTextFromPdf(String filePath) {
+        // 1. 물리 경로 확보 (getAbsolutePath 메서드 활용)
+        String absolutePath = getAbsolutePath(filePath);
+
+        System.out.println(">>> [PDF 분석 시도] 실제 경로: " + absolutePath);
+
+        File file = new File(absolutePath);
+        if (!file.exists()) {
+            System.err.println("!!! [파일 없음] 경로 확인 필요: " + absolutePath);
+            return "[에러: 파일을 찾을 수 없습니다]";
+        }
+
+        // 2. PDFBox 3.0.x 버전 권장 방식으로 로드
+        // Loader.loadPDF(File) 형식을 사용하는 것이 가장 안정적입니다.
+        try (PDDocument document = org.apache.pdfbox.Loader.loadPDF(file)) {
+
+            System.out.println(">>> [성공] PDF 문서 로드 완료. 텍스트 추출 시작...");
+
+            PDFTextStripper stripper = new PDFTextStripper();
+
+            // PDF 내의 텍스트를 순서대로 가져오도록 설정
+            stripper.setSortByPosition(true);
+
+            String text = stripper.getText(document);
+
+            if (text == null || text.trim().isEmpty()) {
+                System.out.println(">>> [결과] 텍스트가 비어있음 (이미지 PDF 가능성)");
+                return "[안내: 이 PDF는 이미지로 구성되어 있어 텍스트 추출이 불가능합니다.]";
+            }
+
+            // 공백 및 줄바꿈 정리 (AI가 읽기 좋게)
+            text = text.replaceAll("\\s+", " ").trim();
+
+            System.out.println(">>> [완료] 추출 성공! 추출된 글자 수: " + text.length());
+            return text;
+
+        } catch (Exception e) {
+            System.err.println("!!! [PDF 분석 중 에러 발생]");
+            e.printStackTrace();
+            return "[에러: PDF 분석 중 오류 발생 (" + e.getMessage() + ")]";
+        }
+    }
+
+    public String analyzeFileContent(String filePath) {
+        String extension = "";
+        if (filePath.contains(".")) {
+            extension = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();
+        }
+
+        System.out.println("📂 [분석 시작] 확장자: " + extension + " | 경로: " + filePath);
+
+        switch (extension) {
+            case "pdf": return extractTextFromPdf(filePath);
+            case "docx": return extractTextFromDocx(filePath);
+            case "jpg":
+            case "jpeg":
+            case "png":
+                String base64 = encodeImageToBase64(filePath);
+                if (base64 == null || base64.isEmpty()) {
+                    System.err.println("❌ [분석 실패] 이미지 인코딩 결과가 비어있음!");
+                    return null;
+                }
+                System.out.println("✅ [분석 성공] 이미지 Base64 변환 완료 (길이: " + base64.length() + ")");
+                return "[IMAGE_DATA]:" + base64;
+            default:
+                System.err.println("⚠️ [미지원 확장자] " + extension);
+                return null;
+        }
+    }
+
+    private String encodeImageToBase64(String filePath) {
+        try {
+            String absolutePath = getAbsolutePath(filePath); // 여기서 실제 물리 경로를 조립
+            File file = new File(absolutePath);
+
+            if (!file.exists()) {
+                System.err.println("❌ [파일 읽기 실패] 실제 경로에 파일이 없습니다: " + absolutePath);
+                return "";
+            }
+
+            byte[] fileContent = Files.readAllBytes(file.toPath());
+            return Base64.getEncoder().encodeToString(fileContent);
+        } catch (Exception e) {
+            System.err.println("❌ [인코딩 에러] " + e.getMessage());
+            return "";
+        }
+    }
+
+    private String getAbsolutePath(String filePath) {
+        // 파일명만 추출 (경로에 포함된 UUID_파일명 전체)
+        String fileName = filePath;
+        if (filePath.contains("/")) {
+            fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+        }
+
+        // 🌟 절대 경로 조립 (사용자님의 실제 환경)
+        // URL 인코딩된 문자(%20 등)가 섞여있을 수 있으므로 파일 객체 생성 시 주의
+        String absolutePath = "C:\\Users\\human-11\\IdeaProjects\\project\\LawMate\\storage\\uploads\\" + fileName;
+
+        // [중요 디버깅 로그] - 이 로그가 '성공'인지 '실패'인지 반드시 확인하세요!
+        File file = new File(absolutePath);
+        if (file.exists()) {
+            System.err.println("✅ [파일 확인 성공] 실제 경로에 파일이 존재합니다: " + absolutePath);
+        } else {
+            System.err.println("❌ [파일 확인 실패] 경로가 틀렸습니다: " + absolutePath);
+        }
+
+        return absolutePath;
+    }
+
+    private String extractTextFromDocx(String filePath) {
+        String absolutePath = getAbsolutePath(filePath); // 물리 경로 확보
+        File file = new File(absolutePath);
+
+        if (!file.exists()) {
+            System.err.println("❌ [DOCX 읽기 실패] 파일이 없습니다: " + absolutePath);
+            return "[에러: 파일을 찾을 수 없습니다]";
+        }
+
+        try (java.io.FileInputStream fis = new java.io.FileInputStream(file);
+             XWPFDocument document = new XWPFDocument(fis)) {
+
+            StringBuilder sb = new StringBuilder();
+            document.getParagraphs().forEach(p -> sb.append(p.getText()).append("\n"));
+
+            System.out.println("✅ [DOCX 추출 성공] 글자 수: " + sb.length());
+            return sb.toString();
+        } catch (Exception e) {
+            System.err.println("❌ [DOCX 분석 에러] " + e.getMessage());
+            return "[에러: 워드 파일 분석 중 오류 발생]";
+        }
+
+    }
+    public boolean isAiRoom(String roomId) {
+        return chatMapper.countAiRoom(roomId) > 0;
     }
 
 }

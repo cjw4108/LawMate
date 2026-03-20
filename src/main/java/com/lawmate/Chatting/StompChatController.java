@@ -13,26 +13,54 @@ public class StompChatController {
     private final RedisPublisher redisPublisher;
     private final A03_ChattingService chattingService;
 
-    @MessageMapping("/chat/message") // JS에서 .send("/pub/chat/message", ...) 보낼 때 호출
-    public void handleMessage(ChatMessage message) {
-
-        // 1. DB 저장 (비동기)
-        CompletableFuture.runAsync(() -> {
+    @MessageMapping("/chat/message")
+    public void message(ChatMessage message) {
+        try {
             chattingService.saveMessage(
-                    message.getRoomId(),
-                    message.getSenderId(),
-                    message.getSenderType(),
-                    message.getMessage()
+                    message.getRoomId(), message.getSenderId(),
+                    message.getSenderType(), message.getMessage()
             );
-        });
+            redisPublisher.publish(message);
 
-        // 2. AI 상담인 경우 (기존 핸들러 로직 이식)
-        if ("AI".equals(message.getSenderType()) || "GEMINI_AI".equals(message.getSenderId())) {
-            // AI 로직 수행... (필요시 추가)
+            // ✅ AI 방일 때만 AI 응답
+            if ("USER".equals(message.getSenderType())
+                    && chattingService.isAiRoom(message.getRoomId())) {
+
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        String aiAnswer;
+                        if (message.getFilePath() != null && !message.getFilePath().trim().isEmpty()) {
+                            aiAnswer = chattingService.requestAiAnalysisByPath(message.getFilePath());
+                        } else {
+                            aiAnswer = chattingService.askGemini(message.getMessage(), null);
+                        }
+
+                        ChatMessage aiMsg = new ChatMessage();
+                        aiMsg.setRoomId(message.getRoomId());
+                        aiMsg.setSenderId("GEMINI_AI");
+                        aiMsg.setSenderName("법률 AI");
+                        aiMsg.setSenderType("AI");
+                        aiMsg.setMessage(aiAnswer);
+
+                        chattingService.saveMessage(
+                                aiMsg.getRoomId(), aiMsg.getSenderId(),
+                                aiMsg.getSenderType(), aiMsg.getMessage()
+                        );
+                        redisPublisher.publish(aiMsg);
+
+                    } catch (Exception e) {
+                        System.err.println("AI 응답 오류: " + e.getMessage());
+                    }
+                });
+            }
+
+        } catch (Exception e) {
+            System.err.println("메시지 처리 오류: " + e.getMessage());
         }
+    }
 
-        // 3. 🚀 핵심: Redis로 메시지 발행 (이게 있어야 실시간으로 보임!)
-        // RedisPublisher가 메시지를 던지면 RedisSubscriber가 받아서 화면에 뿌려줍니다.
-        redisPublisher.publish(message);
+
+    private boolean isAiRoom(String roomId) {
+        return roomId.contains("AI_CHAT");
     }
 }

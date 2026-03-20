@@ -8,11 +8,13 @@ from google import genai
 import io
 from PIL import Image
 import fitz
+from pathlib import Path
+from dotenv import load_dotenv
 
 app = FastAPI()
+load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env")
 
-
-raw_api_key = "AIzaSyDU3Ij6EMTpXt3nODrrfxLDFlQskFGiJko" # 👈 여기에 실제 키를 정확히 입력하세요
+raw_api_key = "${gemini.api.key}" # 👈 여기에 실제 키를 정확히 입력하세요
 api_key = raw_api_key.strip().replace("\n", "").replace("\r", "")
 client = genai.Client(api_key=api_key)
 
