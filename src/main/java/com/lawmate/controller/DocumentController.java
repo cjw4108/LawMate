@@ -21,15 +21,12 @@ import java.util.Map;
 
 @Controller
 public class DocumentController {
-
     @Autowired
     private DocumentService documentService;
-
     @Autowired
     private DocumentLoaderService documentLoaderService;
-
     @Autowired
-    private DocumentDAO documentDAO; // 다운로드에서만 사용
+    private DocumentDAO documentDAO;
 
     @GetMapping("/docs")
     public String document() {

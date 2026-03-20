@@ -251,57 +251,6 @@
         </div>
     </section>
 
-    <section class="quick-forms-section" data-aos="zoom-out" data-aos-delay="300" style="padding: 3rem 0; margin-top: 4rem">
-        <div class="container">
-            <h3 class="mb-4 text-left fw-bold">자주 쓰는 양식 간편 작성</h3>
-            <div class="row quick-form-row gy-4" data-aos="fade-up" data-aos-delay="500">
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/complaint" class="quick-form-card" style="text-decoration: none; --hover-color: #667eea;">
-                        <div class="quick-form-icon" style="background: #f5f3ff;">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #667eea;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">소장</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">민사소송 소장 작성</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/written-preparation" class="quick-form-card" style="text-decoration: none; --hover-color: #f5576c;">
-                        <div class="quick-form-icon" style="background: #fff0f3;">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #f5576c;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">준비서면</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">소송 준비서면 작성</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/accusation" class="quick-form-card" style="text-decoration: none; --hover-color: #4facfe;">
-                        <div class="quick-form-icon" style="background: #eff8ff;">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #4facfe;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">고소장</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">형사 고소장 작성</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <a href="/forms/content-certification" class="quick-form-card" style="text-decoration: none; --hover-color: #43e97b;">
-                        <div class="quick-form-icon" style="background: #f0fdf4;">
-                            <i class="bi bi-file-earmark-text" style="font-size: 1.8rem; color: #43e97b;"></i>
-                        </div>
-                        <div class="quick-form-content">
-                            <h4 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">내용증명</h4>
-                            <p style="font-size: 0.85rem; color: #64748b; margin: 0;">내용증명 우편 작성</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <section id="about" class="about section" data-aos="zoom-out" data-aos-delay="300" style="padding-top: 0 !important; margin-top: 3rem">
         <div class="container">
