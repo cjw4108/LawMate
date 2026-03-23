@@ -45,7 +45,6 @@
             <input type="hidden" name="status" value="정상">
             <input type="hidden" name="idChecked" id="idChecked" value="false">
 
-            <!-- 1. 아이디 입력 + 중복확인 버튼 -->
             <div class="mb-3">
                 <label class="form-label">아이디 <span class="text-danger">*</span></label>
                 <div class="id-check-wrapper">
@@ -55,32 +54,27 @@
                 <div id="idCheckMsg"></div>
             </div>
 
-            <!-- 2. 이름 입력 -->
             <div class="mb-3">
                 <label class="form-label">이름 <span class="text-danger">*</span></label>
                 <input type="text" name="name" class="form-control" placeholder="성명을 입력해주세요" required>
             </div>
 
-            <!-- 3. 전화번호 입력 -->
             <div class="mb-3">
                 <label class="form-label">전화번호 <span class="text-danger">*</span></label>
                 <input type="text" name="phone" class="form-control" placeholder="010-0000-0000" required>
             </div>
 
-            <!-- 4. 비밀번호 입력 -->
             <div class="mb-3">
                 <label class="form-label">비밀번호 <span class="text-danger">*</span></label>
                 <input type="password" name="password" id="password" class="form-control" placeholder="비밀번호 입력" required>
             </div>
 
-            <!-- 5. 비밀번호 확인 -->
             <div class="mb-3">
                 <label class="form-label">비밀번호 확인 <span class="text-danger">*</span></label>
                 <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control" placeholder="비밀번호 재 입력" required>
                 <div id="pwHint" style="font-size:12px; margin-top:4px;"></div>
             </div>
 
-            <!-- 6. 이메일 입력 -->
             <div class="mb-4">
                 <label class="form-label">이메일 <span class="text-danger">*</span></label>
                 <input type="email" name="email" class="form-control" placeholder="example@mail.com" required>
@@ -96,7 +90,7 @@
 </div>
 
 <script>
-    // 1. 아이디 중복확인
+    // 1. 아이디 중복확인 (수정됨)
     function checkDuplicate() {
         const userId = document.getElementById('userId').value.trim();
         const msg = document.getElementById('idCheckMsg');
@@ -107,10 +101,17 @@
             return;
         }
 
-        fetch('${pageContext.request.contextPath}/check-id?userId=' + encodeURIComponent(userId))
-            .then(res => res.json())
+
+        fetch('${pageContext.request.contextPath}/checkId', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'userId=' + encodeURIComponent(userId)
+        })
+            .then(res => res.text()) // 서버의 @ResponseBody String 응답을 받기 위해 text() 사용
             .then(data => {
-                if (data.available) {
+                if (data === 'available') {
                     msg.textContent = '사용 가능한 아이디입니다.';
                     msg.style.color = '#198754';
                     document.getElementById('idChecked').value = 'true';
@@ -190,4 +191,3 @@
 </script>
 </body>
 </html>
-

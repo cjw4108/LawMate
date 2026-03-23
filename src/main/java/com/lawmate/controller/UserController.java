@@ -30,30 +30,24 @@ public class UserController {
 
         UserDTO user = userService.login(userId, password);
 
-        // 1. 아이디/비밀번호가 틀린 경우
         if (user == null) {
             model.addAttribute("error", "아이디 또는 비밀번호가 틀립니다.");
             return "login";
         }
 
-        // 2. 계정 상태가 '정지'인 경우
         if ("정지".equals(user.getStatus())) {
             model.addAttribute("error", "관리자에 의해 이용이 제한된 계정입니다.");
             return "login";
         }
 
-        // 3. 변호사 승인 대기중인 경우
         if ("ROLE_LAWYER".equals(user.getRole()) && "승인대기".equals(user.getStatus())) {
             model.addAttribute("error", "현재 자격 승인 심사 중입니다. 관리자 승인 후 이용 가능합니다.");
             return "login";
         }
 
-        // --- [수정 구간] 로그인 성공 시 세션 저장 ---
         session.setAttribute("loginUser", user);
-        // ⭐ 중요: AdminInterceptor가 권한을 확인할 수 있도록 userRole을 세션에 개별 저장합니다.
         session.setAttribute("userRole", user.getRole());
 
-        // 권한별 리다이렉트 (기현 님 요청 사항: 관리자는 바로 관리자 페이지로)
         if ("ROLE_ADMIN".equals(user.getRole())) {
             return "redirect:/admin/main";
         } else {
@@ -71,11 +65,26 @@ public class UserController {
         return "lawyer";
     }
 
-    // --- 1. 일반 사용자 회원가입 (기존 유지: 가입 즉시 정상) ---
+    // --- [추가] 기현님 요청 사항: 아이디 중복 체크 전용 메서드 ---
+    @PostMapping("/checkId")
+    @ResponseBody
+    public String checkId(@RequestParam("userId") String userId) {
+        boolean isDuplicate = userService.idCheck(userId);
+        return isDuplicate ? "duplicated" : "available";
+    }
+
+    // --- [수정] 일반 사용자 회원가입 로직 ---
     @PostMapping("/signup")
     public String signup(UserDTO user, @RequestParam String passwordConfirm, HttpSession session, Model model) {
+        // 1. 비밀번호 일치 확인
         if (!user.getPassword().equals(passwordConfirm)) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "signup";
+        }
+
+        // 2. 아이디 중복 체크 (기현님이 지적한 20라인 문제 해결)
+        if (userService.idCheck(user.getUserId())) {
+            model.addAttribute("error", "이미 사용 중인 아이디입니다.");
             return "signup";
         }
 
@@ -83,13 +92,15 @@ public class UserController {
         user.setStatus("정상");
         user.setRole("ROLE_USER");
 
+        // 3. 가입 처리
         if (userService.signup(user)) {
             session.setAttribute("loginUser", user);
-            // 일반 사용자 가입 시에도 인터셉터 통과를 위해 Role을 담아주는 것이 좋습니다.
             session.setAttribute("userRole", user.getRole());
             return "redirect:/home?msg=welcome";
         }
-        model.addAttribute("error", "아이디 중복 또는 가입 실패");
+
+        // 4. 기타 서버 오류
+        model.addAttribute("error", "회원가입 처리 중 오류가 발생했습니다.");
         return "signup";
     }
 
@@ -101,6 +112,12 @@ public class UserController {
 
         if (!user.getPassword().equals(passwordConfirm)) {
             model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "lawyer";
+        }
+
+        // 변호사 가입 시에도 중복 체크 추가
+        if (userService.idCheck(user.getUserId())) {
+            model.addAttribute("error", "이미 사용 중인 아이디입니다.");
             return "lawyer";
         }
 

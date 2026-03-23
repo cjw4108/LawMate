@@ -17,19 +17,26 @@ public class UserService {
 
     private final UserDAO userDAO;
 
-    // ✅ : 프로젝트 내부의 static/uploads 폴더를 경로로 지정
     private final String uploadPath = System.getProperty("user.dir") + "/src/main/resources/static/uploads/";
 
-    // 1. 일반 회원가입
+    // ✅ 추가: 아이디 중복 체크 로직 (컨트롤러에서 호출함)
+    public boolean idCheck(String userId) {
+        // 0보다 크면 중복(true), 0이면 사용 가능(false)
+        return userDAO.existsByUserId(userId) > 0;
+    }
+
+    // 1. 일반 회원가입 (로직 보강)
     @Transactional
     public boolean signup(UserDTO user) {
-        if (userDAO.existsByUserId(user.getUserId()) > 0) {
+        // 이미 가입된 아이디인지 확인
+        if (idCheck(user.getUserId())) {
             return false;
         }
 
         user.setRole("ROLE_USER");
         user.setStatus("정상");
 
+        // 가입 성공 여부를 반환하도록 수정 (DAO가 영향을 받은 행의 수를 반환한다고 가정)
         userDAO.signup(user);
         return true;
     }
@@ -37,10 +44,10 @@ public class UserService {
     // 2. 변호사 회원가입
     @Transactional
     public boolean signupLawyer(UserDTO user, MultipartFile licenseFile) {
-        if (userDAO.existsByUserId(user.getUserId()) > 0) {
+        if (idCheck(user.getUserId())) {
             return false;
         }
-// ✅ 자격증 파일이 있을 경우 저장 처리
+
         if (licenseFile != null && !licenseFile.isEmpty()) {
             try {
                 String savedName = saveFile(licenseFile);
@@ -52,19 +59,20 @@ public class UserService {
         }
 
         user.setRole("ROLE_LAWYER");
-        user.setStatus("승인대기"); // 로그인 시 '승인대기' 상태면 차단되도록 컨트롤러에서 처리됨
-        user.setLawyerStatus("PENDING"); // 관리자 승인 페이지 목록용
+        user.setStatus("승인대기");
+        user.setLawyerStatus("PENDING");
 
         return userDAO.saveLawyer(user) > 0;
     }
-    // 3. 로그인 (정지 계정 차단 로직 추가)
+
+    // 3. 로그인
     public UserDTO login(String userId, String password) {
         return userDAO.login(userId, password);
     }
-    // 4. 관리자용: 유저 상태 변경 (정상 <-> 정지)
+
+    // 4. 관리자용: 유저 상태 변경
     @Transactional
     public void changeStatus(String userId, String status) {
-        // 이 기능을 위해 UserDAO에 updateStatus(userId, status) 메서드가 필요합니다.
         userDAO.updateStatus(userId, status);
     }
 
@@ -77,18 +85,13 @@ public class UserService {
         userDAO.updateProfile(userDTO);
     }
 
-    // ✅ 파일 저장 유틸리티 (경로 생성 로직 포함)
     private String saveFile(MultipartFile file) throws Exception {
-        // 폴더가 없으면 생성
         File dir = new File(uploadPath);
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        // 파일명 중복 방지를 위한 UUID 처리
         String savedName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-
-        // 실제 파일 저장
         File destination = new File(uploadPath + savedName);
         file.transferTo(destination);
 
