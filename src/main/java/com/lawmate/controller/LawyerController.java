@@ -86,10 +86,16 @@ public class LawyerController {
      * 변호사 등록 폼
      * GET /lawyer/register
      */
-    @GetMapping("/register")
-    public String lawyerRegisterForm(Model model) {
-        model.addAttribute("lawyer", new LawyerDTO());
-        return "lawyer/lawyerForm";
+    @GetMapping("/register/{lawyerId}")
+    public String lawyerRegisterForm(@PathVariable Long lawyerId, Model model) {
+        LawyerDTO lawyer = lawyerService.getLawyerDetail(lawyerId);
+        if (lawyer != null) {
+            model.addAttribute("lawyer", lawyer);
+            return "lawyer/lawyerDetail";
+        } else {
+            model.addAttribute("lawyer", new LawyerDTO());
+            return "lawyer/lawyerForm";
+        }
     }
 
     /**
@@ -99,8 +105,8 @@ public class LawyerController {
     @PostMapping("/register")
     public String lawyerRegister(@ModelAttribute LawyerDTO dto,
                                  RedirectAttributes redirectAttr) {
+        System.out.println("# process 14 #"+dto);
         try {
-//            System.out.println("# process 14 #"+dto);
             lawyerService.registerLawyer(dto);
             redirectAttr.addFlashAttribute("successMsg", "변호사가 등록되었습니다.");
         } catch (Exception e) {

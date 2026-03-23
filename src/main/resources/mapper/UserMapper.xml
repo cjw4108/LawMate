@@ -43,6 +43,7 @@
 
     <select id="login" resultType="com.lawmate.dto.UserDTO">
         SELECT
+            ID            AS id,
             USER_ID       AS userId,
             NAME          AS name,
             EMAIL         AS email,

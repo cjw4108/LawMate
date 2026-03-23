@@ -192,12 +192,15 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script type="text/javascript">
     $(document).ready(function() {
-        if ("${loginUser.role}" == "ROLE_LAWYER") {
-            if ("${loginUser.email}" == "${lawyer.email}") {
+        $("input[name='name']").val("${loginUser.name}");
+        $("input[name='email']").val("${loginUser.email}");
+        $("input[name='phone']").val("${loginUser.phone}");
+        if ("${loginUser.role}" != "ROLE_ADMIN") {
+//            if ("${loginUser.email}" == "${lawyer.email}") {
                 $("#reggo").show();
-            } else {
-                $("#reggo").hide();
-            }
+//            } else {
+//                $("#reggo").hide();
+//            }
         }
     });
 </script>

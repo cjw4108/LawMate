@@ -98,7 +98,7 @@
     <!-- 변호사 등록 -->
     <insert id="insertLawyer" parameterType="com.lawmate.dto.LawyerDTO">
         <selectKey keyProperty="lawyerId" resultType="long" order="BEFORE">
-            SELECT SEQ_LAWYER.NEXTVAL FROM DUAL
+            SELECT ID FROM USERS WHERE EMAIL = #{email}
         </selectKey>
         INSERT INTO TB_LAWYER (
             LAWYER_ID, NAME, NAME_EN, BAR_NUMBER,

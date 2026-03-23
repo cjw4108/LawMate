@@ -37,7 +37,7 @@
 </style>
 <main class="main">
     <br><br>
-<h2>⚖️ 변호사 프로필 목록</h2>
+<h2>⚖️ 변호사 프로필 목록 </h2>
 
 <c:if test="${not empty successMsg}">
     <div class="msg-success">${successMsg}</div>
@@ -60,7 +60,7 @@
         <input type="hidden" name="pageNo"   value="1"/>
         <input type="hidden" name="pageSize" value="${searchDTO.pageSize}"/>
         <button type="submit" class="btn btn-primary">🔍 검색</button>
-        <a id="reggo" href="/lawyer/register" class="btn btn-success" style="text-decoration:none">+ 변호사 등록</a>
+        <a id="reggo" href="/lawyer/register/${loginUser.id}" class="btn btn-success" style="text-decoration:none">+ 변호사 등록</a>
     </div>
 </form>
 <div class="total-count">총 <strong>${totalCount}</strong> 건</div>
@@ -186,7 +186,7 @@
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script type="text/javascript">
     $(document).ready(function() {
-        if ("${loginUser.role}" == "ROLE_LAWYER") {
+        if ("${loginUser.role}" == "ROLE_ADMIN") {
             $("#reggo").hide();
         } else {
             $("#reggo").show();

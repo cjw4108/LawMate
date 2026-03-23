@@ -42,9 +42,9 @@ public class LawyerService {
 
     public LawyerDTO getLawyerDetail(Long lawyerId) {
         LawyerDTO result = lawyerDAO.selectLawyerDetail(lawyerId);
-        if (result == null) {
-            throw new RuntimeException("해당 변호사를 찾을 수 없습니다. ID: " + lawyerId);
-        }
+//        if (result == null) {
+//            throw new RuntimeException("해당 변호사를 찾을 수 없습니다. ID: " + lawyerId);
+//        }
         return result;
     }
 

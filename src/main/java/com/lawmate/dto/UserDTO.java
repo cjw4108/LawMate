@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true) // 알 수 없는 필드 무시
 public class UserDTO {
     // 1. 기본 계정 정보
+    private int id;
     private String userId;
     private String password;
     private String name;
@@ -35,7 +36,7 @@ public class UserDTO {
 
     @Override
     public String toString() {
-        return "UserDTO [userId=" + userId + ", name=" + name + ", phone=" + phone +
+        return "UserDTO [id=" + id + ", userId=" + userId + ", name=" + name + ", phone=" + phone +
                 ", role=" + role + ", status=" + status + ", lawyerStatus=" + lawyerStatus + "]";
     }
 }
