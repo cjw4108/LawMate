@@ -108,7 +108,7 @@ public class A03_ChattingService {
             dto.setRoomId(roomId);
             dto.setSenderId(senderId);
             dto.setSenderType(senderType);
-            dto.setMessage(content); // content가 (첨부파일 전송)으로 치환되어 들어감
+            dto.setMessage(content);
 
             chatMapper.insertMessage(dto);
             System.out.println("✅ [DB 저장 성공]");
