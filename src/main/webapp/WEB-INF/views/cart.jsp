@@ -204,7 +204,6 @@
                     </div>
                     <div class="cart-actions">
                         <button class="btn-clear" onclick="clearCart()">전체 삭제</button>
-                        <button class="btn-download-all" onclick="downloadAll()">전체 다운로드</button>
                     </div>
                 </div>
             </c:otherwise>
