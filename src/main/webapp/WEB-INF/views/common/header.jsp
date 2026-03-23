@@ -82,7 +82,6 @@
                             <ul class="dropdown-menu shadow border-0">
                                 <c:if test="${loginUser.role eq 'ROLE_USER'}">
                                     <li><a class="dropdown-item" href="/mypage">마이페이지</a></li>
-                                    <li><a class="dropdown-item" href="#">상담 내역</a></li>
                                 </c:if>
                                 <c:if test="${loginUser.role eq 'ROLE_LAWYER'}">
                                     <li><a class="dropdown-item" href="/mypage">변호사 마이페이지</a></li>

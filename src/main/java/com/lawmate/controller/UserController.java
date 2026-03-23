@@ -4,7 +4,6 @@ import com.lawmate.dto.UserDTO;
 import com.lawmate.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,37 +16,6 @@ import java.time.LocalDate;
 public class UserController {
 
     private final UserService userService;
-
-    @GetMapping("/api/user/profile")
-    @ResponseBody
-    public ResponseEntity<?> getProfile(HttpSession session) {
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        }
-        UserDTO profile = userService.findByUserId(loginUser.getUserId());
-        if (profile == null) {
-            return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.");
-        }
-        return ResponseEntity.ok(profile);
-    }
-
-    @PutMapping("/api/user/profile")
-    @ResponseBody
-    public ResponseEntity<?> updateProfile(@RequestBody UserDTO userDTO, HttpSession session) {
-        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
-        if (loginUser == null) {
-            return ResponseEntity.status(401).body("로그인이 필요합니다.");
-        }
-        userDTO.setUserId(loginUser.getUserId());
-        userService.updateProfile(userDTO);
-        // 세션 정보도 최신화
-        loginUser.setName(userDTO.getName());
-        loginUser.setEmail(userDTO.getEmail());
-        loginUser.setPhone(userDTO.getPhone());
-        session.setAttribute("loginUser", loginUser);
-        return ResponseEntity.ok("success");
-    }
 
     @GetMapping("/login")
     public String loginPage() {
@@ -62,24 +30,30 @@ public class UserController {
 
         UserDTO user = userService.login(userId, password);
 
+        // 1. 아이디/비밀번호가 틀린 경우
         if (user == null) {
             model.addAttribute("error", "아이디 또는 비밀번호가 틀립니다.");
             return "login";
         }
 
+        // 2. 계정 상태가 '정지'인 경우
         if ("정지".equals(user.getStatus())) {
             model.addAttribute("error", "관리자에 의해 이용이 제한된 계정입니다.");
             return "login";
         }
 
+        // 3. 변호사 승인 대기중인 경우
         if ("ROLE_LAWYER".equals(user.getRole()) && "승인대기".equals(user.getStatus())) {
             model.addAttribute("error", "현재 자격 승인 심사 중입니다. 관리자 승인 후 이용 가능합니다.");
             return "login";
         }
 
+        // --- [수정 구간] 로그인 성공 시 세션 저장 ---
         session.setAttribute("loginUser", user);
+        // ⭐ 중요: AdminInterceptor가 권한을 확인할 수 있도록 userRole을 세션에 개별 저장합니다.
         session.setAttribute("userRole", user.getRole());
 
+        // 권한별 리다이렉트 (기현 님 요청 사항: 관리자는 바로 관리자 페이지로)
         if ("ROLE_ADMIN".equals(user.getRole())) {
             return "redirect:/admin/main";
         } else {
@@ -97,6 +71,7 @@ public class UserController {
         return "lawyer";
     }
 
+    // --- 1. 일반 사용자 회원가입 (기존 유지: 가입 즉시 정상) ---
     @PostMapping("/signup")
     public String signup(UserDTO user, @RequestParam String passwordConfirm, HttpSession session, Model model) {
         if (!user.getPassword().equals(passwordConfirm)) {
@@ -110,6 +85,7 @@ public class UserController {
 
         if (userService.signup(user)) {
             session.setAttribute("loginUser", user);
+            // 일반 사용자 가입 시에도 인터셉터 통과를 위해 Role을 담아주는 것이 좋습니다.
             session.setAttribute("userRole", user.getRole());
             return "redirect:/home?msg=welcome";
         }
