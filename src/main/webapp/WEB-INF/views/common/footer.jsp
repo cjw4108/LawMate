@@ -12,7 +12,7 @@
 <script src="/vendor/glightbox/js/glightbox.min.js"></script>
 <script src="/vendor/swiper/swiper-bundle.min.js"></script>
 <script src="/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="/js/main.js"></script>
+<script type="module" src="/js/vue-app/main.js"></script>
 
 <script>
     function updateCartCount() {

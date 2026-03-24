@@ -588,6 +588,12 @@
             }
         });
     }
+    $(document).ready(function() {
+        $('#categoryDropdown').on('click', function() {
+            const dropdown = new bootstrap.Dropdown(this);
+            dropdown.toggle();
+        });
+    });
 </script>
 
 </body>
