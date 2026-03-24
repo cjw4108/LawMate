@@ -6,6 +6,17 @@
 <html lang="ko">
 <jsp:include page="/WEB-INF/views/common/header.jsp" />
 <style>
+    .default-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100px;
+        height: 100px;
+        background-color: #e9ecef;
+        border-radius: 50%;
+        font-size: 40px;
+    }
+
     * { box-sizing: border-box; }
     body { font-family: 'Nanum Gothic', sans-serif; background: #f4f6fb; margin: 0; padding: 30px; }
     .container { max-width: 860px; margin: 0 auto; }
@@ -89,13 +100,9 @@
     <!-- 프로필 헤더 -->
     <div class="profile-card">
         <div class="profile-img">
-            <c:choose>
-                <c:when test="${not empty lawyer.profileImage}">
-                    <img src="${lawyer.profileImage}" alt="프로필 이미지"
-                         onerror="this.parentNode.innerHTML='⚖️'"/>
-                </c:when>
-                <c:otherwise>⚖️</c:otherwise>
-            </c:choose>
+            <div class="lawyer-profile-icon" style="font-size: 50px; text-align: center;">
+                ⚖️
+            </div>
         </div>
         <div class="profile-info">
             <h1 style="color: #fff;">
