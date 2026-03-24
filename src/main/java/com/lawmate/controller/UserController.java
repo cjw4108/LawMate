@@ -1,6 +1,8 @@
 package com.lawmate.controller;
 
+import com.lawmate.dto.LawyerDTO;
 import com.lawmate.dto.UserDTO;
+import com.lawmate.service.LawyerService;
 import com.lawmate.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.time.LocalDate;
 public class UserController {
 
     private final UserService userService;
+    private final LawyerService lawyerService; // ← 추가
 
     @GetMapping("/login")
     public String loginPage() {
@@ -48,12 +51,9 @@ public class UserController {
             return "login";
         }
 
-        // --- [수정 구간] 로그인 성공 시 세션 저장 ---
         session.setAttribute("loginUser", user);
-        // ⭐ 중요: AdminInterceptor가 권한을 확인할 수 있도록 userRole을 세션에 개별 저장합니다.
         session.setAttribute("userRole", user.getRole());
 
-        // 권한별 리다이렉트 (기현 님 요청 사항: 관리자는 바로 관리자 페이지로)
         if ("ROLE_ADMIN".equals(user.getRole())) {
             return "redirect:/admin/main";
         } else {
@@ -71,7 +71,7 @@ public class UserController {
         return "lawyer";
     }
 
-    // --- 1. 일반 사용자 회원가입 (기존 유지: 가입 즉시 정상) ---
+    // --- 1. 일반 사용자 회원가입 ---
     @PostMapping("/signup")
     public String signup(UserDTO user, @RequestParam String passwordConfirm, HttpSession session, Model model) {
         if (!user.getPassword().equals(passwordConfirm)) {
@@ -85,13 +85,13 @@ public class UserController {
 
         if (userService.signup(user)) {
             session.setAttribute("loginUser", user);
-            // 일반 사용자 가입 시에도 인터셉터 통과를 위해 Role을 담아주는 것이 좋습니다.
             session.setAttribute("userRole", user.getRole());
             return "redirect:/home?msg=welcome";
         }
         model.addAttribute("error", "아이디 중복 또는 가입 실패");
         return "signup";
     }
+
     @PostMapping("/checkId")
     @ResponseBody
     public String checkId(@RequestParam String userId) {
@@ -127,5 +127,51 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    // --- 프로필 조회 ---
+    @GetMapping("/api/user/profile")
+    @ResponseBody
+    public UserDTO getProfile(HttpSession session) {
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null) return null;
+
+        UserDTO user = userService.findByUserId(loginUser.getUserId());
+
+        if ("ROLE_LAWYER".equals(user.getRole())) {
+            LawyerDTO lawyer = lawyerService.getLawyerByEmail(user.getEmail()); // ← 이메일로 조회
+            if (lawyer != null) {
+                user.setSpecialty(lawyer.getSpecialty());
+                user.setIntroduction(lawyer.getIntroduction());
+            }
+        }
+
+        return user;
+    }
+
+    // --- 프로필 수정 ---
+    @PutMapping("/api/user/profile")
+    @ResponseBody
+    public String updateProfile(@RequestBody UserDTO userDTO, HttpSession session) {
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+        if (loginUser == null) return "UNAUTHORIZED";
+
+        userDTO.setId(loginUser.getId());
+        userDTO.setRole(loginUser.getRole());
+
+        System.out.println("받은 userDTO: " + userDTO);
+        System.out.println("specialty: " + userDTO.getSpecialty());
+        System.out.println("introduction: " + userDTO.getIntroduction());
+        System.out.println("role: " + userDTO.getRole());
+        System.out.println("id: " + userDTO.getId());
+
+        userService.updateProfile(userDTO);
+
+        loginUser.setName(userDTO.getName());
+        loginUser.setEmail(userDTO.getEmail());
+        loginUser.setPhone(userDTO.getPhone());
+        session.setAttribute("loginUser", loginUser);
+
+        return "OK";
     }
 }

@@ -47,7 +47,9 @@ public class LawyerService {
 //        }
         return result;
     }
-
+    public LawyerDTO getLawyerByEmail(String email) {
+        return lawyerDAO.selectLawyerByEmail(email);
+    }
     public void registerLawyer(LawyerDTO dto) {
         if (dto.getStatus() == null || dto.getStatus().isEmpty()) {
             dto.setStatus("ACTIVE");

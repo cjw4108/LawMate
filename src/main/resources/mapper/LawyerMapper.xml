@@ -81,16 +81,27 @@
         </if>
     </select>
 
-    <!-- 변호사 단건 조회 -->
+    <!-- 변호사 단건 조회 (LAWYER_ID 기준) -->
     <select id="selectLawyerDetail" parameterType="long"
             resultMap="LawyerResultMap">
         SELECT
             LAWYER_ID, NAME, NAME_EN, BAR_NUMBER,
             EMAIL, PHONE, SPECIALTY, EDUCATION,
-            CAREER,  INTRODUCTION,
+            CAREER, INTRODUCTION,
             STATUS, ADMISSION_DATE, CREATED_AT, UPDATED_AT
         FROM TB_LAWYER
         WHERE LAWYER_ID = #{lawyerId}
+    </select>
+
+    <!-- 변호사 단건 조회 (EMAIL 기준) -->
+    <select id="selectLawyerByEmail" parameterType="string" resultMap="LawyerResultMap">
+        SELECT
+            LAWYER_ID, NAME, NAME_EN, BAR_NUMBER,
+            EMAIL, PHONE, SPECIALTY, EDUCATION,
+            CAREER, INTRODUCTION,
+            STATUS, ADMISSION_DATE, CREATED_AT, UPDATED_AT
+        FROM TB_LAWYER
+        WHERE EMAIL = #{email}
     </select>
 
     <!-- 변호사 등록 -->
@@ -141,6 +152,19 @@
         SET STATUS     = 'INACTIVE',
             UPDATED_AT = SYSDATE
         WHERE LAWYER_ID = #{lawyerId}
+    </update>
+
+    <!-- 변호사 본인 프로필 수정 (회원정보 수정 페이지용) -->
+    <update id="updateLawyerProfile" parameterType="com.lawmate.dto.LawyerDTO">
+        UPDATE TB_LAWYER
+        SET
+            NAME         = #{name},
+            EMAIL        = #{email},
+            PHONE        = #{phone},
+            SPECIALTY    = #{specialty},
+            INTRODUCTION = #{introduction},
+            UPDATED_AT   = SYSDATE
+        WHERE EMAIL = #{email}
     </update>
 
 </mapper>

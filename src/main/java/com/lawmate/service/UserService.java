@@ -1,6 +1,8 @@
 package com.lawmate.service;
 
+import com.lawmate.dao.LawyerDAO;
 import com.lawmate.dao.UserDAO;
+import com.lawmate.dto.LawyerDTO;
 import com.lawmate.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserDAO userDAO;
+    private final LawyerDAO lawyerDAO;
 
     private final String uploadPath = System.getProperty("user.dir") + "/src/main/resources/static/uploads/";
 
@@ -35,9 +38,7 @@ public class UserService {
         return true;
     }
 
-
     public boolean isUserIdExists(String userId) {
-        // 리턴값이 int이므로 0보다 큰지 비교해야 합니다.
         return userDAO.existsByUserId(userId) > 0;
     }
 
@@ -81,7 +82,25 @@ public class UserService {
     // 6. 프로필 수정
     @Transactional
     public void updateProfile(UserDTO userDTO) {
+        // ① USERS 테이블 수정
         userDAO.updateProfile(userDTO);
+
+        // ② 변호사면 TB_LAWYER도 동기화
+        if ("ROLE_LAWYER".equals(userDTO.getRole())) {
+            LawyerDTO lawyerDTO = new LawyerDTO();
+            lawyerDTO.setLawyerId((long) userDTO.getId());
+            lawyerDTO.setName(userDTO.getName());
+            lawyerDTO.setEmail(userDTO.getEmail());
+            lawyerDTO.setPhone(userDTO.getPhone());
+            lawyerDTO.setSpecialty(userDTO.getSpecialty());
+            lawyerDTO.setIntroduction(userDTO.getIntroduction());
+
+            System.out.println("LawyerDTO lawyerId: " + lawyerDTO.getLawyerId());
+            System.out.println("LawyerDTO specialty: " + lawyerDTO.getSpecialty());
+
+            int result = lawyerDAO.updateLawyerProfile(lawyerDTO);
+            System.out.println("updateLawyerProfile result: " + result);
+        }
     }
 
     // 파일 저장 유틸리티
