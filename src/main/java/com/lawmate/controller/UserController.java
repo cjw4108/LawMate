@@ -92,6 +92,12 @@ public class UserController {
         model.addAttribute("error", "아이디 중복 또는 가입 실패");
         return "signup";
     }
+    @PostMapping("/checkId")
+    @ResponseBody
+    public String checkId(@RequestParam String userId) {
+        boolean exists = userService.isUserIdExists(userId);
+        return exists ? "duplicate" : "available";
+    }
 
     @PostMapping("/signup/lawyer")
     public String signupLawyer(UserDTO user,

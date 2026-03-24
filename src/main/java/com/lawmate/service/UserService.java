@@ -35,6 +35,10 @@ public class UserService {
         return true;
     }
 
+    public boolean isUserIdExists(String userId) {
+        return userDAO.countByUserId(userId) > 0;
+    }
+
     // 2. 변호사 회원가입
     @Transactional
     public boolean signupLawyer(UserDTO user, MultipartFile licenseFile) {

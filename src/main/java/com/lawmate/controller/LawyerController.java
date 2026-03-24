@@ -104,18 +104,40 @@ public class LawyerController {
      */
     @PostMapping("/register")
     public String lawyerRegister(@ModelAttribute LawyerDTO dto,
+                                 HttpSession session,          // ← 추가
                                  RedirectAttributes redirectAttr) {
-        System.out.println("# process 14 #"+dto);
+        System.out.println("# process 14 #" + dto);
+
+        // 이메일이 비어있으면 세션에서 가져오기
+        if (dto.getEmail() == null || dto.getEmail().isEmpty()) {
+            UserDTO loginUser = (UserDTO) session.getAttribute("loginUser");
+            if (loginUser != null) {
+                dto.setEmail(loginUser.getEmail());
+            }
+        }
+
         try {
             lawyerService.registerLawyer(dto);
             redirectAttr.addFlashAttribute("successMsg", "변호사가 등록되었습니다.");
         } catch (Exception e) {
+            e.printStackTrace();
+
             String msg = e.getMessage();
-            String errorMsg = msg.substring(msg.lastIndexOf(":") + 1);
-            if(errorMsg.contains("PRJ01.SYS_C008609")) {errorMsg=errorMsg.replace("PRJ01.SYS_C008609","변호사 등록번호");}
-            else if(errorMsg.contains("PRJ01.SYS_C008610")) {errorMsg=errorMsg.replace("PRJ01.SYS_C008610","이메일");}
+            String errorMsg;
+
+            if (msg == null) {
+                errorMsg = "알 수 없는 오류가 발생했습니다.";
+            } else {
+                errorMsg = msg.substring(msg.lastIndexOf(":") + 1);
+                if (errorMsg.contains("PRJ01.SYS_C008609")) {
+                    errorMsg = errorMsg.replace("PRJ01.SYS_C008609", "변호사 등록번호");
+                } else if (errorMsg.contains("PRJ01.SYS_C008610")) {
+                    errorMsg = errorMsg.replace("PRJ01.SYS_C008610", "이메일");
+                }
+            }
+
             redirectAttr.addFlashAttribute("errorMsg", errorMsg);
-            return "redirect:/lawyer/register";
+            return "redirect:/lawyer/list"; // ✅ 목록으로 리다이렉트
         }
         return "redirect:/lawyer/list";
     }

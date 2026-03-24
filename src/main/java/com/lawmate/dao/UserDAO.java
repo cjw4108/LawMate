@@ -3,6 +3,8 @@ package com.lawmate.dao;
 import com.lawmate.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import java.util.List; // ★ List를 쓰기 위해 이 줄이 꼭 있어야 합니다!
 
 @Mapper
@@ -26,4 +28,7 @@ public interface UserDAO {
                            @Param("rejectReason") String rejectReason);
 
     void updateStatus(String userId, String status);
+
+    @Select("SELECT COUNT(*) FROM USERS WHERE USER_ID = #{userId}")
+    int countByUserId(String userId);
 }

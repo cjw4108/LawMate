@@ -60,7 +60,10 @@
         <input type="hidden" name="pageNo"   value="1"/>
         <input type="hidden" name="pageSize" value="${searchDTO.pageSize}"/>
         <button type="submit" class="btn btn-primary">🔍 검색</button>
-        <a id="reggo" href="/lawyer/register/${loginUser.id}" class="btn btn-success" style="text-decoration:none">+ 변호사 등록</a>
+        <%-- 일반 사용자(의뢰인)일 때만 변호사 등록 버튼 표시 --%>
+        <c:if test="${loginUser.role != 'ROLE_LAWYER' && loginUser.role != 'ROLE_ADMIN'}">
+            <a href="/lawyer/register/${loginUser.id}" class="btn btn-success" style="text-decoration:none">+ 변호사 등록</a>
+        </c:if>
     </div>
 </form>
 <div class="total-count">총 <strong>${totalCount}</strong> 건</div>
@@ -185,12 +188,6 @@
 </main>
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 <script type="text/javascript">
-    $(document).ready(function() {
-        if ("${loginUser.role}" == "ROLE_ADMIN") {
-            $("#reggo").hide();
-        } else {
-            $("#reggo").show();
-        }
-    });
+
 </script>
 </html>
