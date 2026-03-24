@@ -8,21 +8,40 @@
     <jsp:include page="/WEB-INF/views/common/header.jsp" />
     <link rel="stylesheet" href="/css/custom.css">
     <style>
-        /* 채팅창 스타일 보강 */
-        #chatArea {
-            height: 500px;
-            overflow-y: auto;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            padding: 15px;
+        /* 전체 레이아웃 높이 고정 */
+        .card.shadow-sm {
+            height: 600px; /* 전체 채팅창 높이 설정 */
+            display: flex;
+            flex-direction: column;
         }
+
+        .card-header {
+            flex-shrink: 0; /* 헤더 크기 고정 */
+        }
+
+        #chatArea {
+            flex-grow: 1; /* 남은 공간 모두 차지 */
+            overflow-y: auto; /* 내용이 넘칠 때만 스크롤 발생 */
+            background-color: #f8f9fa;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chatMessageArea {
+            margin-top: auto; /* 메시지가 적을 때도 아래부터 쌓이게 하려면 선택사항 */
+        }
+
+        .card-footer {
+            flex-shrink: 0; /* 입력창 크기 고정 (스크롤 안됨) */
+            background-color: #fff;
+        }
+
+        /* 말풍선 스타일 유지 */
         .msg-bubble {
             max-width: 80%;
-            display: inline-block;
             word-break: break-all;
         }
-        .ai-msg { background-color: #ffffff; color: #333; border: 1px solid #dee2e6; }
-        .user-msg { background-color: #007bff; color: #ffffff !important; }
     </style>
 </head>
 
@@ -38,31 +57,35 @@
                     <strong class="ms-2">${lawyerName} 변호사님과의 대화</strong>
                 </div>
                 <div class="card-body" id="chatArea">
-                    <div id="chatMessageArea">
-                        <%-- 기존 대화 내역 출력 시작 --%>
-                        <c:forEach var="h" items="${chatHistory}">
-                            <c:set var="isMe" value="${h.senderId eq userId}" />
-                            <div class="mb-3 ${isMe ? 'text-end' : 'text-start'}">
-                                <div style="display:inline-block; max-width: 80%; text-align: left;">
-                                    <c:if test="${!isMe}">
-                                        <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">
-                                                ${h.senderName}
+                    <div class="card-body" id="chatArea">
+                        <div id="chatMessageArea">
+                            <%-- 기존 대화 내역 출력 시작 --%>
+                            <c:forEach var="h" items="${chatHistory}">
+                                <c:set var="isMe" value="${h.senderId eq userId}" />
+                                <div class="mb-3 ${isMe ? 'text-end' : 'text-start'}">
+                                    <div style="display:inline-block; max-width: 80%; text-align: left;">
+                                        <c:if test="${!isMe}">
+                                            <div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold; color: #555;">
+                                                    ${h.senderName}
+                                            </div>
+                                        </c:if>
+                                        <div class="p-2 rounded shadow-sm"
+                                             style="background-color: ${isMe ? '#007bff' : '#f1f0f0'};
+                                                     color: ${isMe ? '#ffffff' : '#000000'};">
+                                                ${h.message}
                                         </div>
-                                    </c:if>
-                                    <div class="p-2 rounded shadow-sm"
-                                         style="background-color: ${isMe ? '#007bff' : '#f1f0f0'};
-                                                 color: ${isMe ? '#ffffff' : '#000000'};">
-                                            ${h.message}
                                     </div>
                                 </div>
-                            </div>
-                        </c:forEach>
+                            </c:forEach>
 
-                        <div class="text-center my-3">
-                            <small class="bg-secondary text-white px-3 py-1 rounded-pill">새로운 상담이 시작되었습니다.</small>
+                            <%-- 수정 포인트 1: chatHistory가 비어있을 때만 문구 출력 --%>
+                            <c:if test="${empty chatHistory}">
+                                <div id="newRoomNotice" class="text-center my-3">
+                                    <small class="bg-secondary text-white px-3 py-1 rounded-pill">새로운 상담이 시작되었습니다.</small>
+                                </div>
+                            </c:if>
                         </div>
                     </div>
-                </div>
                 <div class="card-footer bg-white">
                     <div class="input-group">
                         <input type="text" id="msg" class="form-control" placeholder="변호사님께 메시지를 입력하세요">
@@ -129,11 +152,13 @@
     }
 
     function renderBubble(msgObj, isMe) {
+        // 수정 포인트 2: 메시지가 하나라도 그려지면 "새로운 상담..." 안내 문구 삭제
+        $("#newRoomNotice").remove();
+
         var align = isMe ? "text-end" : "text-start";
         var bgColor = isMe ? "#007bff" : "#f1f0f0";
         var textColor = isMe ? "#ffffff" : "#000000";
 
-        // 상대방 이름 표시 (내가 아닐 때만)
         var senderName = msgObj.senderName || (isMe ? "" : "상대방");
         var nameTag = isMe ? "" : '<div style="font-size: 0.8rem; margin-bottom: 3px; font-weight: bold;">' + senderName + '</div>';
 

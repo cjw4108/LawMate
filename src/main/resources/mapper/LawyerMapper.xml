@@ -15,7 +15,6 @@
         <result property="specialty"     column="SPECIALTY"/>
         <result property="education"     column="EDUCATION"/>
         <result property="career"        column="CAREER"/>
-        <result property="profileImage"  column="PROFILE_IMAGE"/>
         <result property="introduction"  column="INTRODUCTION"/>
         <result property="status"        column="STATUS"/>
         <result property="admissionDate" column="ADMISSION_DATE"/>
@@ -40,7 +39,6 @@
                     SPECIALTY,
                     EDUCATION,
                     CAREER,
-                    PROFILE_IMAGE,
                     INTRODUCTION,
                     STATUS,
                     ADMISSION_DATE,
@@ -89,7 +87,7 @@
         SELECT
             LAWYER_ID, NAME, NAME_EN, BAR_NUMBER,
             EMAIL, PHONE, SPECIALTY, EDUCATION,
-            CAREER, PROFILE_IMAGE, INTRODUCTION,
+            CAREER,  INTRODUCTION,
             STATUS, ADMISSION_DATE, CREATED_AT, UPDATED_AT
         FROM TB_LAWYER
         WHERE LAWYER_ID = #{lawyerId}
@@ -103,12 +101,12 @@
         INSERT INTO TB_LAWYER (
             LAWYER_ID, NAME, NAME_EN, BAR_NUMBER,
             EMAIL, PHONE, SPECIALTY, EDUCATION,
-            CAREER, PROFILE_IMAGE, INTRODUCTION,
+            CAREER,  INTRODUCTION,
             STATUS, ADMISSION_DATE, CREATED_AT, UPDATED_AT
         ) VALUES (
             #{lawyerId}, #{name}, #{nameEn}, #{barNumber},
             #{email}, #{phone}, #{specialty}, #{education},
-            #{career}, #{profileImage}, #{introduction},
+            #{career},  #{introduction},
             #{status}, #{admissionDate}, SYSDATE, SYSDATE
         )
     </insert>
@@ -130,7 +128,6 @@
             SPECIALTY      = #{specialty},
             EDUCATION      = #{education},
             CAREER         = #{career},
-            PROFILE_IMAGE  = #{profileImage},
             INTRODUCTION   = #{introduction},
             STATUS         = #{status},
             ADMISSION_DATE = #{admissionDate},

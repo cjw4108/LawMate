@@ -16,7 +16,7 @@ public class LawyerDTO {
     private String specialty;        // 전문 분야
     private String education;        // 학력
     private String career;           // 경력
-    private String profileImage;     // 프로필 이미지 경로
+    // private String profileImage;     // 프로필 이미지 경로
     private String introduction;     // 소개
     private String status;           // 상태 (ACTIVE / INACTIVE)
     private Date admissionDate;      // 변호사 등록일
@@ -64,8 +64,8 @@ public class LawyerDTO {
     public String getCareer() { return career; }
     public void setCareer(String career) { this.career = career; }
 
-    public String getProfileImage() { return profileImage; }
-    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
+    // public String getProfileImage() { return profileImage; }
+    // public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
 
     public String getIntroduction() { return introduction; }
     public void setIntroduction(String introduction) { this.introduction = introduction; }

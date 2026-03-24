@@ -66,51 +66,49 @@
         </c:otherwise>
     </c:choose>
 
-        <!-- 기본 정보 -->
-        <div class="section-title-2">📋 기본 정보</div>
+            <div class="section-title-2">📋 기본 정보 (필수 입력)</div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>이름 <span class="required">*</span></label>
-                <input type="text" name="name" value="${lawyer.name}"
-                       placeholder="홍길동" required maxlength="50"/>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>이름 <span class="required">*</span></label>
+                    <input type="text" name="name" value="${lawyer.name}"
+                           placeholder="홍길동" required maxlength="50"/>
+                </div>
+                <div class="form-group">
+                    <label>영문 이름 <span class="required">*</span></label>
+                    <input type="text" name="nameEn" value="${lawyer.nameEn}"
+                           placeholder="Hong Gildong" required maxlength="100"/>
+                </div>
             </div>
-            <div class="form-group">
-                <label>영문 이름</label>
-                <input type="text" name="nameEn" value="${lawyer.nameEn}"
-                       placeholder="Hong Gildong" maxlength="100"/>
-            </div>
-        </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>변호사 등록번호 <span class="required">*</span></label>
-                <input type="text" name="barNumber" value="${lawyer.barNumber}"
-                       placeholder="2010-서울-12345" required maxlength="30"
-                       <c:if test="${not empty lawyer.lawyerId}">readonly style="background:#f5f5f5"</c:if>/>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>변호사 등록번호 <span class="required">*</span></label>
+                    <input type="text" name="barNumber" value="${lawyer.barNumber}"
+                           placeholder="2010-서울-12345" required maxlength="30"
+                           <c:if test="${not empty lawyer.lawyerId}">readonly style="background:#f5f5f5"</c:if>/>
+                </div>
+                <div class="form-group">
+                    <label>변호사 등록일 <span class="required">*</span></label>
+                    <input type="date" name="admissionDate" required
+                           value="<fmt:formatDate value='${lawyer.admissionDate}' pattern='yyyy-MM-dd'/>"/>
+                </div>
             </div>
-            <div class="form-group">
-                <label>변호사 등록일</label>
-                <input type="date" name="admissionDate"
-                       value="<fmt:formatDate value='${lawyer.admissionDate}' pattern='yyyy-MM-dd'/>"/>
-            </div>
-        </div>
 
-        <!-- 연락처 -->
-        <div class="section-title-2">📞 연락처</div>
+            <div class="section-title-2">📞 연락처</div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>이메일</label>
-                <input type="email" name="email" value="${lawyer.email}"
-                       placeholder="example@lawfirm.com" maxlength="100"/>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>이메일 <span class="required">*</span></label>
+                    <input type="email" name="email" value="${lawyer.email}"
+                           placeholder="example@lawfirm.com" required maxlength="100"/>
+                </div>
+                <div class="form-group">
+                    <label>전화번호 <span class="required">*</span></label>
+                    <input type="text" name="phone" value="${lawyer.phone}"
+                           placeholder="02-1234-5678" required maxlength="20"/>
+                </div>
             </div>
-            <div class="form-group">
-                <label>전화번호</label>
-                <input type="text" name="phone" value="${lawyer.phone}"
-                       placeholder="02-1234-5678" maxlength="20"/>
-            </div>
-        </div>
 
         <!-- 전문 분야 / 상태 -->
         <div class="section-title-2">⚖️ 전문 분야 및 상태</div>
@@ -159,14 +157,6 @@
             </div>
         </div>
 
-        <!-- 프로필 이미지 경로 -->
-        <div class="form-row">
-            <div class="form-group full">
-                <label>프로필 이미지 경로</label>
-                <input type="text" name="profileImage" value="${lawyer.profileImage}"
-                       placeholder="/img/profile/lawyer_001.jpg" maxlength="300"/>
-            </div>
-        </div>
 
         <!-- 버튼 -->
         <div class="btn-area">
