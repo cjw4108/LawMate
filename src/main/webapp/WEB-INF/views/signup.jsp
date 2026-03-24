@@ -102,16 +102,26 @@
         }
 
 
-        fetch('${pageContext.request.contextPath}/checkId', {
+// signup.jsp의 checkDuplicate 함수 내부
+
+        fetch('${pageContext.request.contextPath}/checkId', { // 🚨 /check-id가 아니라 /checkId 입니다!
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: 'userId=' + encodeURIComponent(userId)
         })
-            .then(res => res.text()) // 서버의 @ResponseBody String 응답을 받기 위해 text() 사용
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('서버 응답 오류 (Status: ' + res.status + ')');
+                }
+                return res.text();
+            })
             .then(data => {
-                if (data === 'available') {
+                const result = data.trim();
+                console.log("서버 응답 결과: [" + result + "]");
+
+                if (result === 'available') {
                     msg.textContent = '사용 가능한 아이디입니다.';
                     msg.style.color = '#198754';
                     document.getElementById('idChecked').value = 'true';
@@ -121,7 +131,8 @@
                     document.getElementById('idChecked').value = 'false';
                 }
             })
-            .catch(() => {
+            .catch(err => {
+                console.error(err);
                 msg.textContent = '중복확인 중 오류가 발생했습니다.';
                 msg.style.color = '#dc3545';
             });

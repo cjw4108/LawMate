@@ -119,10 +119,11 @@
 </div>
 
 <script>
-    // 1. 아이디 중복확인
+    // 1. 아이디 중복확인 (변호사 페이지용 수정 버전)
     function checkDuplicate() {
         const userId = document.getElementById('userId').value.trim();
         const msg = document.getElementById('idCheckMsg');
+        const idCheckedInput = document.getElementById('idChecked');
 
         if (!userId) {
             msg.textContent = '아이디를 입력해주세요.';
@@ -130,20 +131,34 @@
             return;
         }
 
-        fetch('${pageContext.request.contextPath}/check-id?userId=' + encodeURIComponent(userId))
-            .then(res => res.json())
+        // 컨트롤러의 @PostMapping("/checkId")와 형식을 맞춥니다.
+        fetch('${pageContext.request.contextPath}/checkId', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'userId=' + encodeURIComponent(userId)
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('연결 실패');
+                return res.text(); // 🚨 json()이 아니라 text()로 받아야 합니다!
+            })
             .then(data => {
-                if (data.available) {
+                const result = data.trim();
+                console.log("서버 응답 확인:", result);
+
+                if (result === 'available') {
                     msg.textContent = '사용 가능한 아이디입니다.';
                     msg.style.color = '#198754';
-                    document.getElementById('idChecked').value = 'true';
+                    idCheckedInput.value = 'true';
                 } else {
                     msg.textContent = '이미 사용 중인 아이디입니다.';
                     msg.style.color = '#dc3545';
-                    document.getElementById('idChecked').value = 'false';
+                    idCheckedInput.value = 'false';
                 }
             })
-            .catch(() => {
+            .catch(err => {
+                console.error(err);
                 msg.textContent = '중복확인 중 오류가 발생했습니다.';
                 msg.style.color = '#dc3545';
             });

@@ -35,8 +35,10 @@ public class UserService {
         return true;
     }
 
+
     public boolean isUserIdExists(String userId) {
-        return userDAO.countByUserId(userId) > 0;
+        // 리턴값이 int이므로 0보다 큰지 비교해야 합니다.
+        return userDAO.existsByUserId(userId) > 0;
     }
 
     // 2. 변호사 회원가입
